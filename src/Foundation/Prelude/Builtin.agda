@@ -7,6 +7,8 @@ open import Agda.Primitive public
 variable
   ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
   A B C : 𝒰 ℓ
+  P : A → 𝒰 ℓ
+  P₂ : (x : A) → P x → 𝒰 ℓ
 
 open import Agda.Builtin.Unit public
   using (⊤; tt)

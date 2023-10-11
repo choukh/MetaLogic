@@ -6,6 +6,8 @@ record Language : 𝒰₁ where
   field
     ℱ : 𝒰
     𝒫 : 𝒰
+    discreteℱ : discrete ℱ
+    discrete𝒫 : discrete 𝒫
     ∣_∣ₜ : ℱ → ℕ
     ∣_∣ᵩ : 𝒫 → ℕ
 

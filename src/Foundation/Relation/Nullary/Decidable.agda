@@ -13,9 +13,6 @@ open import Cubical.Relation.Nullary
     isPropDec to isPropDec🧊
   )
 
-private variable
-  P : A → 𝒰 ℓ
-
 Dec→🧊 : Dec A → Dec🧊 A
 Dec→🧊 (yes x) = yes🧊 x
 Dec→🧊 (no ¬x) = no🧊 $ ¬→🧊 ¬x
@@ -26,11 +23,11 @@ Dec←🧊 (no🧊 ¬x) = no $ ¬←🧊 ¬x
 
 Dec→←🧊 : (H : Dec🧊 A) → Dec→🧊 (Dec←🧊 H) ＝ H
 Dec→←🧊 (yes🧊 p) = refl
-Dec→←🧊 (no🧊 ¬p) = subst (λ x → no🧊 x ＝ no🧊 ¬p) (sym $ ¬→←🧊 _) refl
+Dec→←🧊 (no🧊 ¬p) = subst (λ x → no🧊 x ＝ no🧊 ¬p) (¬→←🧊 _) refl
 
 Dec←→🧊 : (H : Dec A) → Dec←🧊 (Dec→🧊 H) ＝ H
 Dec←→🧊 (yes p) = refl
-Dec←→🧊 (no ¬p) = subst (λ x → no x ＝ no ¬p) (sym $ ¬←→🧊 _) refl
+Dec←→🧊 (no ¬p) = subst (λ x → no x ＝ no ¬p) (¬←→🧊 _) refl
 
 Dec≅🧊 : Dec A ≅ Dec🧊 A
 Dec≅🧊 = mk≅ Dec→🧊 Dec←🧊 Dec→←🧊 Dec←→🧊
@@ -39,13 +36,13 @@ Dec＝🧊 : Dec A ＝ Dec🧊 A
 Dec＝🧊 = ua Dec≅🧊
 
 isPropDec : isProp A → isProp (Dec A)
-isPropDec H = subst isProp (sym Dec＝🧊) (mapIsProp isPropDec🧊 H)
+isPropDec H = subst isProp Dec＝🧊 (mapIsProp isPropDec🧊 H)
 
 decidable : (A → 𝒰 ℓ) → 𝒰 _
 decidable P = ∀ x → Dec (P x)
 
-deciderOf : {P : A → 𝒰 ℓ} → decidable P → A → 𝔹
-deciderOf H x = does $ H x
+decider : {P : A → 𝒰 ℓ} → decidable P → A → 𝔹
+decider H x = does $ H x
 
 isPropDecidable : isPred P → isProp (decidable P)
 isPropDecidable H = isPropΠ λ x → isPropDec (H x)
