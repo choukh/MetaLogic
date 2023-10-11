@@ -1,0 +1,9 @@
+name: MetaLogic
+depend:
+  cubical
+  standard-library
+include: src
+flags:
+  --cubical --safe
+  --hidden-argument-puns
+  --warning=noUnsupportedIndexedMatch
