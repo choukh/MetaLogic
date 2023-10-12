@@ -1,6 +1,6 @@
 module FOL.Syntax where
 
-open import Foundation.Everything
+open import Foundation.Essential
 
 record Language : 𝕋₁ where
   field

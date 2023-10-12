@@ -1,7 +1,9 @@
 module Foundation.Relation.Unary.Enumerable where
 
 open import Foundation.Prelude
-open import Foundation.Logic
+open import Foundation.Logic.Basic
+open import Foundation.Logic.Iff
+open import Foundation.Logic.ConstructiveEpsilon
 open import Foundation.Data.Optional
 open import Foundation.Relation.Unary.Countable
   using (countable)
@@ -23,8 +25,8 @@ module OptionalView where
   enumerableℙ : (A → 𝕋 ℓ) → 𝕋 _
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
-  enumerable→countable : enumerable A → countable A
-  enumerable→countable = elim₁ (λ _ → is₁) {!   !}
+  --enumerable→countable : enumerable A → countable A
+  --enumerable→countable = elim₁ (λ _ → is₁) λ (f , H) → {!   !}
 
 module ListView where
 

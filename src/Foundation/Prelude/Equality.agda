@@ -10,7 +10,7 @@ open import Cubical.Data.Equality public
   renaming (
     ap to cong;
     eqToPath to ＝→⥱;
-    pathToEq to ＝←⥱;
+    pathToEq to ⥱→＝;
     Path≡Eq to ⥱＝＝;
     Iso to _≅_;
     iso to mk≅

@@ -1,8 +1,9 @@
 module Foundation.Relation.Unary.Countable where
 
 open import Foundation.Prelude
-open import Foundation.Functions
-open import Foundation.Logic
+open import Foundation.Functions.Injection
+open import Foundation.Functions.Surjection
+open import Foundation.Logic.Basic
 
 countable : 𝕋 ℓ → 𝕋 _
 countable A = ∥ A ↪ ℕ ∥₁

@@ -9,8 +9,11 @@ open import Cubical.HITs.PropositionalTruncation public
     map to map₁; map2 to map₁2
     )
 
-open import Cubical.HITs.PropositionalTruncation
+open import Cubical.HITs.PropositionalTruncation as PT
   using (squash₁; elim; elim2; elim3)
+
+open PT.SetElim using ()
+  renaming (rec→Set to rec→Set🧊)
 
 is₁ : isProp ∥ A ∥₁
 is₁ = isProp←🧊 squash₁
@@ -30,3 +33,6 @@ elim₁3 : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
          (g : (a : A) (b : B) (c : C) → P (∣ a ∣₁) ∣ b ∣₁ ∣ c ∣₁)
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → P x y z
 elim₁3 H = elim3 $ isProp→🧊 ∘₃ H
+
+rec→Set : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
+rec→Set setB f H = rec→Set🧊 (isSet→🧊 setB) f λ x y → ＝→⥱ (H x y)

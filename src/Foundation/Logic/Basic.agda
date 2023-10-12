@@ -3,8 +3,9 @@ module Foundation.Logic.Basic where
 open import Foundation.Prelude.Builtin
 open import Foundation.HITs.PropositionalTruncation public
 
-open import Foundation.Data.Product public
-  using ()
+open import Foundation.Data.Empty public
+open import Foundation.Data.Sigma public
+  using (Σ＝Prop)
   renaming (_×_ to infixr 3 _∧_)
 
 open import Foundation.Data.Sum
