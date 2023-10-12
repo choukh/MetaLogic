@@ -4,19 +4,27 @@ open import Foundation.Prelude
 
 open import Cubical.HITs.PropositionalTruncation public
   using (∥_∥₁; ∣_∣₁)
-  renaming (
-    rec to rec₁; rec2 to rec₁2; rec3 to rec₁3;
-    map to map₁; map2 to map₁2
-    )
+  renaming (map to map₁; map2 to map₁2)
 
 open import Cubical.HITs.PropositionalTruncation as PT
-  using (squash₁; elim; elim2; elim3)
+  using (squash₁;
+    rec; rec2; rec3;
+    elim; elim2; elim3
+  )
 
-open PT.SetElim using ()
-  renaming (rec→Set to rec→Set🧊)
+open PT.SetElim using (rec→Set)
 
 is₁ : isProp ∥ A ∥₁
 is₁ = isProp←🧊 squash₁
+
+rec₁ : isProp B → (A → B) → ∥ A ∥₁ → B
+rec₁ pB = rec $ isProp→🧊 pB
+
+rec₁2 : isProp C → (A → B → C) → ∥ A ∥₁ → ∥ B ∥₁ → C
+rec₁2 pC = rec2 $ isProp→🧊 pC
+
+rec₁3 : isProp D → (A → B → C → D) → ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → D
+rec₁3 pD = rec3 $ isProp→🧊 pD
 
 elim₁ : {P : ∥ A ∥₁ → 𝕋 ℓ} → ((a : ∥ A ∥₁) → isProp (P a))
       → ((x : A) → P ∣ x ∣₁) → (a : ∥ A ∥₁) → P a
@@ -34,5 +42,5 @@ elim₁3 : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → P x y z
 elim₁3 H = elim3 $ isProp→🧊 ∘₃ H
 
-rec→Set : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
-rec→Set setB f H = rec→Set🧊 (isSet→🧊 setB) f λ x y → ＝→⥱ (H x y)
+rec₁→Set : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
+rec₁→Set setB f H = rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)

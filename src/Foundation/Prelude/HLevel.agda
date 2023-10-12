@@ -14,6 +14,12 @@ open import Cubical.Foundations.Prelude public
     isSet to isSet🧊
   )
 
+open import Cubical.Foundations.Prelude public
+  using ()
+  renaming (
+    isProp→isSet to isProp→isSet🧊
+  )
+
 open import Cubical.Foundations.HLevels
   using ()
   renaming (
@@ -75,10 +81,10 @@ isPred←🧊 H x = isProp←🧊 (H x)
 -- Mapping 2
 
 isSet→🧊 : isSet A → isSet🧊 A
-isSet→🧊 H x y = isProp→🧊 $ subst isProp ⥱＝＝ (H x y)
+isSet→🧊 H x y = isProp→🧊 $ subst isProp (sym Eq＝🧊) (H x y)
 
 isSet←🧊 : isSet🧊 A → isSet A
-isSet←🧊 H x y = isProp←🧊 $ subst isProp🧊 (sym ⥱＝＝) (H x y)
+isSet←🧊 H x y = isProp←🧊 $ subst isProp🧊 Eq＝🧊 (H x y)
 
 mapIsSet : (isSet🧊 A → isSet🧊 B) → (isSet A → isSet B)
 mapIsSet F = isSet←🧊 ∘ F ∘ isSet→🧊
@@ -88,6 +94,9 @@ isSets→🧊 H x = isSet→🧊 (H x)
 
 isSets←🧊 : isSets🧊 P → isSets P
 isSets←🧊 H x = isSet←🧊 (H x)
+
+isProp→isSet : isProp A → isSet A
+isProp→isSet pA = isSet←🧊 $ isProp→isSet🧊 $ isProp→🧊 pA
 
 --------------------------------------------------------------------------------
 -- Π
@@ -118,3 +127,4 @@ isPropΣ pA pP = isProp←🧊 $ isPropΣ🧊 (isProp→🧊 pA) $ isPred→🧊
 
 isSetΣ : isSet A → isSets P → isSet (Σ A P)
 isSetΣ sA sP = isSet←🧊 $ isSetΣ🧊 (isSet→🧊 sA) $ isSets→🧊 sP
+ 

@@ -6,8 +6,8 @@ open import Agda.Primitive public
 
 variable
   ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
-  A B C : 𝕋 ℓ
-  P : A → 𝕋 ℓ
+  A B C D : 𝕋 ℓ
+  P Q : A → 𝕋 ℓ
   P₂ : (x : A) → P x → 𝕋 ℓ
 
 open import Agda.Builtin.Unit public
@@ -31,7 +31,7 @@ open import Agda.Builtin.Equality public
 
 open import Agda.Builtin.Cubical.Path public
   using ()
-  renaming (_≡_ to _⥱_)
+  renaming (_≡_ to _＝🧊_)
 
 open import Agda.Builtin.Sigma public
   using (Σ; _,_; fst; snd)

@@ -1,4 +1,52 @@
 module Foundation.Data.Sum where
 
+open import Foundation.Prelude
+open import Foundation.Data.Empty
+open import Foundation.Relation.Nullary.Discrete
+
 open import Data.Sum public
-  using (_⊎_; inj₁; inj₂)
+  using (inj₁; inj₂)
+  renaming (_⊎_ to infixr 5 _⊎_)
+
+open import Cubical.Data.Sum
+  using (inl; inr)
+  renaming (
+    _⊎_ to infixr 5 _⊎🧊_;
+    isProp⊎ to isProp⊎🧊;
+    isSet⊎ to isSet⊎🧊;
+    discrete⊎ to discrete⊎🧊
+  )
+
+Sum→🧊 : A ⊎ B → A ⊎🧊 B
+Sum→🧊 (inj₁ x) = inl x
+Sum→🧊 (inj₂ y) = inr y
+
+Sum←🧊 : A ⊎🧊 B → A ⊎ B
+Sum←🧊 (inl x) = inj₁ x
+Sum←🧊 (inr y) = inj₂ y
+
+Sum→←🧊 : (x : A ⊎🧊 B) → Sum→🧊 (Sum←🧊 x) ＝ x
+Sum→←🧊 (inl x) = refl
+Sum→←🧊 (inr x) = refl
+
+Sum←→🧊 : (x : A ⊎ B) → Sum←🧊 (Sum→🧊 x) ＝ x
+Sum←→🧊 (inj₁ x) = refl
+Sum←→🧊 (inj₂ y) = refl
+
+Sum≅🧊 : A ⊎ B ≅ A ⊎🧊 B
+Sum≅🧊 = mk≅ Sum→🧊 Sum←🧊 Sum→←🧊 Sum←→🧊
+
+Sum＝🧊 : A ⊎ B ＝ A ⊎🧊 B
+Sum＝🧊 = ua Sum≅🧊
+
+isProp⊎ : isProp A → isProp B → (A → B → ⊥) → isProp (A ⊎ B)
+isProp⊎ pA pB disj = subst isProp Sum＝🧊 $
+  isProp←🧊 $ isProp⊎🧊 (isProp→🧊 pA) (isProp→🧊 pB) λ x y → ⊥→🧊 (disj x y)
+
+isSet⊎ : isSet A → isSet B → isSet (A ⊎ B)
+isSet⊎ sA sB = subst isSet Sum＝🧊 $
+  isSet←🧊 $ isSet⊎🧊 (isSet→🧊 sA) (isSet→🧊 sB)
+
+discrete⊎ : discrete A → discrete B → discrete (A ⊎ B)
+discrete⊎ dA dB = subst discrete Sum＝🧊 $
+  discrete←🧊 $ discrete⊎🧊 (discrete→🧊 dA) (discrete→🧊 dB)

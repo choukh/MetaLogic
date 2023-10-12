@@ -4,6 +4,8 @@ open import Foundation.Prelude.Builtin
 open import Foundation.HITs.PropositionalTruncation public
 
 open import Foundation.Data.Empty public
+open import Foundation.Data.Unit public
+
 open import Foundation.Data.Sigma public
   using (Σ＝Prop)
   renaming (_×_ to infixr 3 _∧_)

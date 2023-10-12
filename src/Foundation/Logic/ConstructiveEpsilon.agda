@@ -38,4 +38,4 @@ module _ {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (A n)) 
   constMinWit (_ , pₙ) (_ , qₘ) = constSearch (initial $ witness pₙ) (initial $ witness qₘ)
 
   ε : ∃ ℕ A → Σ ℕ A
-  ε = rec→Set (isSetΣ isSetℕ setsA) minWit constMinWit
+  ε = rec₁→Set (isSetΣ isSetℕ setsA) minWit constMinWit
