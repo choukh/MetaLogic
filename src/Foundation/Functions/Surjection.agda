@@ -6,5 +6,5 @@ open import Cubical.Functions.Surjection public
   using ()
   renaming (isSurjection to surjective)
 
-_↠_ : 𝒰 ℓ → 𝒰 ℓ′ → 𝒰 _
+_↠_ : 𝕋 ℓ → 𝕋 ℓ′ → 𝕋 _
 A ↠ B = Σ (A → B) surjective

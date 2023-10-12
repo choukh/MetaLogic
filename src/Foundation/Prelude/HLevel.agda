@@ -4,31 +4,31 @@ open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
 open import Foundation.Prelude.Equality
 
-open import Cubical.Data.Equality
+open import Cubical.Data.Equality public
   using ()
   renaming (
     isPropToIsPropPath to isProp→🧊;
     isPropPathToIsProp to isProp←🧊
   )
 
-open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Prelude public
   using ()
   renaming (
     isProp to isProp🧊;
     isSet to isSet🧊
   )
 
-open import Cubical.Foundations.HLevels
+open import Cubical.Foundations.HLevels public
   using ()
   renaming (
     isPropΠ to isPropΠ🧊;
     isSetΠ to isSetΠ🧊
   )
 
-isProp : 𝒰 ℓ → 𝒰 ℓ
+isProp : 𝕋 ℓ → 𝕋 ℓ
 isProp A = (x y : A) → x ＝ y
 
-isPred : (A → 𝒰 ℓ) → 𝒰 _
+isPred : (A → 𝕋 ℓ) → 𝕋 _
 isPred P = ∀ x → isProp (P x)
 
 mapIsProp : (isProp🧊 A → isProp🧊 B) → (isProp A → isProp B)
@@ -40,7 +40,7 @@ isPropΠ H = isProp←🧊 $ isPropΠ🧊 $ isProp→🧊 ∘ H
 isPropΠ2 : ((x : A) (y : P x) → isProp (P₂ x y)) → isProp ((x : A) (y : P x) → P₂ x y)
 isPropΠ2 H = isPropΠ λ x → isPropΠ (H x)
 
-isSet : 𝒰 ℓ → 𝒰 ℓ
+isSet : 𝕋 ℓ → 𝕋 ℓ
 isSet A = (x y : A) → isProp (x ＝ y)
 
 isSet→🧊 : isSet A → isSet🧊 A

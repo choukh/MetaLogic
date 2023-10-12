@@ -1,4 +1,4 @@
-module Foundation.Relation.Unary.Discrete where
+module Foundation.Relation.Nullary.Discrete where
 
 open import Foundation.Prelude
 open import Foundation.Relation.Nullary.Decidable
@@ -10,7 +10,7 @@ open import Cubical.Relation.Nullary
     Discrete→isSet to discrete🧊→isSet🧊
   )
 
-discrete : 𝒰 ℓ → 𝒰 ℓ
+discrete : 𝕋 ℓ → 𝕋 ℓ
 discrete A = (x y : A) → Dec (x ＝ y)
 
 discrete→🧊 : discrete A → discrete🧊 A

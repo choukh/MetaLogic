@@ -20,7 +20,7 @@ open import Cubical.Data.Equality
   using (isoToEquiv)
   renaming (ua to ua🧊)
 
-subst : (P : A → 𝒰 ℓ) {x y : A} → y ＝ x → P x → P y
+subst : (P : A → 𝕋 ℓ) {x y : A} → y ＝ x → P x → P y
 subst _ refl H = H
 
 ua : A ≅ B → A ＝ B

@@ -38,11 +38,11 @@ Dec＝🧊 = ua Dec≅🧊
 isPropDec : isProp A → isProp (Dec A)
 isPropDec H = subst isProp Dec＝🧊 (mapIsProp isPropDec🧊 H)
 
-decidable : (A → 𝒰 ℓ) → 𝒰 _
-decidable P = ∀ x → Dec (P x)
+Decℙ : (A → 𝕋 ℓ) → 𝕋 _
+Decℙ P = ∀ x → Dec (P x)
 
-decider : {P : A → 𝒰 ℓ} → decidable P → A → 𝔹
+decider : {P : A → 𝕋 ℓ} → Decℙ P → A → 𝔹
 decider H x = does $ H x
 
-isPropDecidable : isPred P → isProp (decidable P)
-isPropDecidable H = isPropΠ λ x → isPropDec (H x)
+isPropDecℙ : isPred P → isProp (Decℙ P)
+isPropDecℙ H = isPropΠ λ x → isPropDec (H x)

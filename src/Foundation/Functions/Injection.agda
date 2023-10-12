@@ -2,10 +2,10 @@ module Foundation.Functions.Injection where
 
 open import Foundation.Prelude
 
-injective : (A → B) → 𝒰 _
+injective : (A → B) → 𝕋 _
 injective f = ∀ {x y} → f x ＝ f y → x ＝ y
 
-_↪_ : 𝒰 ℓ → 𝒰 ℓ′ → 𝒰 _
+_↪_ : 𝕋 ℓ → 𝕋 ℓ′ → 𝕋 _
 A ↪ B = Σ (A → B) injective
 
 ↪-refl : A ↪ A

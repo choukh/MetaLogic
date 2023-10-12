@@ -2,10 +2,10 @@ module FOL.Syntax where
 
 open import Foundation.Everything
 
-record Language : 𝒰₁ where
+record Language : 𝕋₁ where
   field
-    ℱ : 𝒰
-    𝒫 : 𝒰
+    ℱ : 𝕋
+    𝒫 : 𝕋
     discreteℱ : discrete ℱ
     discrete𝒫 : discrete 𝒫
     ∣_∣ₜ : ℱ → ℕ
@@ -15,17 +15,17 @@ open Language ⦃...⦄
 
 module _ ⦃ ℒ : Language ⦄ where
 
-  data Term : 𝒰 where
+  data Term : 𝕋 where
     #_ : ℕ → Term
     _$̇_ : (f : ℱ) → 𝕍 Term ∣ f ∣ₜ → Term
 
-  data Formula : 𝒰 where
+  data Formula : 𝕋 where
     ⊥̇ : Formula
     _$̇_ : (P : 𝒫) → 𝕍 Term ∣ P ∣ᵩ → Formula
     _→̇_ : Formula → Formula → Formula
     ∀̇_ : Formula → Formula
 
-  Subst : 𝒰
+  Subst : 𝕋
   Subst = ℕ → Term
 
   infix 30 _[_]ₜ _[_]ₜ⃗
@@ -59,14 +59,14 @@ module _ ⦃ ℒ : Language ⦄ where
   _[_] : Formula → Term → Formula
   φ [ t ] = φ [ t ; #_ ]ᵩ
 
-  Context : 𝒰
+  Context : 𝕋
   Context = 𝕃 Formula
 
-  data HasPeirce : 𝒰 where
+  data HasPeirce : 𝕋 where
     classical intuitionistic : HasPeirce
 
-  data HasECQ : 𝒰 where
+  data HasECQ : 𝕋 where
     standard paraconsistent : HasECQ
 
-  ProofTree : {p : HasPeirce} {e : HasECQ} → Context → Formula → 𝒰
+  ProofTree : {p : HasPeirce} {e : HasECQ} → Context → Formula → 𝕋
   ProofTree = {!   !}

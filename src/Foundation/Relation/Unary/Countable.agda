@@ -4,8 +4,11 @@ open import Foundation.Prelude
 open import Foundation.Functions
 open import Foundation.Logic
 
-countable : 𝒰 ℓ → 𝒰 _
-countable A = ∥ A ↠ ℕ ∥₁
+countable : 𝕋 ℓ → 𝕋 _
+countable A = ∥ A ↪ ℕ ∥₁
 
-countablyInfinite : 𝒰 ℓ → 𝒰 _
+countablyInfinite : 𝕋 ℓ → 𝕋 _
 countablyInfinite A = ∥ A ≅ ℕ ∥₁
+
+infinite : 𝕋 ℓ → 𝕋 _
+infinite A = ∥ ℕ ↪ A ∥₁

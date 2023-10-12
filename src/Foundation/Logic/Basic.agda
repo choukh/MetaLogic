@@ -11,7 +11,7 @@ open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)
 
 infixr 2 _∨_
-_∨_ : (A : 𝒰 ℓ) (B : 𝒰 ℓ′) → 𝒰 _
+_∨_ : (A : 𝕋 ℓ) (B : 𝕋 ℓ′) → 𝕋 _
 A ∨ B = ∥ A ⊎ B ∥₁
 
 inl : A → A ∨ B
@@ -20,15 +20,15 @@ inl x = ∣ inj₁ x ∣₁
 inr : B → A ∨ B
 inr x = ∣ inj₂ x ∣₁
 
-exists : (A : 𝒰 ℓ) (P : A → 𝒰 ℓ′) → 𝒰 _
-exists A B = ∥ Σ A B ∥₁
+∃ : (A : 𝕋 ℓ) (P : A → 𝕋 ℓ′) → 𝕋 _
+∃ A P = ∥ Σ A P ∥₁
 
-exists₋ : {A : 𝒰 ℓ} (P : A → 𝒰 ℓ′) → 𝒰 _
-exists₋ {A} B = ∥ Σ A B ∥₁
+∃₋ : (P : A → 𝕋 ℓ′) → 𝕋 _
+∃₋ P = ∥ Σ₋ P ∥₁
 
-∃-syntax = exists
-∃₋-syntax = exists₋
+∃-syntax = ∃
+∃₋-syntax = ∃₋
 
 infix 1 ∃-syntax ∃₋-syntax
-syntax ∃-syntax A (λ x → B) = ∃ x ∶ A , B
-syntax ∃₋-syntax (λ x → B) = ∃ x , B
+syntax ∃-syntax A (λ x → P) = ∃ x ∶ A ⸴ P
+syntax ∃₋-syntax (λ x → P) = ∃ x ⸴ P
