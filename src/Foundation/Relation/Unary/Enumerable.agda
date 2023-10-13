@@ -7,6 +7,8 @@ open import Foundation.Logic.ConstructiveEpsilon
 
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
+open import Foundation.Data.List.Sequence
+open import Foundation.Data.Sigma
 open import Foundation.Functions.Injection
 
 open import Foundation.Relation.Nullary.Decidable
@@ -61,24 +63,18 @@ module MaybeView where
 module ListView where
   module 𝕄 = MaybeView
 
-  isEnumerator : (ℕ → 𝕃 A) → 𝕋 _
-  isEnumerator f = ∀ n → ∃ xs ⸴ f (suc n) ＝ f n ++ xs
-
-  Enumerator : 𝕋 ℓ → 𝕋 _
-  Enumerator A = Σ (ℕ → 𝕃 A) isEnumerator
-
-  _enumerates_ : Enumerator A → A → 𝕋 _
-  f enumerates x = ∃ n ⸴ x ∈ fst f n
+  _enumerates_ : 𝕃ₙ A → A → 𝕋 _
+  f enumerates x = ∃ n ⸴ x ∈ f n
 
   Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ⸴ ∀ (x : A) → f enumerates x
+  Enum A = Σ f ⸴ cumulative f ∧ ∀ (x : A) → f enumerates x
 
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ⸴ ∀ x → P x ↔ f enumerates x
+  Enumℙ P = Σ f ⸴ cumulative f ∧ ∀ x → P x ↔ f enumerates x
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
-  Enum↔ℙ = ⇒: (λ (f , H) → f , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
-           ⇐: (λ (f , H) → f , λ x → H x .⇒ tt)
+  Enum↔ℙ = ⇒: (λ (f , cum , H) → f , cum , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
+           ⇐: (λ (f , cum , H) → f , cum , λ x → H x .⇒ tt)
 
   enumerable : 𝕋 ℓ → 𝕋 _
   enumerable A = ∥ Enum A ∥₁
@@ -89,9 +85,28 @@ module ListView where
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
   enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
+  Enum𝔹 : Enum 𝔹
+  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → ∣ [] , refl ∣₁) ,
+    λ { true →  ∣ 0 , here refl ∣₁
+      ; false → ∣ 0 , there (here refl) ∣₁}
+
+  Enumℕ : Enum ℕ
+  Enumℕ = f , (λ n → ∣ [ suc n ] , refl ∣₁) , λ n → ∣ n , H n ∣₁ where
+    f : 𝕃ₙ ℕ
+    f zero = [ 0 ]
+    f (suc n) = f n ++ [ suc n ]
+    H : ∀ n → n ∈ f n
+    H zero = here refl
+    H (suc n) = {!   !}
+
+  Enumℙ→𝕄 : {P : A → 𝕋 ℓ} → Enumℙ P → 𝕄.Enumℙ P
+  Enumℙ→𝕄 {A} (f , cum , H) = {!   !} , {!   !}
+
+  Enumℙ←𝕄 : 𝕄.Enumℙ P → Enumℙ P
+  Enumℙ←𝕄 = {!   !}
+
   Enumℙ↔𝕄 : Enumℙ P ↔ 𝕄.Enumℙ P
-  Enumℙ↔𝕄 = ⇒: (λ x → {!   !})
-            ⇐: (λ x → {!   !})
+  Enumℙ↔𝕄 = ⇒: Enumℙ→𝕄 ⇐: Enumℙ←𝕄
 
   enumerableℙ↔𝕄 : enumerableℙ P ↔ 𝕄.enumerableℙ P
   enumerableℙ↔𝕄 = ∥∥-↔ ∣ Enumℙ↔𝕄 ∣₁
