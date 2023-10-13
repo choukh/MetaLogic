@@ -9,20 +9,20 @@ open import Data.Empty public
 open import Cubical.Data.Empty
   renaming (⊥ to ⊥🧊; isProp⊥ to isProp⊥🧊)
 
-⊥→🧊 : ⊥ → ⊥🧊
-⊥→🧊 ()
+Empty→🧊 : ⊥ → ⊥🧊
+Empty→🧊 ()
 
-⊥←🧊 : ⊥🧊 → ⊥
-⊥←🧊 ()
+Empty←🧊 : ⊥🧊 → ⊥
+Empty←🧊 ()
 
-⊥≅🧊 : ⊥ ≅ ⊥🧊
-⊥≅🧊 = mk≅ ⊥→🧊 ⊥←🧊 (λ ()) (λ ())
+Empty≅🧊 : ⊥ ≅ ⊥🧊
+Empty≅🧊 = mk≅ Empty→🧊 Empty←🧊 (λ ()) (λ ())
 
-⊥＝🧊 : ⊥ ＝ ⊥🧊
-⊥＝🧊 = ua ⊥≅🧊
+Empty＝🧊 : ⊥ ＝ ⊥🧊
+Empty＝🧊 = ua Empty≅🧊
 
 isProp⊥ : isProp ⊥
-isProp⊥ = subst isProp ⊥＝🧊 (isProp←🧊 isProp⊥🧊)
+isProp⊥ = subst isProp Empty＝🧊 (isProp←🧊 isProp⊥🧊)
 
 isSet⊥ : isSet ⊥
 isSet⊥ = isProp→isSet isProp⊥

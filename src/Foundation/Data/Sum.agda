@@ -41,7 +41,7 @@ Sum＝🧊 = ua Sum≅🧊
 
 isProp⊎ : isProp A → isProp B → (A → B → ⊥) → isProp (A ⊎ B)
 isProp⊎ pA pB disj = subst isProp Sum＝🧊 $
-  isProp←🧊 $ isProp⊎🧊 (isProp→🧊 pA) (isProp→🧊 pB) λ x y → ⊥→🧊 (disj x y)
+  isProp←🧊 $ isProp⊎🧊 (isProp→🧊 pA) (isProp→🧊 pB) λ x y → Empty→🧊 (disj x y)
 
 isSet⊎ : isSet A → isSet B → isSet (A ⊎ B)
 isSet⊎ sA sB = subst isSet Sum＝🧊 $

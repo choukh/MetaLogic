@@ -7,7 +7,7 @@ open import Foundation.Data.Empty public
 open import Foundation.Data.Unit public
 
 open import Foundation.Data.Sigma public
-  using (Σ＝Prop)
+  using (SigEq₁)
   renaming (_×_ to infixr 3 _∧_)
 
 open import Foundation.Data.Sum

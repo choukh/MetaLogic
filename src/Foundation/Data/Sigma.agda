@@ -9,6 +9,6 @@ open import Data.Product public
 open import Cubical.Data.Sigma
   using (Σ≡Prop)
 
-Σ＝Prop : isPred P → {u v : Σ A P}
+SigEq₁ : isPred P → {u v : Σ A P}
        → (p : u .fst ＝ v .fst) → u ＝ v
-Σ＝Prop pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)
+SigEq₁ pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)

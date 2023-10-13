@@ -5,19 +5,29 @@ open import Foundation.Prelude.Function
 
 open import Cubical.Data.Equality public
   using (
-    sym; funExt
+    sym; funExt;
+    _≃_
   )
   renaming (
-    ap to cong;
-    eqToPath to Eq→🧊;
-    pathToEq to Eq←🧊;
-    Iso to infix 4 _≅_;
-    iso to mk≅
+    ap            to cong;
+    happly        to funExt⁻;
+    eqToPath      to Eq→🧊;
+    pathToEq      to Eq←🧊;
+    Path≡Eq       to Eq＝˘🧊;
+    Iso           to infix 4 _≅_;
+    iso           to mk≅;
+    isoToIsoPath  to Iso→🧊;
+    isoToEquiv    to Iso→Equiv;
+    ua            to ua≃
   )
 
-open import Cubical.Data.Equality
-  using (isoToEquiv; Path≡Eq)
-  renaming (ua to ua🧊)
+open import Cubical.Foundations.Isomorphism
+  using ()
+  renaming (Iso to _≅🧊_)
+
+open import Cubical.Foundations.Equiv
+  using ()
+  renaming (_≃_ to _≃🧊_)
 
 infixr 30 _∙_
 _∙_ : {x y z : A} → x ＝ y → y ＝ z → x ＝ z
@@ -40,8 +50,27 @@ _ ∎ = refl
 subst : (P : A → 𝕋 ℓ) {x y : A} → y ＝ x → P x → P y
 subst _ refl H = H
 
+subst2 : {x y : A} {z w : B} (R : A → B → 𝕋 ℓ)
+         (p : x ＝ y) (q : z ＝ w) → R x z → R y w
+subst2 R refl refl = id
+
+funExt2 : {R : A → B → 𝕋 ℓ} {f g : (x : A) (y : B) → R x y} →
+          ((x : A) (y : B) → f x y ＝ g x y) → f ＝ g
+funExt2 H = funExt λ x → funExt λ y → H x y
+
+EqΠ : (∀ x → P x ＝ Q x) → (∀ x → P x) ＝ (∀ x → Q x)
+EqΠ H with funExt H
+... | refl = refl
+
+EqΠ2 : (∀ x y → R x y ＝ S x y) → (∀ x y → R x y) ＝ (∀ x y → S x y)
+EqΠ2 H = EqΠ λ x → EqΠ λ y → H x y
+
 Eq＝🧊 : {x y : A} → (x ＝ y) ＝ (x ＝🧊 y)
-Eq＝🧊 = sym Path≡Eq
+Eq＝🧊 = sym Eq＝˘🧊
+
+Iso←🧊 : A ≅🧊 B → A ≅ B
+Iso←🧊 i = mk≅ (fun i) (inv i) (Eq←🧊 ∘ rightInv i) (Eq←🧊 ∘ leftInv i)
+  where open _≅🧊_
 
 ua : A ≅ B → A ＝ B
-ua = ua🧊 ∘ isoToEquiv
+ua = ua≃ ∘ Iso→Equiv

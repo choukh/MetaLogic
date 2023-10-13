@@ -6,10 +6,12 @@ record Language : 𝕋₁ where
   field
     ℱ : 𝕋
     𝒫 : 𝕋
-    discreteℱ : discrete ℱ
-    discrete𝒫 : discrete 𝒫
     ∣_∣ₜ : ℱ → ℕ
     ∣_∣ᵩ : 𝒫 → ℕ
+    discreteℱ : discrete ℱ
+    discrete𝒫 : discrete 𝒫
+    enumerableℱ : enumerable ℱ
+    enumerable𝒫 : enumerable 𝒫
 
 open Language ⦃...⦄
 

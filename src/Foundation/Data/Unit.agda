@@ -2,6 +2,10 @@ module Foundation.Data.Unit where
 
 open import Foundation.Prelude
 
+open import Data.Unit.Polymorphic public
+  using ()
+  renaming (⊤ to ⊤*; tt to tt*)
+
 isProp⊤ : isProp ⊤
 isProp⊤ _ _ = refl
 

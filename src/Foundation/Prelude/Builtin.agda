@@ -4,11 +4,15 @@ open import Agda.Primitive public
   using (Level; _⊔_)
   renaming (Set to 𝕋; lsuc to _⁺)
 
+open import Level public
+  using (Lift; lift; lower)
+
 variable
   ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
   A B C D : 𝕋 ℓ
   P Q : A → 𝕋 ℓ
-  P₂ : (x : A) → P x → 𝕋 ℓ
+  R S : A → B → 𝕋 ℓ
+  P₂ Q₂ : (x : A) → P x → 𝕋 ℓ
 
 open import Agda.Builtin.Unit public
   using (⊤; tt)
