@@ -6,6 +6,10 @@ open import Data.Empty public
   using (⊥)
   renaming (⊥-elim to exfalso)
 
+open import Data.Empty.Polymorphic public
+  using ()
+  renaming (⊥ to ⊥*; ⊥-elim to exfalso*)
+
 open import Cubical.Data.Empty
   renaming (⊥ to ⊥🧊; isProp⊥ to isProp⊥🧊)
 

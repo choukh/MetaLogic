@@ -24,15 +24,18 @@ module MaybeView where
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
   Enumℙ P = Σ f ⸴ ∀ x → P x ↔ f enumerates x
 
-  Enum↔Enumℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤* {ℓ}
-  Enum↔Enumℙ = ⇒: (λ (f , H) → f , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt*))
-               ⇐: (λ (f , H) → f , λ x → H x .⇒ tt*)
+  Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
+  Enum↔ℙ = ⇒: (λ (f , H) → f , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
+           ⇐: (λ (f , H) → f , λ x → H x .⇒ tt)
 
   enumerable : 𝕋 ℓ → 𝕋 _
   enumerable A = ∥ Enum A ∥₁
 
   enumerableℙ : (A → 𝕋 ℓ) → 𝕋 _
   enumerableℙ P = ∥ Enumℙ P ∥₁
+
+  enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
+  enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable {A} disA = rec₁ is₁ H where
@@ -73,27 +76,33 @@ module ListView where
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
   Enumℙ P = Σ f ⸴ ∀ x → P x ↔ f enumerates x
 
+  Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
+  Enum↔ℙ = ⇒: (λ (f , H) → f , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
+           ⇐: (λ (f , H) → f , λ x → H x .⇒ tt)
+
   enumerable : 𝕋 ℓ → 𝕋 _
   enumerable A = ∥ Enum A ∥₁
 
   enumerableℙ : (A → 𝕋 ℓ) → 𝕋 _
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
-  Enum→𝕄 : Enum A → 𝕄.Enum A
-  Enum→𝕄 ((f , isE) , H) = {!   !} , {!   !}
+  enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
+  enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
-  enumerable→𝕄 : enumerable A → 𝕄.enumerable A
-  enumerable→𝕄 = map₁ Enum→𝕄
+  Enumℙ↔𝕄 : Enumℙ P ↔ 𝕄.Enumℙ P
+  Enumℙ↔𝕄 = ⇒: (λ x → {!   !})
+            ⇐: (λ x → {!   !})
 
-  --enumerable←𝕄 : 𝕄.enumerable A → enumerable A
-  --enumerable←𝕄 = {!   !}
+  enumerableℙ↔𝕄 : enumerableℙ P ↔ 𝕄.enumerableℙ P
+  enumerableℙ↔𝕄 = ∥∥-↔ ∣ Enumℙ↔𝕄 ∣₁
 
-  --enumerableℙ→𝕄 : enumerableℙ P → 𝕄.enumerableℙ P
-  --enumerableℙ→𝕄 = {!   !}
-
-  --enumerableℙ←𝕄 : 𝕄.enumerableℙ P → enumerableℙ P
-  --enumerableℙ←𝕄 = {!   !}
+  enumerable↔𝕄 : enumerable A ↔ 𝕄.enumerable A
+  enumerable↔𝕄 {A} =
+    enumerable A                  ↔⟨ enumerable↔ℙ ⟩
+    enumerableℙ (λ (_ : A) → ⊤)   ↔⟨ enumerableℙ↔𝕄 ⟩
+    𝕄.enumerableℙ (λ (_ : A) → ⊤) ↔˘⟨ 𝕄.enumerable↔ℙ ⟩
+    𝕄.enumerable A                ↔∎
 
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
-    𝕄.discrete→enumerable→countable disA (enumerable→𝕄 enumA)
+    𝕄.discrete→enumerable→countable disA (enumerable↔𝕄 .⇒ enumA)
