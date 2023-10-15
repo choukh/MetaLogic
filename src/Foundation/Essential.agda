@@ -16,9 +16,6 @@ open import Foundation.Data.List public
 open import Foundation.Data.List.Cumulative public
 open import Foundation.Data.Vec public
 
-open import Foundation.Functions.Injection public
-open import Foundation.Functions.Surjection public
-
 open import Foundation.Relation.Nullary.Negation public
 open import Foundation.Relation.Nullary.Decidable public
 open import Foundation.Relation.Nullary.Discrete public

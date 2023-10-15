@@ -31,6 +31,9 @@ open _↔_ public
 --------------------------------------------------------------------------------
 -- Interactions of iff with equality
 
+＝→↔ : A ＝ B → A ↔ B
+＝→↔ refl = ↔-refl
+
 ＝-↔-trans : A ＝ B → B ↔ C → A ↔ C
 ＝-↔-trans A＝B B↔C = subst (_↔ _) A＝B B↔C
 
