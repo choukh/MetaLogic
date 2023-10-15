@@ -1,16 +1,21 @@
 module Foundation.Logic.Basic where
 
 open import Foundation.Prelude.Builtin
+open import Foundation.Prelude.Function
 open import Foundation.HITs.PropositionalTruncation public
 
 open import Foundation.Data.Empty public
 open import Foundation.Data.Unit public
+open import Foundation.Relation.Nullary.Negation public
 
 open import Foundation.Data.Sigma public
   using (_×_; SigEq₁)
 
 open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)
+
+exfalso₁ : ∥ A ∥₁ → ¬ A → B
+exfalso₁ a ¬a = exfalso $ rec₁ isProp⊥ ¬a a
 
 infixr 6 _∧_
 _∧_ = _×_

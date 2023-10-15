@@ -1,7 +1,7 @@
 module Foundation.Data.List.SetTheoretic where
 
 open import Data.List.Membership.Propositional public
-  using (_∈_)
+  using (_∈_; _∉_)
 open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_)
 open import Data.List.Membership.Propositional.Properties public

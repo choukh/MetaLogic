@@ -7,13 +7,6 @@ open import Agda.Primitive public
 open import Level public
   using (Lift; lift; lower)
 
-variable
-  ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
-  A B C D : 𝕋 ℓ
-  P Q : A → 𝕋 ℓ
-  R S : A → B → 𝕋 ℓ
-  P₂ Q₂ : (x : A) → P x → 𝕋 ℓ
-
 open import Agda.Builtin.Unit public
   using (⊤; tt)
 
@@ -22,7 +15,7 @@ open import Agda.Builtin.Bool public
   renaming (Bool to 𝔹)
 
 open import Agda.Builtin.Nat public
-  using (zero; suc)
+  using (zero; suc; _+_)
   renaming (Nat to ℕ)
 
 open import Agda.Builtin.List public
@@ -40,6 +33,14 @@ open import Agda.Builtin.Cubical.Path public
 open import Agda.Builtin.Sigma public
   using (Σ; fst; snd)
   renaming (_,_ to infixr 1 _,_)
+
+variable
+  ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
+  A B C D : 𝕋 ℓ
+  P Q : A → 𝕋 ℓ
+  R S : A → B → 𝕋 ℓ
+  P₂ Q₂ : (x : A) → P x → 𝕋 ℓ
+  xs : 𝕃 A
 
 Σ₋ : (P : A → 𝕋 ℓ) → 𝕋 _
 Σ₋ {A} = Σ A

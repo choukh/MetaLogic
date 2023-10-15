@@ -2,13 +2,13 @@ module Foundation.Data.List.Cumulative where
 
 open import Foundation.Prelude
 open import Foundation.Logic.Basic
+open import Foundation.Data.Nat
+open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
 open import Foundation.Data.Sigma
 
-open import Foundation.Data.Nat
-  renaming (_≤′_ to _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step)
-open import Foundation.Data.List.SetTheoretic
+open import Foundation.Data.List.SetTheoretic public
 
 𝕃ₙ : 𝕋 ℓ → 𝕋 ℓ
 𝕃ₙ A = ℕ → 𝕃 A
@@ -16,7 +16,7 @@ open import Foundation.Data.List.SetTheoretic
 cumulative : 𝕃ₙ A → 𝕋 _
 cumulative f = ∀ n → ∃ xs ⸴ f (suc n) ＝ f n ++ xs
 
-module _ (f : 𝕃ₙ A) (cum : cumulative f) where
+module _ {f : 𝕃ₙ A} (cum : cumulative f) where
 
   cum-≤→++ : (m n : ℕ) → m ≤ n → ∃ xs ⸴ f n ＝ f m ++ xs
   cum-≤→++ n n ≤-refl = exists [] (sym $ ++-identityʳ (f n))
