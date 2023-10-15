@@ -1,6 +1,7 @@
 module Foundation.Essential where
 
 open import Foundation.Prelude public
+open import Foundation.Function.Bundles public
 
 open import Foundation.Logic.Basic public
 open import Foundation.Logic.Iff public

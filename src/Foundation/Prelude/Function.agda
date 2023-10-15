@@ -3,13 +3,7 @@ module Foundation.Prelude.Function where
 open import Foundation.Prelude.Builtin
 
 open import Function public
-  using (
-    _∘_; _∘₂_; _$_; id; flip;
-    _↣_; _↠_
-  )
-
-open import Function as F
-  using (Injective; Surjective)
+  using (_∘_; _∘₂_; _$_; id; flip)
 
 -- tribute to copilot
 _∘₃_ : ∀ {A₁ : 𝕋 ℓ} {A₂ : A₁ → 𝕋 ℓ′} {A₃ : (x : A₁) → A₂ x → 𝕋 ℓ″}
@@ -22,15 +16,3 @@ f ∘₃ g = λ x y z → f (g x y z)
 
 constFunc : (A → B) → 𝕋 _
 constFunc f = ∀ x y → f x ＝ f y
-
-injective : (A → B) → 𝕋 _
-injective = Injective _＝_ _＝_
-
-surjective : (A → B) → 𝕋 _
-surjective = Surjective _＝_ _＝_
-
-mk↣ : (f : A → B) → injective f → A ↣ B
-mk↣ f = F.mk↣
-
-mk↠ : (f : A → B) → surjective f → A ↠ B
-mk↠ f = F.mk↠

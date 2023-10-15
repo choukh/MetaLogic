@@ -1,6 +1,8 @@
 module Foundation.Relation.Unary.Enumerable where
 
 open import Foundation.Prelude
+open import Foundation.Function.Bundles
+
 open import Foundation.Logic.Basic
 open import Foundation.Logic.Iff
 open import Foundation.Logic.ConstructiveEpsilon
