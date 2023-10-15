@@ -13,6 +13,7 @@ open import Foundation.Data.Maybe public
 open import Foundation.Data.Sigma public
 open import Foundation.Data.Sum public
 open import Foundation.Data.List public
+open import Foundation.Data.List.Cumulative public
 open import Foundation.Data.Vec public
 
 open import Foundation.Functions.Injection public

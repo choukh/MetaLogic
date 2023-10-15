@@ -7,11 +7,13 @@ open import Foundation.Data.Empty public
 open import Foundation.Data.Unit public
 
 open import Foundation.Data.Sigma public
-  using (SigEq₁)
-  renaming (_×_ to infixr 3 _∧_)
+  using (_×_; SigEq₁)
 
 open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)
+
+infixr 6 _∧_
+_∧_ = _×_
 
 infixr 2 _∨_
 _∨_ : (A : 𝕋 ℓ) (B : 𝕋 ℓ′) → 𝕋 _
@@ -35,3 +37,6 @@ inr x = ∣ inj₂ x ∣₁
 infix 1 ∃-syntax ∃₋-syntax
 syntax ∃-syntax A (λ x → P) = ∃ x ∶ A ⸴ P
 syntax ∃₋-syntax (λ x → P) = ∃ x ⸴ P
+
+exists : (a : A) (H : P a) → ∃ A P
+exists a H = ∣ a , H ∣₁

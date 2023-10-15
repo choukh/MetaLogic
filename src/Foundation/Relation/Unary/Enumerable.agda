@@ -7,7 +7,8 @@ open import Foundation.Logic.ConstructiveEpsilon
 
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
-open import Foundation.Data.List.Sequence
+open import Foundation.Data.List.Cumulative
+open import Foundation.Data.List.SetTheoretic
 open import Foundation.Data.Sigma
 open import Foundation.Functions.Injection
 
@@ -42,7 +43,7 @@ module MaybeView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable {A} disA = rec₁ is₁ H where
     H : Enum A → countable A
-    H (f , H) = ∣ g₁ , g₁-inj ∣₁ where
+    H (f , H) = exists g₁ λ x → g₁-inj x where
       g : ∀ x → Σ n ⸴ f n ＝ some x
       g x = ε sets dis (H x) where
         sets : isSets (λ n → f n ＝ some x)
@@ -86,18 +87,29 @@ module ListView where
   enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
   Enum𝔹 : Enum 𝔹
-  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → ∣ [] , refl ∣₁) ,
-    λ { true →  ∣ 0 , here refl ∣₁
-      ; false → ∣ 0 , there (here refl) ∣₁}
+  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → exists [] refl) ,
+    λ { true →  exists 0 (here refl)
+      ; false → exists 0 (there $ here refl) }
 
   Enumℕ : Enum ℕ
-  Enumℕ = f , (λ n → ∣ [ suc n ] , refl ∣₁) , λ n → ∣ n , H n ∣₁ where
+  Enumℕ = f , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
     f : 𝕃ₙ ℕ
     f zero = [ 0 ]
     f (suc n) = f n ++ [ suc n ]
     H : ∀ n → n ∈ f n
     H zero = here refl
-    H (suc n) = {!   !}
+    H (suc n) = ∈-++⁺ʳ (f n) (here refl)
+
+  Enum× : Enum A → Enum B → Enum (A × B)
+  Enum× {A} {B} (f , _ , f-enum) (g , _ , g-enum) = h , h-cum , h-enum where
+    h : 𝕃ₙ (A × B)
+    h zero = f 0 [×] g 0
+    h (suc n) = h n ++ f n [×] g n
+    h-cum : cumulative h
+    h-cum n = exists (f n [×] g n) refl
+    h-enum : ∀ xy → h enumerates xy
+    h-enum (x , y) = intro₁2 (f-enum x) (g-enum y)
+      λ (m , x∈fm) (n , x∈fn) → {!   !} , {!   !}
 
   Enumℙ→𝕄 : {P : A → 𝕋 ℓ} → Enumℙ P → 𝕄.Enumℙ P
   Enumℙ→𝕄 {A} (f , cum , H) = {!   !} , {!   !}

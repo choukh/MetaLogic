@@ -38,7 +38,8 @@ open import Agda.Builtin.Cubical.Path public
   renaming (_≡_ to _＝🧊_)
 
 open import Agda.Builtin.Sigma public
-  using (Σ; _,_; fst; snd)
+  using (Σ; fst; snd)
+  renaming (_,_ to infixr 1 _,_)
 
 Σ₋ : (P : A → 𝕋 ℓ) → 𝕋 _
 Σ₋ {A} = Σ A
