@@ -23,6 +23,8 @@ open import Cubical.Data.Equality public
     ua            to ua≃
   )
 
+open _≅_ public
+
 open import Cubical.Foundations.Isomorphism
   using ()
   renaming (Iso to _≅🧊_)

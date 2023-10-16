@@ -9,7 +9,7 @@ open import Foundation.Data.Unit public
 open import Foundation.Relation.Nullary.Negation public
 
 open import Foundation.Data.Sigma public
-  using (_×_; SigEq₁)
+  using (_×_; SigEq₁; ProdEq)
 
 open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)
@@ -17,7 +17,7 @@ open import Foundation.Data.Sum
 exfalso₁ : ∥ A ∥₁ → ¬ A → B
 exfalso₁ a ¬a = exfalso $ rec₁ isProp⊥ ¬a a
 
-infixr 6 _∧_
+infixr 3 _∧_
 _∧_ = _×_
 
 infixr 2 _∨_
