@@ -30,7 +30,8 @@ open import Cubical.Foundations.HLevels
     isSet→  to isSet⇒🧊;
     isPropΣ to isPropΣ🧊;
     isSetΣ  to isSetΣ🧊;
-    isPropIsSet to isPropIsSet🧊
+    isPropIsSet to isPropIsSet🧊;
+    isPropImplicitΠ to isPropImplicitΠ🧊
   )
 
 --------------------------------------------------------------------------------
@@ -123,6 +124,12 @@ isPropΠ H = isProp←🧊 $ isPropΠ🧊 $ isPred→🧊 H
 
 isPropΠ2 : isPred2 P₂ → isProp ((x : A) (y : P x) → P₂ x y)
 isPropΠ2 H = isPropΠ λ x → isPropΠ (H x)
+
+isPropΠ₋ : isPred P → isProp ({x : A} → P x)
+isPropΠ₋ H = isProp←🧊 (isPropImplicitΠ🧊 λ _ → isProp→🧊 (H _))
+
+isPropΠ₋2 : isPred2 P₂ → isProp ({x : A} {y : P x} → P₂ x y)
+isPropΠ₋2 H = isPropΠ₋ λ _ → isPropΠ₋ (H _)
 
 isSetΠ : isSets P → isSet ((x : A) → P x)
 isSetΠ H = isSet←🧊 $ isSetΠ🧊 $ isSets→🧊 H

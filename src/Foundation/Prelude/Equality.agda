@@ -3,13 +3,15 @@ module Foundation.Prelude.Equality where
 open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
 
+open import Relation.Binary.PropositionalEquality public
+  using (sym; cong)
+
 open import Cubical.Data.Equality public
   using (
-    sym; funExt;
+    funExt;
     _≃_
   )
   renaming (
-    ap            to cong;
     happly        to funExt⁻;
     eqToPath      to Eq→🧊;
     pathToEq      to Eq←🧊;
@@ -50,9 +52,17 @@ _ ∎ = refl
 subst : (P : A → 𝕋 ℓ) {x y : A} → y ＝ x → P x → P y
 subst _ refl H = H
 
-subst2 : {x y : A} {z w : B} (R : A → B → 𝕋 ℓ)
-         (p : x ＝ y) (q : z ＝ w) → R x z → R y w
+subst2 : {x y : A} {z w : B} (R : A → B → 𝕋 ℓ) →
+         x ＝ y → z ＝ w → R x z → R y w
 subst2 R refl refl = id
+
+subst3 : {x y : A} {z w : B} {u v : C} (R : A → B → C → 𝕋 ℓ) →
+         x ＝ y → z ＝ w → u ＝ v → R x z u → R y w v
+subst3 R refl refl refl = id
+
+subst4 : {x y : A} {z w : B} {u v : C} {s t : D} (R : A → B → C → D → 𝕋 ℓ) →
+         x ＝ y → z ＝ w → u ＝ v → s ＝ t → R x z u s → R y w v t
+subst4 R refl refl refl refl = id
 
 funExt2 : {R : A → B → 𝕋 ℓ} {f g : (x : A) (y : B) → R x y} →
           ((x : A) (y : B) → f x y ＝ g x y) → f ＝ g

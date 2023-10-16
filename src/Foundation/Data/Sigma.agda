@@ -12,3 +12,6 @@ open import Cubical.Data.Sigma
 SigEq₁ : isPred P → {u v : Σ A P}
        → (p : u .fst ＝ v .fst) → u ＝ v
 SigEq₁ pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)
+
+ProdEq : {x y : A × B} → fst x ＝ fst y → snd x ＝ snd y → x ＝ y
+ProdEq refl refl = refl
