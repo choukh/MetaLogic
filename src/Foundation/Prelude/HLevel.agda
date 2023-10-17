@@ -14,25 +14,11 @@ open import Cubical.Foundations.Prelude public
     isSet to isSet🧊
   )
 
-open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Prelude as 🧊
   using ()
-  renaming (
-    isProp→isSet to isProp→isSet🧊;
-    isPropIsProp to isPropIsProp🧊
-  )
 
-open import Cubical.Foundations.HLevels
+open import Cubical.Foundations.HLevels as 🧊
   using ()
-  renaming (
-    isPropΠ to isPropΠ🧊;
-    isSetΠ  to isSetΠ🧊;
-    isProp→ to isProp⇒🧊;
-    isSet→  to isSet⇒🧊;
-    isPropΣ to isPropΣ🧊;
-    isSetΣ  to isSetΣ🧊;
-    isPropIsSet to isPropIsSet🧊;
-    isPropImplicitΠ to isPropImplicitΠ🧊
-  )
 
 --------------------------------------------------------------------------------
 -- Definition 1
@@ -99,7 +85,7 @@ isSets←🧊 : isSets🧊 P → isSets P
 isSets←🧊 H x = isSet←🧊 (H x)
 
 isProp→isSet : isProp A → isSet A
-isProp→isSet pA = isSet←🧊 $ isProp→isSet🧊 $ isProp→🧊 pA
+isProp→isSet pA = isSet←🧊 $ 🧊.isProp→isSet $ isProp→🧊 pA
 
 --------------------------------------------------------------------------------
 -- Equiv
@@ -111,43 +97,43 @@ isSet＝🧊 : isSet A ＝ isSet🧊 A
 isSet＝🧊 = EqΠ2 λ x y → subst (λ - → isProp - ＝ isProp🧊 (x ＝🧊 y)) Eq＝🧊 isProp＝🧊
 
 isPredIsProp : isPred (isProp {ℓ})
-isPredIsProp _ = isProp←🧊 (subst isProp🧊 isProp＝🧊 isPropIsProp🧊)
+isPredIsProp _ = isProp←🧊 (subst isProp🧊 isProp＝🧊 🧊.isPropIsProp)
 
 isPredIsSet : isPred (isSet {ℓ})
-isPredIsSet _ = isProp←🧊 (subst isProp🧊 isSet＝🧊 isPropIsSet🧊)
+isPredIsSet _ = isProp←🧊 (subst isProp🧊 isSet＝🧊 🧊.isPropIsSet)
 
 --------------------------------------------------------------------------------
 -- Π
 
 isPropΠ : isPred P → isProp ((x : A) → P x)
-isPropΠ H = isProp←🧊 $ isPropΠ🧊 $ isPred→🧊 H
+isPropΠ H = isProp←🧊 $ 🧊.isPropΠ $ isPred→🧊 H
 
 isPropΠ2 : isPred2 P₂ → isProp ((x : A) (y : P x) → P₂ x y)
 isPropΠ2 H = isPropΠ λ x → isPropΠ (H x)
 
 isPropΠ₋ : isPred P → isProp ({x : A} → P x)
-isPropΠ₋ H = isProp←🧊 (isPropImplicitΠ🧊 λ _ → isProp→🧊 (H _))
+isPropΠ₋ H = isProp←🧊 (🧊.isPropImplicitΠ λ _ → isProp→🧊 (H _))
 
 isPropΠ₋2 : isPred2 P₂ → isProp ({x : A} {y : P x} → P₂ x y)
 isPropΠ₋2 H = isPropΠ₋ λ _ → isPropΠ₋ (H _)
 
 isSetΠ : isSets P → isSet ((x : A) → P x)
-isSetΠ H = isSet←🧊 $ isSetΠ🧊 $ isSets→🧊 H
+isSetΠ H = isSet←🧊 $ 🧊.isSetΠ $ isSets→🧊 H
 
 --------------------------------------------------------------------------------
 -- →
 
 isProp→ : isProp B → isProp (A → B)
-isProp→ = mapIsProp isProp⇒🧊
+isProp→ = mapIsProp 🧊.isProp→
 
 isSet→ : isSet B → isSet (A → B)
-isSet→ = mapIsSet isSet⇒🧊
+isSet→ = mapIsSet 🧊.isSet→
 
 --------------------------------------------------------------------------------
 -- Σ
 
 isPropΣ : isProp A → isPred P → isProp (Σ A P)
-isPropΣ pA pP = isProp←🧊 $ isPropΣ🧊 (isProp→🧊 pA) $ isPred→🧊 pP
+isPropΣ pA pP = isProp←🧊 $ 🧊.isPropΣ (isProp→🧊 pA) $ isPred→🧊 pP
 
 isSetΣ : isSet A → isSets P → isSet (Σ A P)
-isSetΣ sA sP = isSet←🧊 $ isSetΣ🧊 (isSet→🧊 sA) $ isSets→🧊 sP
+isSetΣ sA sP = isSet←🧊 $ 🧊.isSetΣ (isSet→🧊 sA) $ isSets→🧊 sP

@@ -13,7 +13,6 @@ open import Function as ⓢ
     _⇔_; mk⇔;
     Injective; Surjective
   )
-  renaming (_↔_ to _↔ⓢ_; mk↔ to mk↔ⓢ)
 
 open ⓢ.Equivalence
 
@@ -60,23 +59,23 @@ Iff≅ⓢ pA pB = mk≅ Iff→ⓢ Iff←ⓢ (Iff→←ⓢ pA pB) (Iff←→ⓢ p
 Iff＝ⓢ : isProp A → isProp B → (A ↔ B) ＝ (A ⇔ B)
 Iff＝ⓢ pA pB = ua $ Iff≅ⓢ pA pB
 
-Iso→ⓢ : A ≅ B → A ↔ⓢ B
-Iso→ⓢ (mk≅ fun inv rightInv leftInv) = mk↔ⓢ {to = fun} {from = inv} $
+Iso→ⓢ : A ≅ B → A ⓢ.↔ B
+Iso→ⓢ (mk≅ fun inv rightInv leftInv) = ⓢ.mk↔ {to = fun} {from = inv} $
   (λ eq → subst (λ - → fun - ＝ _) eq (rightInv _)) ,
   (λ eq → subst (λ - → inv - ＝ _) eq (leftInv _))
 
-Iso←ⓢ : A ↔ⓢ B → A ≅ B
+Iso←ⓢ : A ⓢ.↔ B → A ≅ B
 Iso←ⓢ record { to = f ; from = g ; to-cong = f-cong ; from-cong = g-cong ; inverse = r , l } =
   mk≅ f g (λ _ → r refl) (λ _ → l refl)
 
-Iso→←ⓢ : isSet A → isSet B → (H : A ↔ⓢ B) → Iso→ⓢ (Iso←ⓢ H) ＝ H
+Iso→←ⓢ : isSet A → isSet B → (H : A ⓢ.↔ B) → Iso→ⓢ (Iso←ⓢ H) ＝ H
 Iso→←ⓢ {A} {B} sA sB record { to = f ; from = g ; to-cong = f-cong ; from-cong = g-cong ; inverse = r , l } =
   subst2 (λ x y → _ ＝ record { to-cong = x ; from-cong = y })
     (isProp-f-cong (cong f) f-cong) (isProp-g-cong (cong g) g-cong) $
       subst (λ x → lhs ＝ record { inverse = x })
         (ProdEq (isProp-r r _) (isProp-l l _)) refl
   where
-  lhs : A ↔ⓢ B
+  lhs : A ⓢ.↔ B
   lhs = record { inverse = (λ eq → subst (λ - → f - ＝ _) eq (r refl)) , (λ eq → subst (λ - → g - ＝ _) eq (l refl)) }
   isProp-f-cong : isProp (∀ {x y} → x ＝ y → f x ＝ f y)
   isProp-f-cong = isPropΠ₋2 λ _ _ → isProp→ (sB _ _)
@@ -90,8 +89,8 @@ Iso→←ⓢ {A} {B} sA sB record { to = f ; from = g ; to-cong = f-cong ; from-
 Iso←→ⓢ : (H : A ≅ B) → Iso←ⓢ (Iso→ⓢ H) ＝ H
 Iso←→ⓢ (mk≅ fun inv rightInv leftInv) = refl
 
-Iso≅ⓢ : isSet A → isSet B → (A ≅ B) ≅ (A ↔ⓢ B)
+Iso≅ⓢ : isSet A → isSet B → (A ≅ B) ≅ (A ⓢ.↔ B)
 Iso≅ⓢ sA sB = mk≅ Iso→ⓢ Iso←ⓢ (Iso→←ⓢ sA sB) Iso←→ⓢ
 
-Iso＝ⓢ : isSet A → isSet B → (A ≅ B) ＝ (A ↔ⓢ B)
+Iso＝ⓢ : isSet A → isSet B → (A ≅ B) ＝ (A ⓢ.↔ B)
 Iso＝ⓢ sA sB = ua $ Iso≅ⓢ sA sB

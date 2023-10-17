@@ -5,9 +5,8 @@ open import Foundation.Prelude
 open import Data.Nat.Properties public
   using (+-suc; +-comm)
 
-open import Cubical.Data.Nat
+open import Cubical.Data.Nat as 🧊
   using ()
-  renaming (isSetℕ to isSetℕ🧊)
 
 isSetℕ : isSet ℕ
-isSetℕ = isSet←🧊 isSetℕ🧊
+isSetℕ = isSet←🧊 🧊.isSetℕ

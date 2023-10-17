@@ -13,16 +13,12 @@ open import Data.Maybe.Properties public
   using ()
   renaming (just-injective to some-inj)
 
-open import Cubical.Data.Maybe
+open import Cubical.Data.Maybe as 🧊
   using (Maybe≡SumUnit)
-  renaming (
-    Maybe to infix 30 _？🧊; nothing to none🧊; just to some🧊;
-    discreteMaybe to discreteMaybe🧊
-  )
+  renaming (Maybe to infix 30 _？🧊; nothing to none🧊; just to some🧊)
 
-open import Cubical.Data.Sum
+open import Cubical.Data.Sum as 🧊
   using ()
-  renaming (_⊎_ to infixr 5 _⊎🧊_)
 
 Maybe→🧊 : A ？ → A ？🧊
 Maybe→🧊 none = none🧊
@@ -48,13 +44,13 @@ Maybe＝🧊 = ua Maybe≅🧊
 
 discreteMaybe : discrete A → discrete (A ？)
 discreteMaybe disA = subst discrete Maybe＝🧊 $
-  discrete←🧊 $ discreteMaybe🧊 $ discrete→🧊 disA
+  discrete←🧊 $ 🧊.discreteMaybe $ discrete→🧊 disA
 
 Maybe＝SumUnit : A ？ ＝ ⊤ ⊎ A
 Maybe＝SumUnit {A} =
   A ？ ＝⟨ Maybe＝🧊 ⟩
   A ？🧊 ＝⟨ Eq←🧊 Maybe≡SumUnit ⟩
-  ⊤ ⊎🧊 A ＝˘⟨ Sum＝🧊 ⟩
+  ⊤ 🧊.⊎ A ＝˘⟨ Sum＝🧊 ⟩
   ⊤ ⊎ A ∎
 
 isSetMaybe : isSet A → isSet (A ？)

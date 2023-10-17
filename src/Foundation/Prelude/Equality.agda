@@ -25,11 +25,11 @@ open import Cubical.Data.Equality public
 
 open _≅_ public
 
-open import Cubical.Foundations.Isomorphism
+open import Cubical.Foundations.Isomorphism public
   using ()
   renaming (Iso to _≅🧊_)
 
-open import Cubical.Foundations.Equiv
+open import Cubical.Foundations.Equiv public
   using ()
   renaming (_≃_ to _≃🧊_)
 

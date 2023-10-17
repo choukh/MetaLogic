@@ -11,9 +11,8 @@ open import Cubical.Foundations.HLevels public
 open import Cubical.Foundations.HLevels
   using (isSetHProp)
 
-open import Cubical.Foundations.Univalence
+open import Cubical.Foundations.Univalence as 🧊
   using ()
-  renaming (hPropExt to propExt🧊)
 
 --------------------------------------------------------------------------------
 -- hProp
@@ -57,7 +56,7 @@ isSetΩ = subst isSet Ω＝🧊 (isSet←🧊 isSetHProp)
 -- Propositional extensionality
 
 propExt : isProp A → isProp B → (A ↔ B) → A ＝ B
-propExt pA pB iff = Eq←🧊 $ propExt🧊 (isProp→🧊 pA) (isProp→🧊 pB) (iff .⇒) (iff .⇐)
+propExt pA pB iff = Eq←🧊 $ 🧊.hPropExt (isProp→🧊 pA) (isProp→🧊 pB) (iff .⇒) (iff .⇐)
 
 propExt⁻ : A ＝ B → (A ↔ B)
 propExt⁻ eq = subst (_↔ _) eq ↔-refl

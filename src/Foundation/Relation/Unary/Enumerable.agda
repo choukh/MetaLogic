@@ -125,15 +125,15 @@ module ListView where
     h-cum : cumulative h
     h-cum n = exists (f n [×] g n) refl
     h-enum : ∀ xy → h enumerates xy
-    h-enum (x , y) = intro2 (f-enum x) (g-enum y) aux where
-      aux : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
-      aux (m , x∈fm) (n , x∈gn) = intro∣ aux2 (λ H → suc (m + n) , ∈-++⁺ʳ _ H) where
+    h-enum (x , y) = intro2 (f-enum x) (g-enum y) H where
+      H : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
+      H (m , x∈fm) (n , x∈gn) = intro∣ H2 (λ H → suc (m + n) , ∈-++⁺ʳ _ H) where
         x∈fm+n : ∥ x ∈ f (m + n) ∥₁
         x∈fm+n = map₁ (λ sub → sub x∈fm) (cum-≤→⊆ f-cum _ _ m≤m+n)
         x∈gm+n : ∥ y ∈ g (m + n) ∥₁
         x∈gm+n = map₁ (λ sub → sub x∈gn) (cum-≤→⊆ g-cum _ _ m≤n+m)
-        aux2 : ∥ (x , y) ∈ f (m + n) [×] g (m + n) ∥₁
-        aux2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
+        H2 : ∥ (x , y) ∈ f (m + n) [×] g (m + n) ∥₁
+        H2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
 
   E2ℕ : 𝕃ₙ (ℕ × ℕ)
   E2ℕ = Enum× Enumℕ Enumℕ .fst
@@ -154,6 +154,14 @@ module ListView where
     length (E2ℕ n) + length (Eℕ n [×] Eℕ n)        ＝⟨ cong (length (E2ℕ n) +_) $ [×]-length (Eℕ n) (Eℕ n) ⟩
     length (E2ℕ n) + length (Eℕ n) * length (Eℕ n) ＝⟨ cong (length (E2ℕ n) +_) $ cong2 _*_ (Eℕ-length n) (Eℕ-length n) ⟩
     length (E2ℕ n) + suc n * suc n                 ∎
+
+  E2ℕ-length->n : ∀ n → length (E2ℕ n) > n
+  E2ℕ-length->n zero = ≤-refl
+  E2ℕ-length->n (suc n) = subst (_> suc n) (E2ℕ-length-suc n) H where
+    H : length (E2ℕ n) + suc n * suc n > suc n
+    H = +-mono-≤ H2 (m≤m*n _ _) where
+      H2 : 1 ≤ length (E2ℕ n)
+      H2 = ≤-trans (s≤s z≤n) (E2ℕ-length->n n)
 
   Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
   Enumℙ→Ⓜ {A} (f , cum , H) = {!   !} , {!   !}
@@ -177,3 +185,4 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
+ 
