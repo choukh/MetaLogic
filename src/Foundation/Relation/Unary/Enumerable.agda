@@ -102,7 +102,7 @@ module ListView where
   Enumℕ = Eℕ , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
     H : ∀ n → n ∈ Eℕ n
     H zero = here refl
-    H (suc n) = ∈-++⁺ʳ (Eℕ n) (here refl)
+    H (suc n) = ∈-++⁺ʳ _ (here refl)
 
   ∈Eℕ-intro : ∀ m n → m ≤ n → m ∈ Eℕ n
   ∈Eℕ-intro zero zero ≤-refl = here refl
@@ -127,7 +127,7 @@ module ListView where
     h-enum : ∀ xy → h enumerates xy
     h-enum (x , y) = intro2 (f-enum x) (g-enum y) aux where
       aux : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
-      aux (m , x∈fm) (n , x∈gn) = intro∣ aux2 (λ H → suc (m + n) , ∈-++⁺ʳ (h (m + n)) H) where
+      aux (m , x∈fm) (n , x∈gn) = intro∣ aux2 (λ H → suc (m + n) , ∈-++⁺ʳ _ H) where
         x∈fm+n : ∥ x ∈ f (m + n) ∥₁
         x∈fm+n = map₁ (λ sub → sub x∈fm) (cum-≤→⊆ f-cum _ _ m≤m+n)
         x∈gm+n : ∥ y ∈ g (m + n) ∥₁
@@ -136,10 +136,24 @@ module ListView where
         aux2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
 
   E2ℕ : 𝕃ₙ (ℕ × ℕ)
-  E2ℕ = fst (Enum× Enumℕ Enumℕ)
+  E2ℕ = Enum× Enumℕ Enumℕ .fst
 
   ∈E2ℕ-intro : ∀ m n → (m , n) ∈ E2ℕ (suc (m + n))
-  ∈E2ℕ-intro m n = {!   !}
+  ∈E2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈Eℕm+n n∈Eℕm+n where
+    m∈Eℕm+n : m ∈ Eℕ (m + n)
+    m∈Eℕm+n = ∈Eℕ-intro m (m + n) m≤m+n
+    n∈Eℕm+n : n ∈ Eℕ (m + n)
+    n∈Eℕm+n = ∈Eℕ-intro n (m + n) m≤n+m
+
+  E2ℕ-length-zero : length (E2ℕ zero) ＝ suc zero
+  E2ℕ-length-zero = refl
+
+  E2ℕ-length-suc : ∀ n → length (E2ℕ (suc n)) ＝ length (E2ℕ n) + suc n * suc n
+  E2ℕ-length-suc n =
+    length (E2ℕ (suc n))                           ＝⟨ length-++ (E2ℕ n) ⟩
+    length (E2ℕ n) + length (Eℕ n [×] Eℕ n)        ＝⟨ cong (length (E2ℕ n) +_) $ [×]-length (Eℕ n) (Eℕ n) ⟩
+    length (E2ℕ n) + length (Eℕ n) * length (Eℕ n) ＝⟨ cong (length (E2ℕ n) +_) $ cong2 _*_ (Eℕ-length n) (Eℕ-length n) ⟩
+    length (E2ℕ n) + suc n * suc n                 ∎
 
   Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
   Enumℙ→Ⓜ {A} (f , cum , H) = {!   !} , {!   !}

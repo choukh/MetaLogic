@@ -51,6 +51,9 @@ infix 3 _∎
 _∎ : (x : A) → x ＝ x
 _ ∎ = refl
 
+cong2 : ∀ (f : A → B → C) {x y z w} → x ＝ y → z ＝ w → f x z ＝ f y w
+cong2 f refl refl = refl
+
 subst : (P : A → 𝕋 ℓ) {x y : A} → y ＝ x → P x → P y
 subst _ refl H = H
 
@@ -86,3 +89,4 @@ Iso←🧊 i = mk≅ (fun i) (inv i) (Eq←🧊 ∘ rightInv i) (Eq←🧊 ∘ l
 
 ua : A ≅ B → A ＝ B
 ua = ua≃ ∘ Iso→Equiv
+ 

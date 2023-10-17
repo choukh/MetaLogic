@@ -25,3 +25,11 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 ∈[×]-intro : ∀ {x y} {xs : 𝕃 A} {ys : 𝕃 B} → x ∈ xs → y ∈ ys → (x , y) ∈ xs [×] ys
 ∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro $ _ , y∈ , refl
 ∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ _ $ ∈[×]-intro x∈ y∈
+
+[×]-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs [×] ys) ＝ length xs * length ys
+[×]-length [] _ = refl
+[×]-length (x ∷ xs) ys =
+  length (map (x ,_) ys ++ xs [×] ys)         ＝⟨ length-++ (map (x ,_) ys) ⟩
+  length (map (x ,_) ys) + length (xs [×] ys) ＝⟨ cong (_+ _) (length-map _ ys) ⟩
+  length ys + length (xs [×] ys)              ＝⟨ cong (_ +_) ([×]-length xs ys) ⟩
+  length ys + length xs * length ys           ∎

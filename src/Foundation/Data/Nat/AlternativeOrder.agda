@@ -4,7 +4,10 @@ open import Foundation.Prelude
 
 open import Data.Nat public
   using ()
-  renaming (_≤′_ to _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step)
+  renaming (
+    _≤′_ to _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step;
+    _≥′_ to _≥_; _<′_ to _<_; _>′_ to _>_
+  )
 open import Data.Nat.Properties
   using (≤⇒≤′)
   renaming (

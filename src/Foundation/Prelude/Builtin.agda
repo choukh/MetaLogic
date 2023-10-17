@@ -15,7 +15,7 @@ open import Agda.Builtin.Bool public
   renaming (Bool to 𝔹)
 
 open import Agda.Builtin.Nat public
-  using (zero; suc; _+_)
+  using (zero; suc; _+_; _*_)
   renaming (Nat to ℕ)
 
 open import Agda.Builtin.List public

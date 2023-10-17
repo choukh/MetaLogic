@@ -7,7 +7,7 @@ open import Data.List public
   using (map; length; _++_; [_])
 
 open import Data.List.Properties public
-  using (length-++; ++-assoc; ++-identityʳ)
+  using (length-map; length-++; ++-assoc; ++-identityʳ)
 
 open import Foundation.Data.Maybe
 
