@@ -7,7 +7,7 @@ open import Foundation.Logic.Basic
 open import Foundation.Data.Nat
 open import Foundation.Relation.Nullary.Decidable
 
-module _ {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (A n)) where
+module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (A n)) where
 
   data <witness : ℕ → 𝕋 ℓ where
     witness : ∀ {n} → A n → <witness n
@@ -39,3 +39,5 @@ module _ {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (A n)) 
 
   ε : ∃ ℕ A → Σ ℕ A
   ε = rec₁→Set (isSetΣ isSetℕ setsA) minWit constMinWit
+
+open Epsilon public using (ε)

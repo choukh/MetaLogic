@@ -21,14 +21,14 @@ open import Foundation.Relation.Unary.Countable
 
 module MaybeView where
 
-  _enumerates_ : (ℕ → A ？) → A → 𝕋 _
-  f enumerates x = ∃ n ⸴ f n ＝ some x
+  _witness_ : (ℕ → A ？) → A → 𝕋 _
+  f witness x = ∃ n ⸴ f n ＝ some x
 
   Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ⸴ ∀ (x : A) → f enumerates x
+  Enum A = Σ f ⸴ ∀ (x : A) → f witness x
 
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ⸴ ∀ x → P x ↔ f enumerates x
+  Enumℙ P = Σ f ⸴ ∀ x → P x ↔ f witness x
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
   Enum↔ℙ = ⇒: (λ (f , H) → f , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
@@ -67,14 +67,14 @@ module MaybeView where
 module ListView where
   module Ⓜ = MaybeView
 
-  _enumerates_ : 𝕃ₙ A → A → 𝕋 _
-  f enumerates x = ∃ n ⸴ x ∈ f n
+  _witness_ : 𝕃ₙ A → A → 𝕋 _
+  f witness x = ∃ n ⸴ x ∈ f n
 
   Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ⸴ cumulative f ∧ ∀ (x : A) → f enumerates x
+  Enum A = Σ f ⸴ cumulative f ∧ ∀ (x : A) → f witness x
 
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ⸴ cumulative f ∧ ∀ x → P x ↔ f enumerates x
+  Enumℙ P = Σ f ⸴ cumulative f ∧ ∀ x → P x ↔ f witness x
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
   Enum↔ℙ = ⇒: (λ (f , cum , H) → f , cum , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
@@ -94,26 +94,26 @@ module ListView where
     λ { true →  exists 0 (here refl)
       ; false → exists 0 (there $ here refl) }
 
-  Eℕ : 𝕃ₙ ℕ
-  Eℕ zero = [ 0 ]
-  Eℕ (suc n) = Eℕ n ++ [ suc n ]
+  eℕ : 𝕃ₙ ℕ
+  eℕ zero = [ 0 ]
+  eℕ (suc n) = eℕ n ++ [ suc n ]
 
   Enumℕ : Enum ℕ
-  Enumℕ = Eℕ , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
-    H : ∀ n → n ∈ Eℕ n
+  Enumℕ = eℕ , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
+    H : ∀ n → n ∈ eℕ n
     H zero = here refl
     H (suc n) = ∈-++⁺ʳ _ (here refl)
 
-  ∈Eℕ-intro : ∀ m n → m ≤ n → m ∈ Eℕ n
-  ∈Eℕ-intro zero zero ≤-refl = here refl
-  ∈Eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ _ (here refl)
-  ∈Eℕ-intro m (suc n) (≤-step m≤n) = ∈-++⁺ˡ (∈Eℕ-intro m n m≤n)
+  ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ eℕ n
+  ∈eℕ-intro zero zero ≤-refl = here refl
+  ∈eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ _ (here refl)
+  ∈eℕ-intro m (suc n) (≤-step m≤n) = ∈-++⁺ˡ (∈eℕ-intro m n m≤n)
 
-  Eℕ-length : ∀ n → length (Eℕ n) ＝ suc n
-  Eℕ-length zero = refl
-  Eℕ-length (suc n) =
-    length (Eℕ (suc n))               ＝⟨ length-++ (Eℕ n) ⟩
-    length (Eℕ n) + length [ suc n ]  ＝⟨ cong (_+ 1) (Eℕ-length n) ⟩
+  eℕ-length : ∀ n → length (eℕ n) ＝ suc n
+  eℕ-length zero = refl
+  eℕ-length (suc n) =
+    length (eℕ (suc n))               ＝⟨ length-++ (eℕ n) ⟩
+    length (eℕ n) + length [ suc n ]  ＝⟨ cong (_+ 1) (eℕ-length n) ⟩
     suc n + 1                         ＝⟨ cong suc (+-comm n 1) ⟩
     suc (suc n)                       ∎
 
@@ -124,7 +124,7 @@ module ListView where
     h (suc n) = h n ++ f n [×] g n
     h-cum : cumulative h
     h-cum n = exists (f n [×] g n) refl
-    h-enum : ∀ xy → h enumerates xy
+    h-enum : ∀ xy → h witness xy
     h-enum (x , y) = intro2 (f-enum x) (g-enum y) H where
       H : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
       H (m , x∈fm) (n , x∈gn) = intro∣ H2 (λ H → suc (m + n) , ∈-++⁺ʳ _ H) where
@@ -135,33 +135,42 @@ module ListView where
         H2 : ∥ (x , y) ∈ f (m + n) [×] g (m + n) ∥₁
         H2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
 
-  E2ℕ : 𝕃ₙ (ℕ × ℕ)
-  E2ℕ = Enum× Enumℕ Enumℕ .fst
+  e2ℕ : 𝕃ₙ (ℕ × ℕ)
+  e2ℕ = Enum× Enumℕ Enumℕ .fst
 
-  ∈E2ℕ-intro : ∀ m n → (m , n) ∈ E2ℕ (suc (m + n))
-  ∈E2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈Eℕm+n n∈Eℕm+n where
-    m∈Eℕm+n : m ∈ Eℕ (m + n)
-    m∈Eℕm+n = ∈Eℕ-intro m (m + n) m≤m+n
-    n∈Eℕm+n : n ∈ Eℕ (m + n)
-    n∈Eℕm+n = ∈Eℕ-intro n (m + n) m≤n+m
+  ∈e2ℕ-intro : ∀ m n → (m , n) ∈ e2ℕ (suc (m + n))
+  ∈e2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
+    m∈eℕm+n : m ∈ eℕ (m + n)
+    m∈eℕm+n = ∈eℕ-intro m (m + n) m≤m+n
+    n∈eℕm+n : n ∈ eℕ (m + n)
+    n∈eℕm+n = ∈eℕ-intro n (m + n) m≤n+m
 
-  E2ℕ-length-zero : length (E2ℕ zero) ＝ suc zero
-  E2ℕ-length-zero = refl
+  e2ℕ-length-zero : length (e2ℕ zero) ＝ suc zero
+  e2ℕ-length-zero = refl
 
-  E2ℕ-length-suc : ∀ n → length (E2ℕ (suc n)) ＝ length (E2ℕ n) + suc n * suc n
-  E2ℕ-length-suc n =
-    length (E2ℕ (suc n))                           ＝⟨ length-++ (E2ℕ n) ⟩
-    length (E2ℕ n) + length (Eℕ n [×] Eℕ n)        ＝⟨ cong (length (E2ℕ n) +_) $ [×]-length (Eℕ n) (Eℕ n) ⟩
-    length (E2ℕ n) + length (Eℕ n) * length (Eℕ n) ＝⟨ cong (length (E2ℕ n) +_) $ cong2 _*_ (Eℕ-length n) (Eℕ-length n) ⟩
-    length (E2ℕ n) + suc n * suc n                 ∎
+  e2ℕ-length-suc : ∀ n → length (e2ℕ (suc n)) ＝ length (e2ℕ n) + suc n * suc n
+  e2ℕ-length-suc n =
+    length (e2ℕ (suc n))                           ＝⟨ length-++ (e2ℕ n) ⟩
+    length (e2ℕ n) + length (eℕ n [×] eℕ n)        ＝⟨ cong (length (e2ℕ n) +_) $ [×]-length (eℕ n) (eℕ n) ⟩
+    length (e2ℕ n) + length (eℕ n) * length (eℕ n) ＝⟨ cong (length (e2ℕ n) +_) $ cong2 _*_ (eℕ-length n) (eℕ-length n) ⟩
+    length (e2ℕ n) + suc n * suc n                 ∎
 
-  E2ℕ-length->n : ∀ n → length (E2ℕ n) > n
-  E2ℕ-length->n zero = ≤-refl
-  E2ℕ-length->n (suc n) = subst (_> suc n) (E2ℕ-length-suc n) H where
-    H : length (E2ℕ n) + suc n * suc n > suc n
+  e2ℕ-length->n : ∀ n → length (e2ℕ n) > n
+  e2ℕ-length->n zero = ≤-refl
+  e2ℕ-length->n (suc n) = subst (_> suc n) (e2ℕ-length-suc n) H where
+    H : length (e2ℕ n) + suc n * suc n > suc n
     H = +-mono-≤ H2 (m≤m*n _ _) where
-      H2 : 1 ≤ length (E2ℕ n)
-      H2 = ≤-trans (s≤s z≤n) (E2ℕ-length->n n)
+      H2 : 1 ≤ length (e2ℕ n)
+      H2 = ≤-trans (s≤s z≤n) (e2ℕ-length->n n)
+
+  e2ℕⓂ : ℕ → (ℕ × ℕ) ？
+  e2ℕⓂ n = e2ℕ n [ n ]?
+
+  e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
+  e2ℕⓂ-witnessing (m , n) = {!   !}
+
+  EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
+  EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
 
   Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
   Enumℙ→Ⓜ {A} (f , cum , H) = {!   !} , {!   !}
@@ -185,4 +194,3 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
- 
