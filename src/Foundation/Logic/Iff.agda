@@ -83,5 +83,4 @@ isProp↔ propA propB = subst (λ X → isProp X) (ua $ Iso←🧊 $ iffIsoΣ) $
 
 ∥∥-↔ : ∥ A ↔ B ∥₁ → ∥ A ∥₁ ↔ ∥ B ∥₁
 ∥∥-↔ = rec₁ (isProp↔ is₁ is₁) λ iff →
-  ⇒: rec₁ is₁ (λ x → ∣ iff .⇒ x ∣₁)
-  ⇐: rec₁ is₁ (λ x → ∣ iff .⇐ x ∣₁)
+  ⇒: map₁ (iff .⇒) ⇐: map₁ (iff .⇐)

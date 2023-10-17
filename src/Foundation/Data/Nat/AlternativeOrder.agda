@@ -7,7 +7,13 @@ open import Data.Nat public
   renaming (_≤′_ to _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step)
 open import Data.Nat.Properties
   using (≤⇒≤′)
-  renaming (m≤m+n to m≤′m+n)
+  renaming (
+    m≤m+n to m≤′m+n;
+    m≤n+m to m≤′n+m
+  )
 
 m≤m+n : ∀ {m n} → m ≤ m + n
 m≤m+n = ≤⇒≤′ $ m≤′m+n _ _
+
+m≤n+m : ∀ {m n} → m ≤ n + m
+m≤n+m = ≤⇒≤′ $ m≤′n+m _ _

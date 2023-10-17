@@ -15,8 +15,3 @@ _[_]? : 𝕃 A → ℕ → A ？
 (x ∷ _)  [ zero ]?  = some x
 (_ ∷ xs) [ suc n ]? = xs [ n ]?
 _ [ _ ]? = none
-
-infixr 6 _[×]_
-_[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
-[] [×] ys = []
-(x ∷ xs) [×] ys = map (x ,_) ys ++ xs [×] ys

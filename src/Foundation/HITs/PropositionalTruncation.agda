@@ -45,8 +45,14 @@ elim₁3 H = elim3 $ isProp→🧊 ∘₃ H
 rec₁→Set : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
 rec₁→Set setB f H = rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
 
-intro₁ : ∥ A ∥₁ → (A → B) → ∥ B ∥₁
-intro₁ = flip map₁
+intro : ∥ A ∥₁ → (A → ∥ B ∥₁) → ∥ B ∥₁
+intro a H = rec₁ is₁ H a
 
-intro₁2 : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → C) → ∥ C ∥₁
-intro₁2 a b H = map₁2 H a b
+intro2 : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → ∥ C ∥₁) → ∥ C ∥₁
+intro2 a b H = rec₁2 is₁ H a b
+
+intro∣ : ∥ A ∥₁ → (A → B) → ∥ B ∥₁
+intro∣ = flip map₁
+
+intro2∣ : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → C) → ∥ C ∥₁
+intro2∣ a b H = map₁2 H a b
