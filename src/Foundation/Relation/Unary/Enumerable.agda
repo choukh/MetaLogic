@@ -65,7 +65,7 @@ module MaybeView where
         some y   ∎
 
 module ListView where
-  module 𝕄 = MaybeView
+  module Ⓜ = MaybeView
 
   _enumerates_ : 𝕃ₙ A → A → 𝕋 _
   f enumerates x = ∃ n ⸴ x ∈ f n
@@ -94,14 +94,28 @@ module ListView where
     λ { true →  exists 0 (here refl)
       ; false → exists 0 (there $ here refl) }
 
+  Eℕ : 𝕃ₙ ℕ
+  Eℕ zero = [ 0 ]
+  Eℕ (suc n) = Eℕ n ++ [ suc n ]
+
   Enumℕ : Enum ℕ
-  Enumℕ = f , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
-    f : 𝕃ₙ ℕ
-    f zero = [ 0 ]
-    f (suc n) = f n ++ [ suc n ]
-    H : ∀ n → n ∈ f n
+  Enumℕ = Eℕ , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
+    H : ∀ n → n ∈ Eℕ n
     H zero = here refl
-    H (suc n) = ∈-++⁺ʳ (f n) (here refl)
+    H (suc n) = ∈-++⁺ʳ (Eℕ n) (here refl)
+
+  ∈Eℕ-intro : ∀ m n → m ≤ n → m ∈ Eℕ n
+  ∈Eℕ-intro zero zero ≤-refl = here refl
+  ∈Eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ _ (here refl)
+  ∈Eℕ-intro m (suc n) (≤-step m≤n) = ∈-++⁺ˡ (∈Eℕ-intro m n m≤n)
+
+  Eℕ-length : ∀ n → length (Eℕ n) ＝ suc n
+  Eℕ-length zero = refl
+  Eℕ-length (suc n) =
+    length (Eℕ (suc n))               ＝⟨ length-++ (Eℕ n) ⟩
+    length (Eℕ n) + length [ suc n ]  ＝⟨ cong (_+ 1) (Eℕ-length n) ⟩
+    suc n + 1                         ＝⟨ cong suc (+-comm n 1) ⟩
+    suc (suc n)                       ∎
 
   Enum× : Enum A → Enum B → Enum (A × B)
   Enum× {A} {B} (f , f-cum , f-enum) (g , g-cum , g-enum) = h , h-cum , h-enum where
@@ -121,25 +135,31 @@ module ListView where
         aux2 : ∥ (x , y) ∈ f (m + n) [×] g (m + n) ∥₁
         aux2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
 
-  Enumℙ→𝕄 : {P : A → 𝕋 ℓ} → Enumℙ P → 𝕄.Enumℙ P
-  Enumℙ→𝕄 {A} (f , cum , H) = {!   !} , {!   !}
+  E2ℕ : 𝕃ₙ (ℕ × ℕ)
+  E2ℕ = fst (Enum× Enumℕ Enumℕ)
 
-  Enumℙ←𝕄 : 𝕄.Enumℙ P → Enumℙ P
-  Enumℙ←𝕄 = {!   !}
+  ∈E2ℕ-intro : ∀ m n → (m , n) ∈ E2ℕ (suc (m + n))
+  ∈E2ℕ-intro m n = {!   !}
 
-  Enumℙ↔𝕄 : Enumℙ P ↔ 𝕄.Enumℙ P
-  Enumℙ↔𝕄 = ⇒: Enumℙ→𝕄 ⇐: Enumℙ←𝕄
+  Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
+  Enumℙ→Ⓜ {A} (f , cum , H) = {!   !} , {!   !}
 
-  enumerableℙ↔𝕄 : enumerableℙ P ↔ 𝕄.enumerableℙ P
-  enumerableℙ↔𝕄 = ∥∥-↔ ∣ Enumℙ↔𝕄 ∣₁
+  Enumℙ←Ⓜ : Ⓜ.Enumℙ P → Enumℙ P
+  Enumℙ←Ⓜ = {!   !}
 
-  enumerable↔𝕄 : enumerable A ↔ 𝕄.enumerable A
-  enumerable↔𝕄 {A} =
+  Enumℙ↔Ⓜ : Enumℙ P ↔ Ⓜ.Enumℙ P
+  Enumℙ↔Ⓜ = ⇒: Enumℙ→Ⓜ ⇐: Enumℙ←Ⓜ
+
+  enumerableℙ↔Ⓜ : enumerableℙ P ↔ Ⓜ.enumerableℙ P
+  enumerableℙ↔Ⓜ = ∥∥-↔ ∣ Enumℙ↔Ⓜ ∣₁
+
+  enumerable↔Ⓜ : enumerable A ↔ Ⓜ.enumerable A
+  enumerable↔Ⓜ {A} =
     enumerable A                  ↔⟨ enumerable↔ℙ ⟩
-    enumerableℙ (λ (_ : A) → ⊤)   ↔⟨ enumerableℙ↔𝕄 ⟩
-    𝕄.enumerableℙ (λ (_ : A) → ⊤) ↔˘⟨ 𝕄.enumerable↔ℙ ⟩
-    𝕄.enumerable A                ↔∎
+    enumerableℙ (λ (_ : A) → ⊤)   ↔⟨ enumerableℙ↔Ⓜ ⟩
+    Ⓜ.enumerableℙ (λ (_ : A) → ⊤) ↔˘⟨ Ⓜ.enumerable↔ℙ ⟩
+    Ⓜ.enumerable A                ↔∎
 
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
-    𝕄.discrete→enumerable→countable disA (enumerable↔𝕄 .⇒ enumA)
+    Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)

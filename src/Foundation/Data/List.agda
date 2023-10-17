@@ -4,10 +4,10 @@ open import Foundation.Prelude
 open import Foundation.Data.Sigma
 
 open import Data.List public
-  using (map; _++_; [_])
+  using (map; length; _++_; [_])
 
 open import Data.List.Properties public
-  using (++-assoc; ++-identityʳ)
+  using (length-++; ++-assoc; ++-identityʳ)
 
 open import Foundation.Data.Maybe
 
