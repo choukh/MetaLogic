@@ -163,13 +163,14 @@ module ListView where
   e2ℕⓂ n = e2ℕ n [ n ]?
 
   e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
-  e2ℕⓂ-witnessing (m , n) with index? (e2ℕ (suc (m + n))) (m , n) in eq
-  ... | none rewrite ∈→Σindex (∈e2ℕ-intro m n) .snd with eq
+  e2ℕⓂ-witnessing (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq
+  ... | none rewrite x∈→Σ[x]⁻¹ (∈e2ℕ-intro m n) .snd with eq
   ... | ()
   e2ℕⓂ-witnessing (m , n) | some k with e2ℕⓂ k in eq
-  ... | none rewrite Σ[<length]? (e2ℕ k) k (e2ℕ-length->n k) .snd with eq
+  ... | none rewrite Σ[<length] (e2ℕ k) (e2ℕ-length->n k) .snd with eq
   ... | ()
-  e2ℕⓂ-witnessing (m , n) | some k | some p = exists k {!   !}
+  e2ℕⓂ-witnessing (m , n) | some k | some p = exists k $ index-inv (e2ℕ k)
+    {!   !}
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
@@ -196,4 +197,4 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
- 
+  
