@@ -1,12 +1,15 @@
 module Foundation.Data.Nat where
 
 open import Foundation.Prelude
+open import Foundation.Relation.Nullary.Discrete
 
-open import Data.Nat.Properties public
-  using (+-suc; +-comm)
+open import Data.Nat.Properties as ℕ public
+  using (
+    +-suc; +-comm
+  )
 
-open import Cubical.Data.Nat as 🧊
-  using ()
+discreteℕ : discrete ℕ
+discreteℕ = ℕ._≟_
 
 isSetℕ : isSet ℕ
-isSetℕ = isSet←🧊 🧊.isSetℕ
+isSetℕ = discrete→isSet discreteℕ

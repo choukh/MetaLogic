@@ -3,8 +3,7 @@ module Foundation.Relation.Unary.Enumerable where
 open import Foundation.Prelude
 open import Foundation.Function.Bundles
 
-open import Foundation.Logic.Basic
-open import Foundation.Logic.Iff
+open import Foundation.Logic
 open import Foundation.Logic.ConstructiveEpsilon
 
 open import Foundation.Data.Nat
@@ -163,7 +162,9 @@ module ListView where
   e2ℕⓂ n = e2ℕ n [ n ]?
 
   e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
-  e2ℕⓂ-witnessing (m , n) = {!   !}
+  e2ℕⓂ-witnessing (m , n) = {!   !} where
+    discrete2ℕ : discrete (ℕ × ℕ)
+    discrete2ℕ = discrete× discreteℕ discreteℕ
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
