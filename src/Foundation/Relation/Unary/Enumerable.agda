@@ -71,10 +71,10 @@ module ListView where
   f witness x = ∃ n ⸴ x ∈ f n
 
   Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ⸴ cumulative f ∧ ∀ (x : A) → f witness x
+  Enum A = Σ f ⸴ Cumulative f ∧ ∀ (x : A) → f witness x
 
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ⸴ cumulative f ∧ ∀ x → P x ↔ f witness x
+  Enumℙ P = Σ f ⸴ Cumulative f ∧ ∀ x → P x ↔ f witness x
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
   Enum↔ℙ = ⇒: (λ (f , cum , H) → f , cum , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
@@ -90,7 +90,7 @@ module ListView where
   enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
   Enum𝔹 : Enum 𝔹
-  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → exists [] refl) ,
+  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → [] , refl) ,
     λ { true →  exists 0 (here refl)
       ; false → exists 0 (there $ here refl) }
 
@@ -99,7 +99,7 @@ module ListView where
   eℕ (suc n) = eℕ n ++ [ suc n ]
 
   Enumℕ : Enum ℕ
-  Enumℕ = eℕ , (λ n → exists [ suc n ] refl) , λ n → exists n (H n) where
+  Enumℕ = eℕ , (λ n → [ suc n ] , refl) , λ n → exists n (H n) where
     H : ∀ n → n ∈ eℕ n
     H zero = here refl
     H (suc n) = ∈-++⁺ʳ _ (here refl)
@@ -122,18 +122,14 @@ module ListView where
     h : 𝕃ₙ (A × B)
     h zero = f 0 [×] g 0
     h (suc n) = h n ++ f n [×] g n
-    h-cum : cumulative h
-    h-cum n = exists (f n [×] g n) refl
+    h-cum : Cumulative h
+    h-cum n = f n [×] g n , refl
     h-enum : ∀ xy → h witness xy
     h-enum (x , y) = intro2 (f-enum x) (g-enum y) H where
       H : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
-      H (m , x∈fm) (n , x∈gn) = intro∣ H2 (λ H → suc (m + n) , ∈-++⁺ʳ _ H) where
-        x∈fm+n : ∥ x ∈ f (m + n) ∥₁
-        x∈fm+n = map₁ (λ sub → sub x∈fm) (cum-≤→⊆ f-cum _ _ m≤m+n)
-        x∈gm+n : ∥ y ∈ g (m + n) ∥₁
-        x∈gm+n = map₁ (λ sub → sub x∈gn) (cum-≤→⊆ g-cum _ _ m≤n+m)
-        H2 : ∥ (x , y) ∈ f (m + n) [×] g (m + n) ∥₁
-        H2 = map₁2 ∈[×]-intro x∈fm+n x∈gm+n
+      H (m , x∈fm) (n , x∈gn) = exists (suc (m + n)) (∈-++⁺ʳ _ H2) where
+        H2 : (x , y) ∈ f (m + n) [×] g (m + n)
+        H2 = ∈[×]-intro (cum-≤→⊆ f-cum _ _ m≤m+n x∈fm) (cum-≤→⊆ g-cum _ _ m≤n+m x∈gn)
 
   e2ℕ : 𝕃ₙ (ℕ × ℕ)
   e2ℕ = Enum× Enumℕ Enumℕ .fst
