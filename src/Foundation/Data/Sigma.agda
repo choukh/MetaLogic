@@ -5,7 +5,7 @@ open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Product public
   using ()
-  renaming (_×_ to infixr 6 _×_)
+  renaming (_×_ to infixr 4.2 _×_)
 
 open import Data.Product.Properties public
   using ()

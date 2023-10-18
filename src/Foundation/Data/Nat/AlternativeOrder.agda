@@ -1,12 +1,15 @@
 module Foundation.Data.Nat.AlternativeOrder where
 
 open import Foundation.Prelude
+open import Foundation.Data.Sum
 
 open import Data.Nat public
   using (NonZero; nonZero)
   renaming (
-    _≤′_ to _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step;
-    _≥′_ to _≥_; _<′_ to _<_; _>′_ to _>_
+    _≤′_ to infix 5 _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step;
+    _≥′_ to infix 5 _≥_;
+    _<′_ to infix 5 _<_;
+    _>′_ to infix 5 _>_
   )
 
 open import Data.Nat.Properties public
@@ -30,6 +33,11 @@ private
 
 ≤-trans : m ≤ n → n ≤ o → m ≤ o
 ≤-trans = map2 ℕ.≤-trans
+
+≤-<-connex : ∀ m n → (m ≤ n) ⊎ (m > n)
+≤-<-connex m n with ℕ.≤-<-connex m n
+... | inj₁ x = inj₁ (≤⇒≤′ x)
+... | inj₂ y = inj₂ (≤⇒≤′ y)
 
 m≤m+n : m ≤ m + n
 m≤m+n = ≤⇒≤′ $ ℕ.m≤m+n _ _

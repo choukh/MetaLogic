@@ -6,7 +6,7 @@ open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Sum public
   using (inj₁; inj₂)
-  renaming (_⊎_ to infixr 5 _⊎_)
+  renaming (_⊎_ to infixr 4.1 _⊎_)
 
 open import Cubical.Data.Sum as 🧊
   using (inl; inr)

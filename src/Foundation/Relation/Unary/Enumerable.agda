@@ -10,6 +10,7 @@ open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Maybe
 open import Foundation.Data.Sigma
+open import Foundation.Data.Sum
 open import Foundation.Data.List
 open import Foundation.Data.List.Cumulative
 open import Foundation.Data.List.SetTheoretic
@@ -129,10 +130,16 @@ module ListView where
       H : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
       H (m , x∈fm) (n , x∈gn) = exists (suc (m + n)) (∈-++⁺ʳ _ H2) where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
-        H2 = ∈[×]-intro (cum-≤→⊆ f-cum _ _ m≤m+n x∈fm) (cum-≤→⊆ g-cum _ _ m≤n+m x∈gn)
+        H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
+
+  Enum2ℕ : Enum (ℕ × ℕ)
+  Enum2ℕ = Enum× Enumℕ Enumℕ
 
   e2ℕ : 𝕃ₙ (ℕ × ℕ)
-  e2ℕ = Enum× Enumℕ Enumℕ .fst
+  e2ℕ = Enum2ℕ .fst
+
+  e2ℕ-cum : Cumulative e2ℕ
+  e2ℕ-cum = Enum2ℕ .snd .fst
 
   ∈e2ℕ-intro : ∀ m n → (m , n) ∈ e2ℕ (suc (m + n))
   ∈e2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
@@ -163,14 +170,25 @@ module ListView where
   e2ℕⓂ n = e2ℕ n [ n ]?
 
   e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
-  e2ℕⓂ-witnessing (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq
-  ... | none rewrite x∈→Σ[x]⁻¹ (∈e2ℕ-intro m n) .snd with eq
+  e2ℕⓂ-witnessing (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq1
+  ... | none rewrite x∈→Σ[x]⁻¹ (∈e2ℕ-intro m n) .snd with eq1
   ... | ()
-  e2ℕⓂ-witnessing (m , n) | some k with e2ℕⓂ k in eq
-  ... | none rewrite Σ[<length] (e2ℕ k) (e2ℕ-length->n k) .snd with eq
+  e2ℕⓂ-witnessing (m , n) | some k with e2ℕⓂ k in eq2
+  ... | none rewrite Σ[<length] (e2ℕ k) (e2ℕ-length->n k) .snd with eq2
   ... | ()
-  e2ℕⓂ-witnessing (m , n) | some k | some p = exists k $ index-inv (e2ℕ k)
-    {!   !}
+  e2ℕⓂ-witnessing (m , n) | some k | some q = exists k H where
+    --eq1 : e2ℕ (suc (m + n)) [ m , n ]⁻¹? ＝ some k
+    --eq2 : e2ℕⓂ k ＝ e2ℕ k [ k ]? ＝ some q
+    H : e2ℕⓂ k ＝ some (m , n)
+    H with ≤-<-connex k (suc (m + n))
+    ... | inj₁ le with cum-≤→++ e2ℕ-cum le
+    ... | xs , eq3 =
+      e2ℕⓂ k                    ＝⟨ eq2 ⟩
+      some q                    ＝˘⟨ ++[]? (e2ℕ k) eq2 ⟩
+      (e2ℕ k ++ xs) [ k ]?      ＝⟨ cong (_[ k ]?) (sym eq3) ⟩
+      e2ℕ (suc (m + n)) [ k ]?  ＝⟨ index-inv (e2ℕ (suc (m + n))) eq1 ⟩
+      some (m , n)              ∎
+    H | inj₂ lt = {!   !}
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
@@ -197,4 +215,3 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
-  
