@@ -21,7 +21,7 @@ module _ {f : 𝕃ₙ A} (cum : Cumulative f) where
   cum-≤→++ : (m n : ℕ) → m ≤ n → Σ xs ⸴ f n ＝ f m ++ xs
   cum-≤→++ n n ≤-refl = [] , sym (++-identityʳ (f n))
   cum-≤→++ m (suc n) (≤-step m≤n) with cum n | cum-≤→++ m n m≤n
-  ... | (xs , H₁) | (ys , H₂) = (ys ++ xs) ,
+  ... | xs , H₁ | ys , H₂ = (ys ++ xs) ,
     f (suc n)         ＝⟨ H₁ ⟩
     f n ++ xs         ＝⟨ cong (_++ xs) H₂ ⟩
     (f m ++ ys) ++ xs ＝⟨ ++-assoc (f m) ys xs ⟩
@@ -29,4 +29,4 @@ module _ {f : 𝕃ₙ A} (cum : Cumulative f) where
 
   cum-≤→⊆ : (m n : ℕ) → m ≤ n → f m ⊆ f n
   cum-≤→⊆ m n m≤n x∈fm with cum-≤→++ m n m≤n
-  ... | (xs , eq) = subst (_ ∈_) eq (∈-++⁺ˡ x∈fm)
+  ... | xs , eq = subst (_ ∈_) eq (∈-++⁺ˡ x∈fm)

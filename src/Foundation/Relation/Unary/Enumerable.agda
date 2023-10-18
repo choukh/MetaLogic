@@ -9,10 +9,11 @@ open import Foundation.Logic.ConstructiveEpsilon
 open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Maybe
+open import Foundation.Data.Sigma
 open import Foundation.Data.List
 open import Foundation.Data.List.Cumulative
 open import Foundation.Data.List.SetTheoretic
-open import Foundation.Data.Sigma
+open import Foundation.Data.List.Discrete (discrete× discreteℕ discreteℕ)
 
 open import Foundation.Relation.Nullary.Decidable
 open import Foundation.Relation.Nullary.Discrete
@@ -162,9 +163,13 @@ module ListView where
   e2ℕⓂ n = e2ℕ n [ n ]?
 
   e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
-  e2ℕⓂ-witnessing (m , n) = {!   !} where
-    discrete2ℕ : discrete (ℕ × ℕ)
-    discrete2ℕ = discrete× discreteℕ discreteℕ
+  e2ℕⓂ-witnessing (m , n) with index? (e2ℕ (suc (m + n))) (m , n) in eq
+  ... | none rewrite ∈→Σindex (∈e2ℕ-intro m n) .snd with eq
+  ... | ()
+  e2ℕⓂ-witnessing (m , n) | some k with e2ℕⓂ k in eq
+  ... | none rewrite Σ[<length]? (e2ℕ k) k (e2ℕ-length->n k) .snd with eq
+  ... | ()
+  e2ℕⓂ-witnessing (m , n) | some k | some p = exists k {!   !}
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
@@ -191,3 +196,4 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
+ 
