@@ -4,7 +4,7 @@ open import Foundation.Prelude
 
 open import Cubical.HITs.PropositionalTruncation public
   using (∥_∥₁; ∣_∣₁)
-  renaming (map to map₁; map2 to map₁2)
+  renaming (map to map1; map2 to map1²)
 
 open import Cubical.HITs.PropositionalTruncation as PT
   using (squash₁;
@@ -12,47 +12,39 @@ open import Cubical.HITs.PropositionalTruncation as PT
     elim; elim2; elim3
   )
 
-open PT.SetElim using (rec→Set)
+is1 : isProp ∥ A ∥₁
+is1 = isProp←🧊 squash₁
 
-is₁ : isProp ∥ A ∥₁
-is₁ = isProp←🧊 squash₁
+rec1→p : isProp B → (A → B) → ∥ A ∥₁ → B
+rec1→p pB = rec $ isProp→🧊 pB
 
-rec₁ : isProp B → (A → B) → ∥ A ∥₁ → B
-rec₁ pB = rec $ isProp→🧊 pB
+rec1²→p : isProp C → (A → B → C) → ∥ A ∥₁ → ∥ B ∥₁ → C
+rec1²→p pC = rec2 $ isProp→🧊 pC
 
-rec₁2 : isProp C → (A → B → C) → ∥ A ∥₁ → ∥ B ∥₁ → C
-rec₁2 pC = rec2 $ isProp→🧊 pC
+rec1³→p : isProp D → (A → B → C → D) → ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → D
+rec1³→p pD = rec3 $ isProp→🧊 pD
 
-rec₁3 : isProp D → (A → B → C → D) → ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → D
-rec₁3 pD = rec3 $ isProp→🧊 pD
-
-elim₁ : {P : ∥ A ∥₁ → 𝕋 ℓ} → ((a : ∥ A ∥₁) → isProp (P a))
+elim1→p : {P : ∥ A ∥₁ → 𝕋 ℓ} → ((a : ∥ A ∥₁) → isProp (P a))
       → ((x : A) → P ∣ x ∣₁) → (a : ∥ A ∥₁) → P a
-elim₁ H = elim $ isProp→🧊 ∘ H
+elim1→p H = elim $ isProp→🧊 ∘ H
 
-elim₁2 : {P : ∥ A ∥₁ → ∥ B ∥₁ → 𝕋 ℓ}
+elim1²→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → 𝕋 ℓ}
          (Pprop : (x : ∥ A ∥₁) (y : ∥ B ∥₁) → isProp (P x y))
          (f : (a : A) (b : B) → P ∣ a ∣₁ ∣ b ∣₁)
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) → P x y
-elim₁2 H = elim2 $ isProp→🧊 ∘₂ H
+elim1²→p H = elim2 $ isProp→🧊 ∘₂ H
 
-elim₁3 : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
+elim1³→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
          (Pprop : ((x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → isProp (P x y z)))
          (g : (a : A) (b : B) (c : C) → P (∣ a ∣₁) ∣ b ∣₁ ∣ c ∣₁)
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → P x y z
-elim₁3 H = elim3 $ isProp→🧊 ∘₃ H
+elim1³→p H = elim3 $ isProp→🧊 ∘₃ H
 
-rec₁→Set : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
-rec₁→Set setB f H = rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
+rec1→s : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
+rec1→s setB f H = PT.SetElim.rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
 
-intro : ∥ A ∥₁ → (A → ∥ B ∥₁) → ∥ B ∥₁
-intro a H = rec₁ is₁ H a
+intro1→1 : ∥ A ∥₁ → (A → ∥ B ∥₁) → ∥ B ∥₁
+intro1→1 a H = rec1→p is1 H a
 
-intro2 : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → ∥ C ∥₁) → ∥ C ∥₁
-intro2 a b H = rec₁2 is₁ H a b
-
-intro∣ : ∥ A ∥₁ → (A → B) → ∥ B ∥₁
-intro∣ = flip map₁
-
-intro2∣ : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → C) → ∥ C ∥₁
-intro2∣ a b H = map₁2 H a b
+intro1²→1 : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → ∥ C ∥₁) → ∥ C ∥₁
+intro1²→1 a b H = rec1²→p is1 H a b

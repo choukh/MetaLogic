@@ -38,6 +38,6 @@ module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (
   constMinWit (_ , pₙ) (_ , qₘ) = constSearch (initial $ witness pₙ) (initial $ witness qₘ)
 
   ε : ∃ ℕ A → Σ ℕ A
-  ε = rec₁→Set (isSetΣ isSetℕ setsA) minWit constMinWit
+  ε = rec1→s (isSetΣ isSetℕ setsA) minWit constMinWit
 
 open Epsilon public using (ε)

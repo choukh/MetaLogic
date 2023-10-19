@@ -17,9 +17,9 @@ _[_]? : 𝕃 A → ℕ → A ？
 (_ ∷ xs) [ suc n ]? = xs [ n ]?
 _ [ _ ]? = none
 
-Σ[<length] : (xs : 𝕃 A) {n : ℕ} → n < length xs → Σ x ⸴ xs [ n ]? ＝ some x
-Σ[<length] (x ∷ xs) {n = zero} _ = x , refl
-Σ[<length] (x ∷ xs) {suc n} lt = Σ[<length] xs (+-cancelˡ-≤ _ _ _ lt)
+Σ[<length]? : (xs : 𝕃 A) {n : ℕ} → n < length xs → Σ x ⸴ xs [ n ]? ＝ some x
+Σ[<length]? (x ∷ xs) {n = zero} _ = x , refl
+Σ[<length]? (x ∷ xs) {suc n} lt = Σ[<length]? xs (+-cancelˡ-≤ _ _ _ lt)
 
 ++[]? : (xs : 𝕃 A) {ys : 𝕃 A} {x : A} {n : ℕ} →
         xs [ n ]? ＝ some x → (xs ++ ys) [ n ]? ＝ some x
