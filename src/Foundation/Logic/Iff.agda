@@ -81,6 +81,11 @@ isProp↔ : isProp A → isProp B → isProp (A ↔ B)
 isProp↔ propA propB = subst (λ X → isProp X) (ua $ Iso←🧊 $ iffIsoΣ) $
   isPropΣ (isProp→ propB) λ _ → isProp→ propA
 
-∥∥-↔ : ∥ A ↔ B ∥₁ → ∥ A ∥₁ ↔ ∥ B ∥₁
-∥∥-↔ = rec1→p (isProp↔ is1 is1) λ iff →
-  ⇒: map1 (iff .⇒) ⇐: map1 (iff .⇐)
+--------------------------------------------------------------------------------
+-- With propositional truncation
+
+↔-map1 : A ↔ B → ∥ A ∥₁ ↔ ∥ B ∥₁
+↔-map1 iff = ⇒: map1 (iff .⇒) ⇐: map1 (iff .⇐)
+
+∥↔∥-map : ∥ A ↔ B ∥₁ → ∥ A ∥₁ ↔ ∥ B ∥₁
+∥↔∥-map = rec1→p (isProp↔ is1 is1) ↔-map1

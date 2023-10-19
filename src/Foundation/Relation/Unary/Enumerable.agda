@@ -42,7 +42,7 @@ module MaybeView where
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
-  enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
+  enumerable↔ℙ = ↔-map1 Enum↔ℙ
 
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable {A} disA = map1 H where
@@ -88,7 +88,7 @@ module ListView where
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
-  enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
+  enumerable↔ℙ = ↔-map1 Enum↔ℙ
 
   Enum𝔹 : Enum 𝔹
   Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → [] , refl) ,
@@ -127,7 +127,7 @@ module ListView where
     h-cum n = f n [×] g n , refl
     h-wit : ∀ xy → h witness xy
     h-wit (x , y) = intro1²→1 (f-wit x) (g-wit y) H where
-      H : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ y ∈ g n) → ∃ n ⸴ (x , y) ∈ h n
+      H : Σ n ⸴ x ∈ f n → Σ n ⸴ y ∈ g n → ∃ n ⸴ (x , y) ∈ h n
       H (m , x∈fm) (n , x∈gn) = exists (suc (m + n)) (∈-++⁺ʳ _ H2) where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
@@ -206,18 +206,18 @@ module ListView where
     g-cal : ∀ k {m n} → e2ℕⓂ k ＝ some (m , n) → g k ＝ f m [ n ]?
     g-cal _ eq rewrite eq = refl
     g-wit : ∀ x → P x ↔ g Ⓜ.witness x
-    g-wit x = ↔-trans (f-wit x) $ ⇒: map1 H1 ⇐: map1 H2 where
-      H1 : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ g n ＝ some x)
-      H1 (m , x∈fn) with ∈→Σ[]? x∈fn
+    g-wit x = ↔-trans (f-wit x) $ ⇒: map1 (uncurry H1) ⇐: map1 (uncurry H2) where
+      H1 : ∀ n → x ∈ f n → Σ n ⸴ g n ＝ some x
+      H1 m x∈fn with ∈→Σ[]? x∈fn
       ... | n , fm[n] with e2ℕⓂ-enum (m , n)
       ... | k , eq = k , g-cal k eq ∙ fm[n]
-      H2 : (Σ n ⸴ g n ＝ some x) → (Σ n ⸴ x ∈ f n)
-      H2 (k , fm[n]) with e2ℕⓂ k
+      H2 : ∀ n → g n ＝ some x → Σ n ⸴ x ∈ f n
+      H2 k fm[n] with e2ℕⓂ k
       ... | some (m , n) with []?→∈ (f m) fm[n]
       ... | x∈fm = m , x∈fm
 
   Enumℙ←Ⓜ : {P : A → 𝕋 ℓ} → Ⓜ.Enumℙ P → Enumℙ P
-  Enumℙ←Ⓜ {A} {P} (f , f-enum) = {!   !} , {!   !} , λ x → {!   !} where
+  Enumℙ←Ⓜ {A} {P} (f , f-enum) = h , h-cum , h-enum where
     g : 𝕃ₙ A
     g n with f n
     ... | some x = [ x ]
@@ -225,18 +225,35 @@ module ListView where
     g-cal : ∀ {k x} → f k ＝ some x → g k ＝ [ x ]
     g-cal eq rewrite eq = refl
     wit↔ : ∀ x → (Σ n ⸴ f n ＝ some x) ↔ (Σ n ⸴ x ∈ g n)
-    wit↔ x = ⇒: H1 ⇐: H2 where
-      H1 : (Σ n ⸴ f n ＝ some x) → (Σ n ⸴ x ∈ g n)
-      H1 (n , fn) = n , subst (x ∈_) (g-cal fn) (here refl)
-      H2 : (Σ n ⸴ x ∈ g n) → (Σ n ⸴ f n ＝ some x)
-      H2 (n , x∈gn) with f n in eq
-      H2 (n , here refl) | some x = n , eq
+    wit↔ x = ⇒: uncurry H1 ⇐: uncurry H2 where
+      H1 : ∀ n → f n ＝ some x → Σ n ⸴ x ∈ g n
+      H1 n fn = n , subst (x ∈_) (g-cal fn) (here refl)
+      H2 : ∀ n → x ∈ g n → Σ n ⸴ f n ＝ some x
+      H2 n x∈gn with f n in eq
+      H2 n (here refl) | some x = n , eq
+    h : 𝕃ₙ A
+    h zero = []
+    h (suc n) = h n ++ g n
+    h-cum : Cumulative h
+    h-cum n = g n , refl
+    h-enum : ∀ x → P x ↔ h witness x
+    h-enum x =
+      P x           ↔⟨ f-enum x ⟩
+      f Ⓜ.witness x ↔⟨ ↔-map1 $ wit↔ x ⟩
+      g witness x   ↔⟨ ↔-map1 $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
+      h witness x   ↔∎ where
+        H1 : ∀ n → x ∈ g n → Σ n ⸴ x ∈ h n
+        H1 n x∈gn = suc n , ∈-++⁺ʳ _ x∈gn
+        H2 : ∀ n → x ∈ h n → Σ n ⸴ x ∈ g n
+        H2 (suc n) x∈hn++gn with ∈-++⁻ (h n) x∈hn++gn
+        ... | inj₁ x∈hn = H2 n x∈hn
+        ... | inj₂ x∈gn = n , x∈gn
 
   Enumℙ↔Ⓜ : Enumℙ P ↔ Ⓜ.Enumℙ P
   Enumℙ↔Ⓜ = ⇒: Enumℙ→Ⓜ ⇐: Enumℙ←Ⓜ
 
   enumerableℙ↔Ⓜ : enumerableℙ P ↔ Ⓜ.enumerableℙ P
-  enumerableℙ↔Ⓜ = ∥∥-↔ ∣ Enumℙ↔Ⓜ ∣₁
+  enumerableℙ↔Ⓜ = ↔-map1 Enumℙ↔Ⓜ
 
   enumerable↔Ⓜ : enumerable A ↔ Ⓜ.enumerable A
   enumerable↔Ⓜ {A} =
@@ -248,4 +265,3 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
-  

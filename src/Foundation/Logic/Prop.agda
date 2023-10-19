@@ -36,12 +36,12 @@ isPredHolds = str
 Ω←🧊 (P , pP) = P , (isProp←🧊 pP)
 
 Ω→←🧊 : (𝗣 : Ω🧊 ℓ) → Ω→🧊 (Ω←🧊 𝗣) ＝ 𝗣
-Ω→←🧊 𝗣 = SigEq₁ H refl where
+Ω→←🧊 𝗣 = SigEqProp H refl where
   H : isPred (isProp🧊 {ℓ})
   H = subst isPred (sym $ funExt $ λ x → isProp＝🧊) isPredIsProp
 
 Ω←→🧊 : (𝗣 : Ω ℓ) → Ω←🧊 (Ω→🧊 𝗣) ＝ 𝗣
-Ω←→🧊 𝗣 = SigEq₁ isPredIsProp refl
+Ω←→🧊 𝗣 = SigEqProp isPredIsProp refl
 
 Ω≅🧊 : Ω ℓ ≅ Ω🧊 ℓ
 Ω≅🧊 = mk≅ Ω→🧊 Ω←🧊 Ω→←🧊 Ω←→🧊
@@ -62,7 +62,7 @@ propExt⁻ : A ＝ B → (A ↔ B)
 propExt⁻ eq = subst (_↔ _) eq ↔-refl
 
 ΩExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ＝ 𝗤
-ΩExt {𝗣} {𝗤} H = SigEq₁ isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
+ΩExt {𝗣} {𝗤} H = SigEqProp isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
 
 ΩExt⁻ : 𝗣 ＝ 𝗤 → 𝗣 holds ↔ 𝗤 holds
 ΩExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
@@ -77,4 +77,4 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 ∥ A ∥ = ∥ A ∥₁ , is1
 
 ΩTruncExt : A ↔ B → ∥ A ∥ ＝ ∥ B ∥
-ΩTruncExt iff = SigEq₁ isPredIsProp (propTruncExt iff)
+ΩTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)

@@ -9,7 +9,7 @@ open import Foundation.Data.Unit public
 open import Foundation.Relation.Nullary.Negation public
 
 open import Foundation.Data.Sigma public
-  using (_×_; SigEq₁; ProdEq)
+  using (_×_; SigEqProp; ProdEq)
 
 open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)

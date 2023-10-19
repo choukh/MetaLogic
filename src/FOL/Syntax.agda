@@ -13,6 +13,12 @@ record Language : 𝕋₁ where
     enumerableℱ : enumerable ℱ
     enumerable𝒫 : enumerable 𝒫
 
+  countableℱ : countable ℱ
+  countableℱ = discrete→enumerable→countable discreteℱ enumerableℱ
+
+  countable𝒫 : countable 𝒫
+  countable𝒫 = discrete→enumerable→countable discrete𝒫 enumerable𝒫
+
 open Language ⦃...⦄
 
 module _ ⦃ ℒ : Language ⦄ where
