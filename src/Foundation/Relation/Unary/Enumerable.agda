@@ -180,15 +180,19 @@ module ListView where
     --eq1 : e2ℕ (suc (m + n)) [ m , n ]⁻¹? ＝ some k
     --eq2 : e2ℕⓂ k ＝ e2ℕ k [ k ]? ＝ some q
     H : e2ℕⓂ k ＝ some (m , n)
-    H with ≤-<-connex k (suc (m + n))
-    ... | inj₁ le with cum-≤→++ e2ℕ-cum le
+    H with ≤-total k (suc (m + n))
+    ... | inj₁ ≤ with cum-≤→++ e2ℕ-cum ≤
     ... | xs , eq3 =
-      e2ℕⓂ k                    ＝⟨ eq2 ⟩
-      some q                    ＝˘⟨ ++[]? (e2ℕ k) eq2 ⟩
-      (e2ℕ k ++ xs) [ k ]?      ＝⟨ cong (_[ k ]?) (sym eq3) ⟩
-      e2ℕ (suc (m + n)) [ k ]?  ＝⟨ index-inv (e2ℕ (suc (m + n))) eq1 ⟩
-      some (m , n)              ∎
-    H | inj₂ lt = {!   !}
+      e2ℕⓂ k                            ＝⟨ eq2 ⟩
+      some q                            ＝˘⟨ ++[]? (e2ℕ k) eq2 ⟩
+      (e2ℕ k ++ xs) [ k ]?              ＝˘⟨ cong (_[ k ]?) eq3 ⟩
+      e2ℕ (suc (m + n)) [ k ]?          ＝⟨ index-inv (e2ℕ (suc (m + n))) eq1 ⟩
+      some (m , n)                      ∎
+    H | inj₂ ≥ with cum-≤→++ e2ℕ-cum ≥
+    ... | xs , eq3 =
+      e2ℕⓂ k                            ＝⟨ cong (_[ k ]?) eq3 ⟩
+      (e2ℕ (suc (m + n)) ++ xs) [ k ]?  ＝⟨ ++[]? (e2ℕ (suc (m + n))) (index-inv (e2ℕ (suc (m + n))) eq1) ⟩
+      some (m , n)                      ∎
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing

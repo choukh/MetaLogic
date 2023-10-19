@@ -31,13 +31,27 @@ private
   map2 : (m ℕ.≤ n → o ℕ.≤ p → q ℕ.≤ r) → m ≤ n → o ≤ p → q ≤ r
   map2 H p q = ≤⇒≤′ $ H (≤′⇒≤ p) (≤′⇒≤ q)
 
+------------------------------------------------------------------------
+-- Relational properties of _≤_
+
 ≤-trans : m ≤ n → n ≤ o → m ≤ o
 ≤-trans = map2 ℕ.≤-trans
 
-≤-<-connex : ∀ m n → (m ≤ n) ⊎ (m > n)
+≤-total : ∀ m n → m ≤ n ⊎ n ≤ m
+≤-total m n with ℕ.≤-total m n
+... | inj₁ x = inj₁ (≤⇒≤′ x)
+... | inj₂ y = inj₂ (≤⇒≤′ y)
+
+------------------------------------------------------------------------
+-- Relationships between _≤_ nad _<_
+
+≤-<-connex : ∀ m n → m ≤ n ⊎ m > n
 ≤-<-connex m n with ℕ.≤-<-connex m n
 ... | inj₁ x = inj₁ (≤⇒≤′ x)
 ... | inj₂ y = inj₂ (≤⇒≤′ y)
+
+------------------------------------------------------------------------
+-- Properties of _+_ and _≤_/_<_
 
 m≤m+n : m ≤ m + n
 m≤m+n = ≤⇒≤′ $ ℕ.m≤m+n _ _
@@ -65,6 +79,9 @@ m+n≤o⇒n≤o m = map $ ℕ.m+n≤o⇒n≤o m
 
 +-cancelʳ-≤ : ∀ m n o → n + m ≤ o + m → n ≤ o
 +-cancelʳ-≤ m n o = map (ℕ.+-cancelʳ-≤ m n o)
+
+------------------------------------------------------------------------
+-- Properties of _*_ and _≤_/_<_
 
 m≤m*n : ∀ m n .⦃ _ : NonZero n ⦄ → m ≤ m * n
 m≤m*n _ _ = ≤⇒≤′ $ ℕ.m≤m*n _ _
