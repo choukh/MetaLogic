@@ -43,6 +43,9 @@ elim1³→p H = elim3 $ isProp→🧊 ∘₃ H
 rec1→s : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
 rec1→s setB f H = PT.SetElim.rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
 
+rec1→1 : (A → ∥ B ∥₁) → ∥ A ∥₁ → ∥ B ∥₁
+rec1→1 H a = rec1→p is1 H a
+
 intro1→1 : ∥ A ∥₁ → (A → ∥ B ∥₁) → ∥ B ∥₁
 intro1→1 a H = rec1→p is1 H a
 

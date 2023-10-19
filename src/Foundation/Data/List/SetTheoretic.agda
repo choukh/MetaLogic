@@ -20,6 +20,10 @@ open import Data.List.Relation.Unary.Any public
 ∈→Σ[]? {xs = y ∷ xs} (there x∈xs) with ∈→Σ[]? x∈xs
 ... | n , H = suc n , H
 
+[]?→∈ : ∀ (xs : 𝕃 A) {x n} → xs [ n ]? ＝ some x → x ∈ xs
+[]?→∈ (x ∷ xs) {n = zero} refl = here refl
+[]?→∈ (y ∷ xs) {n = suc n} eq = there $ []?→∈ xs eq
+
 ∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ⸴ x ∈ xs ∧ y ＝ f x) → y ∈ map f xs
 ∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
 

@@ -45,9 +45,9 @@ module MaybeView where
   enumerable↔ℙ = ∥∥-↔ ∣ Enum↔ℙ ∣₁
 
   discrete→enumerable→countable : discrete A → enumerable A → countable A
-  discrete→enumerable→countable {A} disA = rec1→p is1 H where
-    H : Enum A → countable A
-    H (f , H) = ∣ mk↣ g₁ g₁-inj ∣₁ where
+  discrete→enumerable→countable {A} disA = map1 H where
+    H : Enum A → A ↣ ℕ
+    H (f , H) = mk↣ g₁ g₁-inj where
       g : ∀ x → Σ n ⸴ f n ＝ some x
       g x = ε sets dis (H x) where
         sets : isSets (λ n → f n ＝ some x)
@@ -206,11 +206,15 @@ module ListView where
     g-cal : ∀ k {m n} → e2ℕⓂ k ＝ some (m , n) → g k ＝ f m [ n ]?
     g-cal _ eq rewrite eq = refl
     g-wit : ∀ x → P x ↔ g Ⓜ.witness x
-    g-wit x = ↔-trans (f-wit x) $ ⇒: rec1→p is1 H1 ⇐: {!   !} where
+    g-wit x = ↔-trans (f-wit x) $ ⇒: rec1→1 H1 ⇐: map1 H2 where
       H1 : Σ n ⸴ x ∈ f n → g Ⓜ.witness x
       H1 (m , x∈fn) with ∈→Σ[]? x∈fn
       ... | n , fm[n] with e2ℕⓂ-witnessing (m , n)
       ... | ∃k = (flip map1) ∃k λ (k , eq) → k , g-cal k eq ∙ fm[n]
+      H2 : Σ n ⸴ g n ＝ some x → Σ n ⸴ x ∈ f n
+      H2 (k , fm[n]) with e2ℕⓂ k
+      ... | some (m , n) with []?→∈ (f m) fm[n]
+      ... | x∈fm = m , x∈fm
 
   Enumℙ←Ⓜ : Ⓜ.Enumℙ P → Enumℙ P
   Enumℙ←Ⓜ = {!   !}
@@ -231,4 +235,3 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
-  
