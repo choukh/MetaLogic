@@ -169,14 +169,14 @@ module ListView where
   e2ℕⓂ : ℕ → (ℕ × ℕ) ？
   e2ℕⓂ n = e2ℕ n [ n ]?
 
-  e2ℕⓂ-witnessing : ∀ p → e2ℕⓂ Ⓜ.witness p
-  e2ℕⓂ-witnessing (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq1
+  e2ℕⓂ-enum : ∀ p → Σ k ⸴ e2ℕⓂ k ＝ some p
+  e2ℕⓂ-enum (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq1
   ... | none rewrite x∈→Σ[x]⁻¹? (∈e2ℕ-intro m n) .snd with eq1
   ... | ()
-  e2ℕⓂ-witnessing (m , n) | some k with e2ℕⓂ k in eq2
+  e2ℕⓂ-enum (m , n) | some k with e2ℕⓂ k in eq2
   ... | none rewrite Σ[<length]? (e2ℕ k) (e2ℕ-length->n k) .snd with eq2
   ... | ()
-  e2ℕⓂ-witnessing (m , n) | some k | some q = exists k H where
+  e2ℕⓂ-enum (m , n) | some k | some q = k , H where
     --eq1 : e2ℕ (suc (m + n)) [ m , n ]⁻¹? ＝ some k
     --eq2 : e2ℕⓂ k ＝ e2ℕ k [ k ]? ＝ some q
     H : e2ℕⓂ k ＝ some (m , n)
@@ -195,7 +195,7 @@ module ListView where
       some (m , n)                      ∎
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
-  EnumⓂ2ℕ = e2ℕⓂ , e2ℕⓂ-witnessing
+  EnumⓂ2ℕ = e2ℕⓂ , ∣_∣₁ ∘ e2ℕⓂ-enum
 
   Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
   Enumℙ→Ⓜ {A} {P} (f , f-cum , f-wit) = g , g-wit where
@@ -206,18 +206,31 @@ module ListView where
     g-cal : ∀ k {m n} → e2ℕⓂ k ＝ some (m , n) → g k ＝ f m [ n ]?
     g-cal _ eq rewrite eq = refl
     g-wit : ∀ x → P x ↔ g Ⓜ.witness x
-    g-wit x = ↔-trans (f-wit x) $ ⇒: rec1→1 H1 ⇐: map1 H2 where
-      H1 : Σ n ⸴ x ∈ f n → g Ⓜ.witness x
+    g-wit x = ↔-trans (f-wit x) $ ⇒: map1 H1 ⇐: map1 H2 where
+      H1 : (Σ n ⸴ x ∈ f n) → (Σ n ⸴ g n ＝ some x)
       H1 (m , x∈fn) with ∈→Σ[]? x∈fn
-      ... | n , fm[n] with e2ℕⓂ-witnessing (m , n)
-      ... | ∃k = (flip map1) ∃k λ (k , eq) → k , g-cal k eq ∙ fm[n]
-      H2 : Σ n ⸴ g n ＝ some x → Σ n ⸴ x ∈ f n
+      ... | n , fm[n] with e2ℕⓂ-enum (m , n)
+      ... | k , eq = k , g-cal k eq ∙ fm[n]
+      H2 : (Σ n ⸴ g n ＝ some x) → (Σ n ⸴ x ∈ f n)
       H2 (k , fm[n]) with e2ℕⓂ k
       ... | some (m , n) with []?→∈ (f m) fm[n]
       ... | x∈fm = m , x∈fm
 
-  Enumℙ←Ⓜ : Ⓜ.Enumℙ P → Enumℙ P
-  Enumℙ←Ⓜ = {!   !}
+  Enumℙ←Ⓜ : {P : A → 𝕋 ℓ} → Ⓜ.Enumℙ P → Enumℙ P
+  Enumℙ←Ⓜ {A} {P} (f , f-enum) = {!   !} , {!   !} , λ x → {!   !} where
+    g : 𝕃ₙ A
+    g n with f n
+    ... | some x = [ x ]
+    ... | none = []
+    g-cal : ∀ {k x} → f k ＝ some x → g k ＝ [ x ]
+    g-cal eq rewrite eq = refl
+    wit↔ : ∀ x → (Σ n ⸴ f n ＝ some x) ↔ (Σ n ⸴ x ∈ g n)
+    wit↔ x = ⇒: H1 ⇐: H2 where
+      H1 : (Σ n ⸴ f n ＝ some x) → (Σ n ⸴ x ∈ g n)
+      H1 (n , fn) = n , subst (x ∈_) (g-cal fn) (here refl)
+      H2 : (Σ n ⸴ x ∈ g n) → (Σ n ⸴ f n ＝ some x)
+      H2 (n , x∈gn) with f n in eq
+      H2 (n , here refl) | some x = n , eq
 
   Enumℙ↔Ⓜ : Enumℙ P ↔ Ⓜ.Enumℙ P
   Enumℙ↔Ⓜ = ⇒: Enumℙ→Ⓜ ⇐: Enumℙ←Ⓜ
@@ -235,3 +248,4 @@ module ListView where
   discrete→enumerable→countable : discrete A → enumerable A → countable A
   discrete→enumerable→countable disA enumA =
     Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
+  
