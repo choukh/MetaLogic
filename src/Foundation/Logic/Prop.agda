@@ -20,6 +20,9 @@ open import Cubical.Foundations.Univalence as 🧊
 Ω : ∀ ℓ → 𝕋 (ℓ ⁺)
 Ω ℓ = TypeWithStr ℓ isProp
 
+Ωₒ : 𝕋 (ℓ0 ⁺)
+Ωₒ = Ω ℓ0
+
 variable
   𝗣 𝗤 𝗥 : Ω ℓ
 
@@ -78,3 +81,4 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 
 ΩTruncExt : A ↔ B → ∥ A ∥ ＝ ∥ B ∥
 ΩTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)
+ 

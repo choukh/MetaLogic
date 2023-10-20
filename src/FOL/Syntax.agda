@@ -76,5 +76,8 @@ module _ ⦃ ℒ : Language ⦄ where
   data HasECQ : 𝕋 where
     standard paraconsistent : HasECQ
 
-  ProofTree : {p : HasPeirce} {e : HasECQ} → Context → Formula → 𝕋
-  ProofTree = {!   !}
+  Proof : ⦃ p : HasPeirce ⦄ ⦃ e : HasECQ ⦄ → Context → Formula → 𝕋
+  Proof = {!   !}
+
+  _⊢_ : ⦃ p : HasPeirce ⦄ ⦃ e : HasECQ ⦄ → Context → Formula → 𝕋
+  Γ ⊢ φ = ∥ Proof Γ φ ∥₁
