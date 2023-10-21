@@ -16,9 +16,7 @@ open import Data.Nat.Properties public
   using ()
   renaming (z≤′n to z≤n; s≤′s to s≤s)
 
-open import Data.Nat as ℕ
-  using ()
-
+import Data.Nat as ℕ
 open import Data.Nat.Properties as ℕ
   using (≤⇒≤′; ≤′⇒≤)
 

@@ -11,8 +11,7 @@ open import Cubical.Foundations.HLevels public
 open import Cubical.Foundations.HLevels
   using (isSetHProp)
 
-open import Cubical.Foundations.Univalence as 🧊
-  using ()
+import Cubical.Foundations.Univalence as 🧊
 
 --------------------------------------------------------------------------------
 -- hProp

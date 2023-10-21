@@ -17,8 +17,7 @@ open import Cubical.Data.Maybe as 🧊
   using (Maybe≡SumUnit)
   renaming (Maybe to infix 30 _？🧊; nothing to none🧊; just to some🧊)
 
-open import Cubical.Data.Sum as 🧊
-  using ()
+import Cubical.Data.Sum as 🧊
 
 Maybe→🧊 : A ？ → A ？🧊
 Maybe→🧊 none = none🧊

@@ -14,11 +14,8 @@ open import Cubical.Foundations.Prelude public
     isSet to isSet🧊
   )
 
-open import Cubical.Foundations.Prelude as 🧊
-  using ()
-
-open import Cubical.Foundations.HLevels as 🧊
-  using ()
+import Cubical.Foundations.Prelude as 🧊
+import Cubical.Foundations.HLevels as 🧊
 
 --------------------------------------------------------------------------------
 -- Definition 1

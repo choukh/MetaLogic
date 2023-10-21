@@ -46,13 +46,13 @@ module _ ⦃ ℒ : Language ⦄ where
   [] [ σ ]ₜ⃗ = []
   (t ∷ t⃗) [ σ ]ₜ⃗ = t [ σ ]ₜ ∷ t⃗ [ σ ]ₜ⃗
 
+  ↑ₜ : Term → Term
+  ↑ₜ = _[ #_ ∘ suc ]ₜ
+
   infix 8 _;_
   _;_ : Term → Subst → Subst
   (t ; σ) zero = t
   (t ; σ) (suc n) = σ n
-
-  ↑ₜ : Term → Term
-  ↑ₜ = _[ #_ ∘ suc ]ₜ
 
   infix 30 _[_]ᵩ
   _[_]ᵩ : Formula → Subst → Formula
@@ -64,11 +64,17 @@ module _ ⦃ ℒ : Language ⦄ where
   ↑ᵩ : Formula → Formula
   ↑ᵩ = _[ #_ ∘ suc ]ᵩ
 
-  _[_] : Formula → Term → Formula
-  φ [ t ] = φ [ t ; #_ ]ᵩ
+  _[_;] : Formula → Term → Formula
+  φ [ t ;] = φ [ t ; #_ ]ᵩ
 
   Context : 𝕋
   Context = 𝕃 Formula
+
+  ↑ : Context → Context
+  ↑ = map ↑ᵩ
+
+  Theory : 𝕋₁
+  Theory = ℙ Formula
 
   data HasPeirce : 𝕋 where
     classical intuitionistic : HasPeirce
@@ -76,8 +82,17 @@ module _ ⦃ ℒ : Language ⦄ where
   data HasECQ : 𝕋 where
     standard paraconsistent : HasECQ
 
-  Proof : ⦃ p : HasPeirce ⦄ ⦃ e : HasECQ ⦄ → Context → Formula → 𝕋
-  Proof = {!   !}
+  private variable
+    p : HasPeirce
+    e : HasECQ
 
-  _⊢_ : ⦃ p : HasPeirce ⦄ ⦃ e : HasECQ ⦄ → Context → Formula → 𝕋
-  Γ ⊢ φ = ∥ Proof Γ φ ∥₁
+  open import Foundation.Data.List.SetTheoretic
+
+  data Proof : HasPeirce → HasECQ → Context → Formula → 𝕋 where
+    CTX : ∀ Γ φ   → φ ∈ Γ → Proof p e Γ φ
+    II  : ∀ Γ φ ψ → Proof p e (φ ∷ Γ) ψ → Proof p e Γ (φ →̇ ψ)
+    IE  : ∀ Γ φ ψ → Proof p e Γ (φ →̇ ψ) → Proof p e Γ φ → Proof p e Γ ψ
+    ∀I  : ∀ Γ φ   → Proof p e (↑ Γ) φ   → Proof p e Γ (∀̇ φ)
+    ∀E  : ∀ Γ φ t → Proof p e Γ (∀̇ φ)   → Proof p e Γ (φ [ t ;])
+    ECQ : ∀ Γ φ   → Proof p standard Γ ⊥̇ → Proof p standard Γ φ
+    PEI : ∀ Γ φ ψ → Proof classical e Γ ((φ →̇ ψ) →̇ φ) → Proof classical e Γ φ

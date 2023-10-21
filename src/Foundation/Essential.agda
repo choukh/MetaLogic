@@ -2,6 +2,7 @@ module Foundation.Essential where
 
 open import Foundation.Prelude public
 open import Foundation.Logic public
+open import Foundation.Set.Powerset public
 open import Foundation.Function.Bundles public
 
 open import Foundation.Data.Empty public

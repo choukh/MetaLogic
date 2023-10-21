@@ -6,8 +6,7 @@ open import Foundation.Relation.Nullary.Negation
 open import Relation.Nullary public
   using (Dec; yes; no; does)
 
-open import Cubical.Relation.Nullary as 🧊
-  using ()
+import Cubical.Relation.Nullary as 🧊
 
 Dec→🧊 : Dec A → 🧊.Dec A
 Dec→🧊 (yes x) = 🧊.yes x

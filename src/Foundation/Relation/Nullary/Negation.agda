@@ -7,8 +7,7 @@ open import Relation.Nullary public
   using ()
   renaming (¬_ to infix 30 ¬_)
 
-open import Cubical.Relation.Nullary as 🧊
-  using ()
+import Cubical.Relation.Nullary as 🧊
 
 ¬→🧊 : ¬ A → 🧊.¬ A
 ¬→🧊 ¬x x with ¬x x
