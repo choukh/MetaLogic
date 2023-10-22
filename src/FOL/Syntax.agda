@@ -76,6 +76,8 @@ module _ ⦃ ℒ : Language ⦄ where
   Theory : 𝕋₁
   Theory = ℙ Formula
 
+  open import Foundation.Data.List.SetTheoretic
+
   data HasPeirce : 𝕋 where
     classical intuitionistic : HasPeirce
 
@@ -86,8 +88,6 @@ module _ ⦃ ℒ : Language ⦄ where
     p : HasPeirce
     e : HasECQ
 
-  open import Foundation.Data.List.SetTheoretic
-
   data Proof : HasPeirce → HasECQ → Context → Formula → 𝕋 where
     CTX : ∀ Γ φ   → φ ∈ Γ → Proof p e Γ φ
     II  : ∀ Γ φ ψ → Proof p e (φ ∷ Γ) ψ → Proof p e Γ (φ →̇ ψ)
@@ -96,3 +96,15 @@ module _ ⦃ ℒ : Language ⦄ where
     ∀E  : ∀ Γ φ t → Proof p e Γ (∀̇ φ)   → Proof p e Γ (φ [ t ;])
     ECQ : ∀ Γ φ   → Proof p standard Γ ⊥̇ → Proof p standard Γ φ
     PEI : ∀ Γ φ ψ → Proof classical e Γ ((φ →̇ ψ) →̇ φ) → Proof classical e Γ φ
+
+  _⊢ᶜ_ : Context → Formula → 𝕋
+  Γ ⊢ᶜ φ = Proof classical standard Γ φ
+
+  _⊢ⁱ_ : Context → Formula → 𝕋
+  Γ ⊢ⁱ φ = Proof intuitionistic standard Γ φ
+
+  _⊢ᶜ⁻_ : Context → Formula → 𝕋
+  Γ ⊢ᶜ⁻ φ = Proof classical paraconsistent Γ φ
+
+  _⊢ⁱ⁻_ : Context → Formula → 𝕋
+  Γ ⊢ⁱ⁻ φ = Proof intuitionistic paraconsistent Γ φ
