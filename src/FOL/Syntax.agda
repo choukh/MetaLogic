@@ -1,6 +1,7 @@
 module FOL.Syntax where
 
 open import Foundation.Essential
+open import Foundation.Data.List.SetTheoretic
 
 record Language : 𝕋₁ where
   field
@@ -76,35 +77,17 @@ module _ ⦃ ℒ : Language ⦄ where
   Theory : 𝕋₁
   Theory = ℙ Formula
 
-  open import Foundation.Data.List.SetTheoretic
+  variable
+    t : Term
+    φ ψ : Formula
+    Γ : Context
 
-  data HasPeirce : 𝕋 where
-    classical intuitionistic : HasPeirce
-
-  data HasECQ : 𝕋 where
-    standard paraconsistent : HasECQ
-
-  private variable
-    p : HasPeirce
-    e : HasECQ
-
-  data Proof : HasPeirce → HasECQ → Context → Formula → 𝕋 where
-    CTX : ∀ Γ φ   → φ ∈ Γ → Proof p e Γ φ
-    II  : ∀ Γ φ ψ → Proof p e (φ ∷ Γ) ψ → Proof p e Γ (φ →̇ ψ)
-    IE  : ∀ Γ φ ψ → Proof p e Γ (φ →̇ ψ) → Proof p e Γ φ → Proof p e Γ ψ
-    ∀I  : ∀ Γ φ   → Proof p e (↑ Γ) φ   → Proof p e Γ (∀̇ φ)
-    ∀E  : ∀ Γ φ t → Proof p e Γ (∀̇ φ)   → Proof p e Γ (φ [ t ;])
-    ECQ : ∀ Γ φ   → Proof p standard Γ ⊥̇ → Proof p standard Γ φ
-    PEI : ∀ Γ φ ψ → Proof classical e Γ ((φ →̇ ψ) →̇ φ) → Proof classical e Γ φ
-
-  _⊢ᶜ_ : Context → Formula → 𝕋
-  Γ ⊢ᶜ φ = Proof classical standard Γ φ
-
-  _⊢ⁱ_ : Context → Formula → 𝕋
-  Γ ⊢ⁱ φ = Proof intuitionistic standard Γ φ
-
-  _⊢ᶜ⁻_ : Context → Formula → 𝕋
-  Γ ⊢ᶜ⁻ φ = Proof classical paraconsistent Γ φ
-
-  _⊢ⁱ⁻_ : Context → Formula → 𝕋
-  Γ ⊢ⁱ⁻ φ = Proof intuitionistic paraconsistent Γ φ
+  infix 10 _⊢_
+  data _⊢_ : Context → Formula → 𝕋 where
+    Ctx     : φ ∈ Γ             → Γ ⊢ φ
+    ImpI    : (φ ∷ Γ) ⊢ ψ       → Γ ⊢ φ →̇ ψ
+    ImpE    : Γ ⊢ φ →̇ ψ → Γ ⊢ φ → Γ ⊢ ψ
+    AllI    : ↑ Γ ⊢ φ           → Γ ⊢ ∀̇ φ
+    AllE    : Γ ⊢ ∀̇ φ           → Γ ⊢ φ [ t ;]
+    FalseE  : Γ ⊢ ⊥̇             → Γ ⊢ φ
+    Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
