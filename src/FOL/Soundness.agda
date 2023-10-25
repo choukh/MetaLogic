@@ -5,17 +5,17 @@ open import Foundation.Essential
 open import FOL.Syntax ℒ
 open import FOL.Semantics ℒ
 
-soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding → ∀ Γ φ → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
-soundness⟨ C ⟩ exp Γ φ (Ctx x) c 𝓋 𝓋⊨Γ = {!   !}
-soundness⟨ C ⟩ exp Γ (φ →̇ ψ) (ImpI ⊢) = {!   !}
-soundness⟨ C ⟩ exp Γ φ (ImpE ⊢₁ ⊢₂) = {!   !}
-soundness⟨ C ⟩ exp Γ (∀̇ φ) (AllI ⊢) = {!   !}
-soundness⟨ C ⟩ exp Γ _ (AllE ⊢) = {!   !}
-soundness⟨ C ⟩ exp Γ φ (FalseE ⊢) = {!   !}
-soundness⟨ C ⟩ exp Γ _ Peirce = {!   !}
+soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding → ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
+soundness⟨ C ⟩ H (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
+soundness⟨ C ⟩ H (ImpI ⊢) = {!   !}
+soundness⟨ C ⟩ H (ImpE ⊢₁ ⊢₂) = {!   !}
+soundness⟨ C ⟩ H (AllI ⊢) = {!   !}
+soundness⟨ C ⟩ H (AllE ⊢) = {!   !}
+soundness⟨ C ⟩ H (FalseE ⊢) = {!   !}
+soundness⟨ C ⟩ H Peirce = {!   !}
 
-soundness : ∀ Γ φ → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
-soundness Γ φ Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ φ Γ⊢φ
+soundness : ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
+soundness Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ⊢φ
 
 instance
   ℐ : Interpretation ⊤
@@ -44,4 +44,4 @@ standard : Standard
 standard = classical , id
 
 consistency : [] ⊬ ⊥̇
-consistency ⊢⊥̇ = soundness [] ⊥̇ ⊢⊥̇ standard (λ _ → tt) λ _ ()
+consistency ⊢⊥̇ = soundness ⊢⊥̇ standard (λ _ → tt) λ _ ()
