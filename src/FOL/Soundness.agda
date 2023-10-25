@@ -15,7 +15,7 @@ soundness⟨ C ⟩ exp Γ φ (FalseE ⊢) = {!   !}
 soundness⟨ C ⟩ exp Γ _ Peirce = {!   !}
 
 soundness : ∀ Γ φ → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
-soundness Γ φ Γ⊢φ = soundness⟨ Standard ⟩ Std→Exp Γ φ Γ⊢φ
+soundness Γ φ Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ φ Γ⊢φ
 
 instance
   ℐ : Interpretation ⊤

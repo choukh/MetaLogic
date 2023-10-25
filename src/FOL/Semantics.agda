@@ -66,8 +66,8 @@ Standard = Classical ∧ StandardBottom
 Exploding : Variant ℓ
 Exploding = Classical ∧ ExplodingBottom
 
-Std→Exp : Standard {ℓ} ⊑ Exploding
-Std→Exp (cls , std⊥) = cls , λ _ _ _ → exfalso ∘ std⊥
+Std⊑Exp : Standard {ℓ} ⊑ Exploding
+Std⊑Exp (cls , std⊥) = cls , λ _ _ _ → exfalso ∘ std⊥
 
 _⊨⟨_⟩_ : Context → Variant ℓ → Formula → 𝕋 _
 Γ ⊨⟨ C ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C → ∀ 𝓋 → 𝓋 ⊨ Γ → 𝓋 ⊨ᵩ φ
