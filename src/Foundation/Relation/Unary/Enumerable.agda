@@ -44,8 +44,8 @@ module MaybeView where
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
   enumerable↔ℙ = ↔-map1 Enum↔ℙ
 
-  discrete→enumerable→countable : discrete A → enumerable A → countable A
-  discrete→enumerable→countable {A} disA = map1 H where
+  discr→enum→count : discrete A → enumerable A → countable A
+  discr→enum→count {A} disA = map1 H where
     H : Enum A → A ↣ ℕ
     H (f , H) = mk↣ g₁ g₁-inj where
       g : ∀ x → Σ n ⸴ f n ＝ some x
@@ -262,6 +262,6 @@ module ListView where
     Ⓜ.enumerableℙ (λ (_ : A) → ⊤) ↔˘⟨ Ⓜ.enumerable↔ℙ ⟩
     Ⓜ.enumerable A                ↔∎
 
-  discrete→enumerable→countable : discrete A → enumerable A → countable A
-  discrete→enumerable→countable disA enumA =
-    Ⓜ.discrete→enumerable→countable disA (enumerable↔Ⓜ .⇒ enumA)
+  discr→enum→count : discrete A → enumerable A → countable A
+  discr→enum→count disA enumA =
+    Ⓜ.discr→enum→count disA (enumerable↔Ⓜ .⇒ enumA)

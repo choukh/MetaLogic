@@ -5,20 +5,20 @@ open import Foundation.Data.List.SetTheoretic
 
 record Language : 𝕋₁ where
   field
-    ℱ : 𝕋
-    ℛ : 𝕋
-    ∣_∣ᶠ : ℱ → ℕ
-    ∣_∣ᴿ : ℛ → ℕ
-    discreteℱ : discrete ℱ
-    discreteℛ : discrete ℛ
-    enumerableℱ : enumerable ℱ
-    enumerableℛ : enumerable ℛ
+    𝓕 : 𝕋
+    𝓡 : 𝕋
+    ∣_∣ᶠ : 𝓕 → ℕ
+    ∣_∣ᴿ : 𝓡 → ℕ
+    discr𝓕 : discrete 𝓕
+    discr𝓡 : discrete 𝓡
+    enum𝓕 : enumerable 𝓕
+    enum𝓡 : enumerable 𝓡
 
-  countableℱ : countable ℱ
-  countableℱ = discrete→enumerable→countable discreteℱ enumerableℱ
+  count𝓕 : countable 𝓕
+  count𝓕 = discr→enum→count discr𝓕 enum𝓕
 
-  countableℛ : countable ℛ
-  countableℛ = discrete→enumerable→countable discreteℛ enumerableℛ
+  count𝓡 : countable 𝓡
+  count𝓡 = discr→enum→count discr𝓡 enum𝓡
 
 open Language ⦃...⦄
 
@@ -26,11 +26,11 @@ module _ ⦃ ℒ : Language ⦄ where
 
   data Term : 𝕋 where
     #_ : ℕ → Term
-    _$̇_ : (f : ℱ) → 𝕍 Term ∣ f ∣ᶠ → Term
+    _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
 
   data Formula : 𝕋 where
     ⊥̇ : Formula
-    _$̇_ : (R : ℛ) → 𝕍 Term ∣ R ∣ᴿ → Formula
+    _$̇_ : (R : 𝓡) → 𝕍 Term ∣ R ∣ᴿ → Formula
     _→̇_ : Formula → Formula → Formula
     ∀̇_ : Formula → Formula
 
