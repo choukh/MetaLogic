@@ -1,5 +1,4 @@
 open import FOL.Language
-
 module FOL.Semantics (ℒ : Language) where
 
 open import Foundation.Essential
@@ -35,38 +34,44 @@ record Interpretation (Domain : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   𝓋 ⊨ᵩ φ →̇ ψ = 𝓋 ⊨ᵩ φ → 𝓋 ⊨ᵩ ψ
   𝓋 ⊨ᵩ ∀̇ φ = (x : Domain) → (x ; 𝓋) ⊨ᵩ φ
 
+  _⊭ᵩ_ : Assignment → Formula → 𝕋 _
+  𝓋 ⊭ᵩ φ = ¬ (𝓋 ⊨ᵩ φ)
+
   _⊨_ : Assignment → Context → 𝕋 _
   𝓋 ⊨ Γ = ∀ φ → φ ∈ᴸ Γ → 𝓋 ⊨ᵩ φ
 
   _⊫_ : Assignment → Theory → 𝕋 _
   𝓋 ⊫ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
 
-open Interpretation ⦃...⦄
+open Interpretation ⦃...⦄ public
 
-Constraint : ∀ ℓ → 𝕋 _
-Constraint ℓ = {D : 𝕋 ℓ} → ⦃ Interpretation D ⦄ → 𝕋 ℓ
+Variant : ∀ ℓ → 𝕋 _
+Variant ℓ = {D : 𝕋 ℓ} → ⦃ Interpretation D ⦄ → 𝕋 ℓ
 
-classical : Constraint ℓ
-classical = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
+_⊑_ : Variant ℓ → Variant ℓ → 𝕋 _
+C₁ ⊑ C₂ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C₁ → C₂
 
-standard : Constraint ℓ
-standard = classical ∧ (bottom holds → ⊥)
+Classical : Variant ℓ
+Classical = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
 
-exploding : Constraint ℓ
-exploding = classical ∧ ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+Standard : Variant ℓ
+Standard = Classical ∧ (bottom holds → ⊥)
 
-_⊨⟨_⟩_ : Context → Constraint ℓ → Formula → 𝕋 _
+Exploding : Variant ℓ
+Exploding = Classical ∧ ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+
+_⊨⟨_⟩_ : Context → Variant ℓ → Formula → 𝕋 _
 Γ ⊨⟨ C ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C → ∀ 𝓋 → 𝓋 ⊨ Γ → 𝓋 ⊨ᵩ φ
 
-_⊫⟨_⟩_ : Theory → Constraint ℓ → Formula → 𝕋 _
+_⊫⟨_⟩_ : Theory → Variant ℓ → Formula → 𝕋 _
 𝒯 ⊫⟨ C ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C → ∀ 𝓋 → 𝓋 ⊫ 𝒯 → 𝓋 ⊨ᵩ φ
 
-Model : ∀ ℓ → 𝕋 _
-Model ℓ = TypeWithStr ℓ Interpretation
+record Model ℓ : 𝕋 (ℓ ⁺) where
+  field
+    Domain : 𝕋 ℓ
+    ⦃ ℐ ⦄ : Interpretation Domain
+    𝓋 : Assignment
 
-_isA_modelOf_ : Model ℓ → Constraint ℓ → Theory → 𝕋 _
-(_ , ℐ) isA C modelOf 𝒯 = let instance _ = ℐ in
-  C ∧ ∃ _ λ 𝓋 → ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
-
-_hasA_model : Theory → Constraint ℓ → 𝕋 _
-𝒯 hasA C model = ∃ _ (_isA C modelOf 𝒯)
+_isA_modelOf_ : Model ℓ → Variant ℓ → Theory → 𝕋 _
+ℳ isA C modelOf 𝒯 = C ∧ ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
+  where open Model ℳ

@@ -11,7 +11,10 @@ open import Data.Empty.Polymorphic public
   renaming (⊥ to ⊥*; ⊥-elim to exfalso*)
 
 open import Cubical.Data.Empty
-  renaming (⊥ to ⊥🧊; isProp⊥ to isProp⊥🧊)
+  using ()
+  renaming (
+    ⊥ to ⊥🧊; isProp⊥ to isProp⊥🧊;
+    ⊥* to ⊥*🧊; isProp⊥* to isProp⊥*🧊)
 
 Empty→🧊 : ⊥ → ⊥🧊
 Empty→🧊 ()
@@ -30,3 +33,21 @@ isProp⊥ = subst isProp Empty＝🧊 (isProp←🧊 isProp⊥🧊)
 
 isSet⊥ : isSet ⊥
 isSet⊥ = isProp→isSet isProp⊥
+
+Empty*→🧊 : ⊥* {ℓ} → ⊥*🧊 {ℓ}
+Empty*→🧊 ()
+
+Empty*←🧊 : ⊥*🧊 {ℓ} → ⊥* {ℓ}
+Empty*←🧊 ()
+
+Empty*≅🧊 : ⊥* {ℓ} ≅ ⊥*🧊
+Empty*≅🧊 = mk≅ Empty*→🧊 Empty*←🧊 (λ ()) (λ ())
+
+Empty*＝🧊 : ⊥* {ℓ} ＝ ⊥*🧊
+Empty*＝🧊 = ua Empty*≅🧊
+
+isProp⊥* : isProp (⊥* {ℓ})
+isProp⊥* = subst isProp Empty*＝🧊 (isProp←🧊 isProp⊥*🧊)
+
+isSet* : isSet (⊥* {ℓ})
+isSet* = isProp→isSet isProp⊥*

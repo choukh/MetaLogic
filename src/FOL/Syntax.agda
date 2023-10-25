@@ -7,7 +7,7 @@ open import Foundation.Data.List.SetTheoretic
 
 open Language ℒ
 
-infix 10 _⊢_ _⊩_
+infix 10 _⊢_ _⊬_ _⊩_ _⊮_
 infixl 15 _→̇_
 infix 30 _[_]ₜ _[_]ₜ⃗ _[_]ᵩ
 
@@ -72,5 +72,11 @@ data _⊢_ : Context → Formula → 𝕋 where
   FalseE  : Γ ⊢ ⊥̇             → Γ ⊢ φ
   Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
 
+_⊬_ : Context → Formula → 𝕋
+Γ ⊬ φ = ¬ (Γ ⊢ φ)
+
 _⊩_ : Theory → Formula → 𝕋
 𝒯 ⊩ φ = Σ _ λ Γ → (∀ φ → φ ∈ᴸ Γ → φ ∈ 𝒯) → Γ ⊢ φ
+
+_⊮_ : Theory → Formula → 𝕋
+𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
