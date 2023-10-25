@@ -73,4 +73,4 @@ data _⊢_ : Context → Formula → 𝕋 where
   Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
 
 _⊩_ : Theory → Formula → 𝕋
-𝒯 ⊩ φ = Σ Context λ Γ → (∀ φ → φ ∈ᴸ Γ → φ ∈ 𝒯) → Γ ⊢ φ
+𝒯 ⊩ φ = Σ _ λ Γ → (∀ φ → φ ∈ᴸ Γ → φ ∈ 𝒯) → Γ ⊢ φ
