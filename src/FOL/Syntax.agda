@@ -1,94 +1,76 @@
-module FOL.Syntax where
+open import FOL.Language
+module FOL.Syntax (ℒ : Language) where
 
 open import Foundation.Essential
 open import Foundation.Data.List.SetTheoretic
+  renaming (_∈_ to _∈ᴸ_)
 
-record Language : 𝕋₁ where
-  field
-    𝓕 : 𝕋
-    𝓡 : 𝕋
-    ∣_∣ᶠ : 𝓕 → ℕ
-    ∣_∣ᴿ : 𝓡 → ℕ
-    discr𝓕 : discrete 𝓕
-    discr𝓡 : discrete 𝓡
-    enum𝓕 : enumerable 𝓕
-    enum𝓡 : enumerable 𝓡
+open Language ℒ
 
-  count𝓕 : countable 𝓕
-  count𝓕 = discr→enum→count discr𝓕 enum𝓕
+infix 10 _⊢_ _⊩_
+infixl 15 _→̇_
+infix 30 _[_]ₜ _[_]ₜ⃗ _[_]ᵩ
 
-  count𝓡 : countable 𝓡
-  count𝓡 = discr→enum→count discr𝓡 enum𝓡
+data Term : 𝕋 where
+  #_ : ℕ → Term
+  _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
 
-open Language ⦃...⦄
+data Formula : 𝕋 where
+  ⊥̇ : Formula
+  _$̇_ : (R : 𝓡) → 𝕍 Term ∣ R ∣ᴿ → Formula
+  _→̇_ : Formula → Formula → Formula
+  ∀̇_ : Formula → Formula
 
-module _ ⦃ ℒ : Language ⦄ where
+Subst : 𝕋
+Subst = ℕ → Term
 
-  data Term : 𝕋 where
-    #_ : ℕ → Term
-    _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
+_[_]ₜ : Term → Subst → Term
+_[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 
-  data Formula : 𝕋 where
-    ⊥̇ : Formula
-    _$̇_ : (R : 𝓡) → 𝕍 Term ∣ R ∣ᴿ → Formula
-    _→̇_ : Formula → Formula → Formula
-    ∀̇_ : Formula → Formula
+(# n)   [ σ ]ₜ = σ n
+(f $̇ t⃗) [ σ ]ₜ = f $̇ t⃗ [ σ ]ₜ⃗
 
-  Subst : 𝕋
-  Subst = ℕ → Term
+[] [ σ ]ₜ⃗ = []
+(t ∷ t⃗) [ σ ]ₜ⃗ = t [ σ ]ₜ ∷ t⃗ [ σ ]ₜ⃗
 
-  infix 30 _[_]ₜ _[_]ₜ⃗
-  _[_]ₜ : Term → Subst → Term
-  _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
+↑ₜ : Term → Term
+↑ₜ = _[ #_ ∘ suc ]ₜ
 
-  (# n)   [ σ ]ₜ = σ n
-  (f $̇ t⃗) [ σ ]ₜ = f $̇ t⃗ [ σ ]ₜ⃗
+_[_]ᵩ : Formula → Subst → Formula
+⊥̇       [ σ ]ᵩ = ⊥̇
+(R $̇ t⃗) [ σ ]ᵩ = R $̇ t⃗ [ σ ]ₜ⃗
+(φ →̇ ψ) [ σ ]ᵩ = φ [ σ ]ᵩ →̇ ψ [ σ ]ᵩ
+(∀̇ φ)   [ σ ]ᵩ = ∀̇ φ [ # 0 ; ↑ₜ ∘ σ ]ᵩ
 
-  [] [ σ ]ₜ⃗ = []
-  (t ∷ t⃗) [ σ ]ₜ⃗ = t [ σ ]ₜ ∷ t⃗ [ σ ]ₜ⃗
+↑ᵩ : Formula → Formula
+↑ᵩ = _[ #_ ∘ suc ]ᵩ
 
-  ↑ₜ : Term → Term
-  ↑ₜ = _[ #_ ∘ suc ]ₜ
+_[_;] : Formula → Term → Formula
+φ [ t ;] = φ [ t ; #_ ]ᵩ
 
-  infix 8 _;_
-  _;_ : Term → Subst → Subst
-  (t ; σ) zero = t
-  (t ; σ) (suc n) = σ n
+Context : 𝕋
+Context = 𝕃 Formula
 
-  infix 30 _[_]ᵩ
-  _[_]ᵩ : Formula → Subst → Formula
-  ⊥̇       [ σ ]ᵩ = ⊥̇
-  (R $̇ t⃗) [ σ ]ᵩ = R $̇ t⃗ [ σ ]ₜ⃗
-  (φ →̇ ψ) [ σ ]ᵩ = φ [ σ ]ᵩ →̇ ψ [ σ ]ᵩ
-  (∀̇ φ)   [ σ ]ᵩ = ∀̇ φ [ # 0 ; ↑ₜ ∘ σ ]ᵩ
+↑ : Context → Context
+↑ = map ↑ᵩ
 
-  ↑ᵩ : Formula → Formula
-  ↑ᵩ = _[ #_ ∘ suc ]ᵩ
+Theory : 𝕋₁
+Theory = 𝒫 Formula
 
-  _[_;] : Formula → Term → Formula
-  φ [ t ;] = φ [ t ; #_ ]ᵩ
+variable
+  t : Term
+  φ ψ : Formula
+  Γ : Context
+  𝒯 : Theory
 
-  Context : 𝕋
-  Context = 𝕃 Formula
+data _⊢_ : Context → Formula → 𝕋 where
+  Ctx     : φ ∈ᴸ Γ             → Γ ⊢ φ
+  ImpI    : (φ ∷ Γ) ⊢ ψ       → Γ ⊢ φ →̇ ψ
+  ImpE    : Γ ⊢ φ →̇ ψ → Γ ⊢ φ → Γ ⊢ ψ
+  AllI    : ↑ Γ ⊢ φ           → Γ ⊢ ∀̇ φ
+  AllE    : Γ ⊢ ∀̇ φ           → Γ ⊢ φ [ t ;]
+  FalseE  : Γ ⊢ ⊥̇             → Γ ⊢ φ
+  Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
 
-  ↑ : Context → Context
-  ↑ = map ↑ᵩ
-
-  Theory : 𝕋₁
-  Theory = 𝒫 Formula
-
-  variable
-    t : Term
-    φ ψ : Formula
-    Γ : Context
-    𝒯 : Theory
-
-  infix 10 _⊢_
-  data _⊢_ : Context → Formula → 𝕋 where
-    Ctx     : φ ∈ Γ             → Γ ⊢ φ
-    ImpI    : (φ ∷ Γ) ⊢ ψ       → Γ ⊢ φ →̇ ψ
-    ImpE    : Γ ⊢ φ →̇ ψ → Γ ⊢ φ → Γ ⊢ ψ
-    AllI    : ↑ Γ ⊢ φ           → Γ ⊢ ∀̇ φ
-    AllE    : Γ ⊢ ∀̇ φ           → Γ ⊢ φ [ t ;]
-    FalseE  : Γ ⊢ ⊥̇             → Γ ⊢ φ
-    Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
+_⊩_ : Theory → Formula → 𝕋
+𝒯 ⊩ φ = Σ Context λ Γ → (∀ φ → φ ∈ᴸ Γ → φ ∈ 𝒯) → Γ ⊢ φ
