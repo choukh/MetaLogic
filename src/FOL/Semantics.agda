@@ -54,11 +54,20 @@ C₁ ⊑ C₂ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C₁ → C₂
 Classical : Variant ℓ
 Classical = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
 
+StandardBottom : Variant ℓ
+StandardBottom = bottom holds → ⊥
+
+ExplodingBottom : Variant ℓ
+ExplodingBottom = ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+
 Standard : Variant ℓ
-Standard = Classical ∧ (bottom holds → ⊥)
+Standard = Classical ∧ StandardBottom
 
 Exploding : Variant ℓ
-Exploding = Classical ∧ ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+Exploding = Classical ∧ ExplodingBottom
+
+Std→Exp : Standard {ℓ} ⊑ Exploding
+Std→Exp (cls , std⊥) = cls , λ _ _ _ → exfalso ∘ std⊥
 
 _⊨⟨_⟩_ : Context → Variant ℓ → Formula → 𝕋 _
 Γ ⊨⟨ C ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → C → ∀ 𝓋 → 𝓋 ⊨ Γ → 𝓋 ⊨ᵩ φ
