@@ -6,7 +6,7 @@ open import Foundation.Logic.Iff
 
 open import Cubical.Foundations.HLevels public
   using ()
-  renaming (hProp to Ω🧊)
+  renaming (hProp to ℙ🧊)
 
 open import Cubical.Foundations.HLevels
   using (isSetHProp)
@@ -16,43 +16,43 @@ import Cubical.Foundations.Univalence as 🧊
 --------------------------------------------------------------------------------
 -- hProp
 
-Ω : ∀ ℓ → 𝕋 (ℓ ⁺)
-Ω ℓ = TypeWithStr ℓ isProp
+ℙ : ∀ ℓ → 𝕋 (ℓ ⁺)
+ℙ ℓ = TypeWithStr ℓ isProp
 
-Ωₒ : 𝕋 (ℓ0 ⁺)
-Ωₒ = Ω ℓ0
+ℙₒ : 𝕋 (ℓ0 ⁺)
+ℙₒ = ℙ ℓ0
 
 variable
-  𝗣 𝗤 𝗥 : Ω ℓ
+  𝗣 𝗤 𝗥 : ℙ ℓ
 
-_holds : Ω ℓ → 𝕋 ℓ
+_holds : ℙ ℓ → 𝕋 ℓ
 _holds = typ
 
 isPredHolds : isPred (_holds {ℓ})
 isPredHolds = str
 
-Ω→🧊 : Ω ℓ → Ω🧊 ℓ
-Ω→🧊 (P , pP) = P , (isProp→🧊 pP)
+ℙ→🧊 : ℙ ℓ → ℙ🧊 ℓ
+ℙ→🧊 (P , pP) = P , (isProp→🧊 pP)
 
-Ω←🧊 : Ω🧊 ℓ → Ω ℓ
-Ω←🧊 (P , pP) = P , (isProp←🧊 pP)
+ℙ←🧊 : ℙ🧊 ℓ → ℙ ℓ
+ℙ←🧊 (P , pP) = P , (isProp←🧊 pP)
 
-Ω→←🧊 : (𝗣 : Ω🧊 ℓ) → Ω→🧊 (Ω←🧊 𝗣) ＝ 𝗣
-Ω→←🧊 𝗣 = SigEqProp H refl where
+ℙ→←🧊 : (𝗣 : ℙ🧊 ℓ) → ℙ→🧊 (ℙ←🧊 𝗣) ＝ 𝗣
+ℙ→←🧊 𝗣 = SigEqProp H refl where
   H : isPred (isProp🧊 {ℓ})
   H = subst isPred (sym $ funExt $ λ x → isProp＝🧊) isPredIsProp
 
-Ω←→🧊 : (𝗣 : Ω ℓ) → Ω←🧊 (Ω→🧊 𝗣) ＝ 𝗣
-Ω←→🧊 𝗣 = SigEqProp isPredIsProp refl
+ℙ←→🧊 : (𝗣 : ℙ ℓ) → ℙ←🧊 (ℙ→🧊 𝗣) ＝ 𝗣
+ℙ←→🧊 𝗣 = SigEqProp isPredIsProp refl
 
-Ω≅🧊 : Ω ℓ ≅ Ω🧊 ℓ
-Ω≅🧊 = mk≅ Ω→🧊 Ω←🧊 Ω→←🧊 Ω←→🧊
+ℙ≅🧊 : ℙ ℓ ≅ ℙ🧊 ℓ
+ℙ≅🧊 = mk≅ ℙ→🧊 ℙ←🧊 ℙ→←🧊 ℙ←→🧊
 
-Ω＝🧊 : Ω ℓ ＝ Ω🧊 ℓ
-Ω＝🧊 = ua Ω≅🧊
+ℙ＝🧊 : ℙ ℓ ＝ ℙ🧊 ℓ
+ℙ＝🧊 = ua ℙ≅🧊
 
-isSetΩ : isSet (Ω ℓ)
-isSetΩ = subst isSet Ω＝🧊 (isSet←🧊 isSetHProp)
+isSetℙ : isSet (ℙ ℓ)
+isSetℙ = subst isSet ℙ＝🧊 (isSet←🧊 isSetHProp)
 
 --------------------------------------------------------------------------------
 -- Propositional extensionality
@@ -63,11 +63,11 @@ propExt pA pB iff = Eq←🧊 $ 🧊.hPropExt (isProp→🧊 pA) (isProp→🧊 
 propExt⁻ : A ＝ B → (A ↔ B)
 propExt⁻ eq = subst (_↔ _) eq ↔-refl
 
-ΩExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ＝ 𝗤
-ΩExt {𝗣} {𝗤} H = SigEqProp isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
+ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ＝ 𝗤
+ℙExt {𝗣} {𝗤} H = SigEqProp isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
 
-ΩExt⁻ : 𝗣 ＝ 𝗤 → 𝗣 holds ↔ 𝗤 holds
-ΩExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
+ℙExt⁻ : 𝗣 ＝ 𝗤 → 𝗣 holds ↔ 𝗤 holds
+ℙExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
 
 propTruncExt : A ↔ B → ∥ A ∥₁ ＝ ∥ B ∥₁
 propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 _ _) λ _ → is1 _ _
@@ -75,9 +75,9 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 --------------------------------------------------------------------------------
 -- hProp truncation
 
-∥_∥ : 𝕋 ℓ → Ω ℓ
+∥_∥ : 𝕋 ℓ → ℙ ℓ
 ∥ A ∥ = ∥ A ∥₁ , is1
 
-ΩTruncExt : A ↔ B → ∥ A ∥ ＝ ∥ B ∥
-ΩTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)
+ℙTruncExt : A ↔ B → ∥ A ∥ ＝ ∥ B ∥
+ℙTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)
  

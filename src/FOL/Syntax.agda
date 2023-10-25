@@ -5,20 +5,20 @@ open import Foundation.Data.List.SetTheoretic
 
 record Language : 𝕋₁ where
   field
-    ℱ : 𝕋
-    𝒫 : 𝕋
-    ∣_∣ₜ : ℱ → ℕ
-    ∣_∣ᵩ : 𝒫 → ℕ
-    discreteℱ : discrete ℱ
-    discrete𝒫 : discrete 𝒫
-    enumerableℱ : enumerable ℱ
-    enumerable𝒫 : enumerable 𝒫
+    𝔣 : 𝕋
+    𝔓 : 𝕋
+    ∣_∣ₜ : 𝔣 → ℕ
+    ∣_∣ᵩ : 𝔓 → ℕ
+    discrete𝔣 : discrete 𝔣
+    discrete𝔓 : discrete 𝔓
+    enumerable𝔣 : enumerable 𝔣
+    enumerable𝔓 : enumerable 𝔓
 
-  countableℱ : countable ℱ
-  countableℱ = discrete→enumerable→countable discreteℱ enumerableℱ
+  countable𝔣 : countable 𝔣
+  countable𝔣 = discrete→enumerable→countable discrete𝔣 enumerable𝔣
 
-  countable𝒫 : countable 𝒫
-  countable𝒫 = discrete→enumerable→countable discrete𝒫 enumerable𝒫
+  countable𝔓 : countable 𝔓
+  countable𝔓 = discrete→enumerable→countable discrete𝔓 enumerable𝔓
 
 open Language ⦃...⦄
 
@@ -26,11 +26,11 @@ module _ ⦃ ℒ : Language ⦄ where
 
   data Term : 𝕋 where
     #_ : ℕ → Term
-    _$̇_ : (f : ℱ) → 𝕍 Term ∣ f ∣ₜ → Term
+    _$̇_ : (f : 𝔣) → 𝕍 Term ∣ f ∣ₜ → Term
 
   data Formula : 𝕋 where
     ⊥̇ : Formula
-    _$̇_ : (P : 𝒫) → 𝕍 Term ∣ P ∣ᵩ → Formula
+    _$̇_ : (P : 𝔓) → 𝕍 Term ∣ P ∣ᵩ → Formula
     _→̇_ : Formula → Formula → Formula
     ∀̇_ : Formula → Formula
 
@@ -75,12 +75,13 @@ module _ ⦃ ℒ : Language ⦄ where
   ↑ = map ↑ᵩ
 
   Theory : 𝕋₁
-  Theory = ℙ Formula
+  Theory = 𝒫 Formula
 
   variable
     t : Term
     φ ψ : Formula
     Γ : Context
+    𝒯 : Theory
 
   infix 10 _⊢_
   data _⊢_ : Context → Formula → 𝕋 where
