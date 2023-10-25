@@ -5,20 +5,20 @@ open import Foundation.Data.List.SetTheoretic
 
 record Language : 𝕋₁ where
   field
-    𝔣 : 𝕋
-    𝔓 : 𝕋
-    ∣_∣ₜ : 𝔣 → ℕ
-    ∣_∣ᵩ : 𝔓 → ℕ
-    discrete𝔣 : discrete 𝔣
-    discrete𝔓 : discrete 𝔓
-    enumerable𝔣 : enumerable 𝔣
-    enumerable𝔓 : enumerable 𝔓
+    ℱ : 𝕋
+    ℛ : 𝕋
+    ∣_∣ᶠ : ℱ → ℕ
+    ∣_∣ᴿ : ℛ → ℕ
+    discreteℱ : discrete ℱ
+    discreteℛ : discrete ℛ
+    enumerableℱ : enumerable ℱ
+    enumerableℛ : enumerable ℛ
 
-  countable𝔣 : countable 𝔣
-  countable𝔣 = discrete→enumerable→countable discrete𝔣 enumerable𝔣
+  countableℱ : countable ℱ
+  countableℱ = discrete→enumerable→countable discreteℱ enumerableℱ
 
-  countable𝔓 : countable 𝔓
-  countable𝔓 = discrete→enumerable→countable discrete𝔓 enumerable𝔓
+  countableℛ : countable ℛ
+  countableℛ = discrete→enumerable→countable discreteℛ enumerableℛ
 
 open Language ⦃...⦄
 
@@ -26,11 +26,11 @@ module _ ⦃ ℒ : Language ⦄ where
 
   data Term : 𝕋 where
     #_ : ℕ → Term
-    _$̇_ : (f : 𝔣) → 𝕍 Term ∣ f ∣ₜ → Term
+    _$̇_ : (f : ℱ) → 𝕍 Term ∣ f ∣ᶠ → Term
 
   data Formula : 𝕋 where
     ⊥̇ : Formula
-    _$̇_ : (P : 𝔓) → 𝕍 Term ∣ P ∣ᵩ → Formula
+    _$̇_ : (R : ℛ) → 𝕍 Term ∣ R ∣ᴿ → Formula
     _→̇_ : Formula → Formula → Formula
     ∀̇_ : Formula → Formula
 
@@ -58,7 +58,7 @@ module _ ⦃ ℒ : Language ⦄ where
   infix 30 _[_]ᵩ
   _[_]ᵩ : Formula → Subst → Formula
   ⊥̇       [ σ ]ᵩ = ⊥̇
-  (P $̇ t⃗) [ σ ]ᵩ = P $̇ t⃗ [ σ ]ₜ⃗
+  (R $̇ t⃗) [ σ ]ᵩ = R $̇ t⃗ [ σ ]ₜ⃗
   (φ →̇ ψ) [ σ ]ᵩ = φ [ σ ]ᵩ →̇ ψ [ σ ]ᵩ
   (∀̇ φ)   [ σ ]ᵩ = ∀̇ φ [ # 0 ; ↑ₜ ∘ σ ]ᵩ
 
