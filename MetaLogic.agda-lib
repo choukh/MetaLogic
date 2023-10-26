@@ -1,7 +1,7 @@
 name: MetaLogic
 depend:
-  cubical
-  standard-library
+  cubical-0.5
+  standard-library-2.0
 include: src
 flags:
   --cubical --safe

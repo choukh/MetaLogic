@@ -40,13 +40,13 @@ _[_]ᵩ : Formula → Subst → Formula
 ⊥̇       [ σ ]ᵩ = ⊥̇
 (R $̇ t⃗) [ σ ]ᵩ = R $̇ t⃗ [ σ ]ₜ⃗
 (φ →̇ ψ) [ σ ]ᵩ = φ [ σ ]ᵩ →̇ ψ [ σ ]ᵩ
-(∀̇ φ)   [ σ ]ᵩ = ∀̇ φ [ # 0 ; ↑ₜ ∘ σ ]ᵩ
+(∀̇ φ)   [ σ ]ᵩ = ∀̇ φ [ # 0 ∷ₛ ↑ₜ ∘ σ ]ᵩ
 
 ↑ᵩ : Formula → Formula
 ↑ᵩ = _[ #_ ∘ suc ]ᵩ
 
-_[_;] : Formula → Term → Formula
-φ [ t ;] = φ [ t ; #_ ]ᵩ
+_[_∷] : Formula → Term → Formula
+φ [ t ∷] = φ [ t ∷ₛ #_ ]ᵩ
 
 Context : 𝕋
 Context = 𝕃 Formula
@@ -68,9 +68,9 @@ data _⊢_ : Context → Formula → 𝕋 where
   ImpI    : (φ ∷ Γ) ⊢ ψ       → Γ ⊢ φ →̇ ψ
   ImpE    : Γ ⊢ φ →̇ ψ → Γ ⊢ φ → Γ ⊢ ψ
   AllI    : ↑ Γ ⊢ φ           → Γ ⊢ ∀̇ φ
-  AllE    : Γ ⊢ ∀̇ φ           → Γ ⊢ φ [ t ;]
+  AllE    : Γ ⊢ ∀̇ φ           → Γ ⊢ φ [ t ∷]
   FalseE  : Γ ⊢ ⊥̇             → Γ ⊢ φ
-  Peirce  : Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
+  Peirce  : ∀ φ ψ → Γ ⊢ ((φ →̇ ψ) →̇ φ) →̇ φ
 
 _⊬_ : Context → Formula → 𝕋
 Γ ⊬ φ = ¬ (Γ ⊢ φ)
