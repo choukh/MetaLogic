@@ -73,6 +73,21 @@ _↔∎ : (A : 𝕋 ℓ) → A ↔ A
 _ ↔∎ = ↔-refl
 
 --------------------------------------------------------------------------------
+-- Some congruence properties of iff
+
+＝↔＝ : ∀ {a b c d : A} → a ＝ b → c ＝ d → (a ＝ c) ↔ (b ＝ d)
+＝↔＝ a＝b c＝d = ⇒: (λ a＝c → sym a＝b ∙ a＝c ∙ c＝d)
+              ⇐: (λ b＝d → a＝b     ∙ b＝d ∙ sym c＝d)
+
+→↔→ : A ↔ B → C ↔ D → (A → C) ↔ (B → D)
+→↔→ A↔B C↔D = ⇒: (λ f x → ⇒ C↔D (f $ ⇐ A↔B x))
+              ⇐: (λ g x → ⇐ C↔D (g $ ⇒   A↔B x))
+
+Π↔Π : (∀ x → P x ↔ Q x) → (∀ x → P x) ↔ (∀ x → Q x)
+Π↔Π ↔ = ⇒: (λ P x → ⇒ (↔ x) $ P x)
+        ⇐: (λ Q x → ⇐ (↔ x) $ Q x)
+
+--------------------------------------------------------------------------------
 -- Proof of prop-hood
 
 unquoteDecl iffIsoΣ = declareRecordIsoΣ iffIsoΣ (quote _↔_)

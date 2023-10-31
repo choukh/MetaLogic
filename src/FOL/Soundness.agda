@@ -8,12 +8,19 @@ open import Foundation.Data.List.SetTheoretic
 open import FOL.Syntax ℒ
 open import FOL.Semantics ℒ
 
-semanticExplosion : {D : 𝕋 ℓ} ⦃ _ : Interpretation D ⦄ → ExplodingBottom →
+semanticExplosion : ⦃ _ : Interpretation D ⦄ → ExplodingBottom →
   ∀ 𝓋 φ → 𝓋 ⊨ᵩ ⊥̇ → 𝓋 ⊨ᵩ φ
 semanticExplosion exp 𝓋 ⊥̇ bot = bot
 semanticExplosion exp 𝓋 (R $̇ t⃗) bot = exp 𝓋 R t⃗ bot
 semanticExplosion exp 𝓋 (φ →̇ ψ) bot _ = semanticExplosion exp 𝓋 ψ bot
 semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₛ 𝓋) φ bot
+
+⊨subst-iff : ⦃ _ : Interpretation D ⦄ →
+  ∀ 𝓋 φ σ → (eval 𝓋 ∘ σ) ⊨ᵩ φ ↔ 𝓋 ⊨ᵩ φ [ σ ]ᵩ
+⊨subst-iff 𝓋 ⊥̇ σ = ↔-refl
+⊨subst-iff 𝓋 (R $̇ x) σ = {!   !}
+⊨subst-iff 𝓋 (φ →̇ ψ) σ = →↔→ (⊨subst-iff 𝓋 φ σ) (⊨subst-iff 𝓋 ψ σ)
+⊨subst-iff 𝓋 (∀̇ φ) σ = {!   !}
 
 soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
@@ -22,8 +29,8 @@ soundness⟨ C ⟩ H (ImpI IH) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ H
   λ { φ (here refl) → 𝓋⊨φ
     ; φ (there φ∈Γ) → 𝓋⊨Γ φ φ∈Γ }
 soundness⟨ C ⟩ H (ImpE IH₁ IH₂) c 𝓋 𝓋⊨Γ = soundness⟨ C ⟩ H IH₁ c 𝓋 𝓋⊨Γ $ soundness⟨ C ⟩ H IH₂ c 𝓋 𝓋⊨Γ
-soundness⟨ C ⟩ H (AllI IH) c 𝓋 𝓋⊨Γ x = soundness⟨ C ⟩ H IH c (x ∷ₛ 𝓋)
-  λ φ φ∈↑Γ → {!   !}
+soundness⟨ C ⟩ H (AllI IH) c 𝓋 𝓋⊨Γ x = soundness⟨ C ⟩ H IH c (x ∷ₛ 𝓋) $
+  map⊆P-intro λ φ φ∈Γ → {! 𝓋⊨Γ (↑ᵩ φ)  !}
 soundness⟨ C ⟩ H (AllE IH) = {!   !}
 soundness⟨ C ⟩ H (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (H c .snd) 𝓋 φ $ soundness⟨ C ⟩ H Γ⊢⊥̇ c 𝓋 𝓋⊨Γ
 soundness⟨ C ⟩ H (Peirce φ ψ) c 𝓋 _ = H c .fst 𝓋 φ ψ
@@ -39,8 +46,8 @@ instance
     ; bottom = ⊥ , isProp⊥ }
 
 Dec⊨ᵩ : (𝓋 : Assignment) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
-Dec⊨ᵩ 𝓋 ⊥̇       = no (λ ())
-Dec⊨ᵩ 𝓋 (R $̇ x) = no (λ ())
+Dec⊨ᵩ 𝓋 ⊥̇       = no λ ()
+Dec⊨ᵩ 𝓋 (R $̇ x) = no λ ()
 Dec⊨ᵩ 𝓋 (φ →̇ ψ) with Dec⊨ᵩ 𝓋 φ | Dec⊨ᵩ 𝓋 ψ
 ... | yes p | yes q = yes λ _ → q
 ... | yes p | no ¬q = no λ pq → ¬q $ pq p

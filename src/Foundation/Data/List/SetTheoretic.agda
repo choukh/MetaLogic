@@ -27,6 +27,14 @@ open import Data.List.Relation.Unary.Any public
 ∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ⸴ x ∈ xs ∧ y ＝ f x) → y ∈ map f xs
 ∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
 
+∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ⸴ x ∈ xs ∧ y ＝ f x
+∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
+
+map⊆P-intro : {xs : 𝕃 A} {f : A → B} →
+  (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
+map⊆P-intro {P} H y y∈map with ∈map-elim y∈map
+... | x , x∈xs , y＝fx = subst P y＝fx $ H x x∈xs
+
 infixr 6 _[×]_
 _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 [] [×] ys = []
