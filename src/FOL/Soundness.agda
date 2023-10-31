@@ -2,6 +2,9 @@ open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
 
 open import Foundation.Essential
+open import Foundation.Data.List.SetTheoretic
+  renaming (_∈_ to _∈ᴸ_)
+
 open import FOL.Syntax ℒ
 open import FOL.Semantics ℒ
 
@@ -15,11 +18,14 @@ semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₛ �
 soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
 soundness⟨ C ⟩ H (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
-soundness⟨ C ⟩ H (ImpI ⊢) = {!   !}
-soundness⟨ C ⟩ H (ImpE ⊢₁ ⊢₂) = {!   !}
-soundness⟨ C ⟩ H (AllI ⊢) = {!   !}
-soundness⟨ C ⟩ H (AllE ⊢) = {!   !}
-soundness⟨ C ⟩ H (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (H c .snd) 𝓋 φ {!  soundness⟨_⟩  !}
+soundness⟨ C ⟩ H (ImpI IH) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ H IH c 𝓋
+  λ { φ (here refl) → 𝓋⊨φ
+    ; φ (there φ∈Γ) → 𝓋⊨Γ φ φ∈Γ }
+soundness⟨ C ⟩ H (ImpE IH₁ IH₂) c 𝓋 𝓋⊨Γ = soundness⟨ C ⟩ H IH₁ c 𝓋 𝓋⊨Γ $ soundness⟨ C ⟩ H IH₂ c 𝓋 𝓋⊨Γ
+soundness⟨ C ⟩ H (AllI IH) c 𝓋 𝓋⊨Γ x = soundness⟨ C ⟩ H IH c (x ∷ₛ 𝓋)
+  λ φ φ∈↑Γ → {!   !}
+soundness⟨ C ⟩ H (AllE IH) = {!   !}
+soundness⟨ C ⟩ H (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (H c .snd) 𝓋 φ $ soundness⟨ C ⟩ H Γ⊢⊥̇ c 𝓋 𝓋⊨Γ
 soundness⟨ C ⟩ H (Peirce φ ψ) c 𝓋 _ = H c .fst 𝓋 φ ψ
 
 soundness : ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
