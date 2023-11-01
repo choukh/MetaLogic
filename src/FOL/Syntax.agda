@@ -4,6 +4,8 @@ module FOL.Syntax (ℒ : Language) where
 open import Foundation.Essential
 open import Foundation.Data.List.SetTheoretic
   renaming (_∈_ to _∈ᴸ_)
+open import Foundation.Data.Vec.SetTheoretic
+  renaming (_∈_ to _∈ⱽ_)
 
 open Language ℒ
 
@@ -36,6 +38,14 @@ _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 []ₜ⃗≡map⃗ : ∀ {n} (t⃗ : 𝕍 Term n) σ → t⃗ [ σ ]ₜ⃗ ≡ map⃗ (_[ σ ]ₜ) t⃗
 []ₜ⃗≡map⃗ [] σ = refl
 []ₜ⃗≡map⃗ (_ ∷ t⃗) σ = cong (_ ∷_) $ []ₜ⃗≡map⃗ t⃗ σ
+
+term-elim : (P : Term → 𝕋 ℓ) → (∀ n → P (# n)) →
+  (∀ f t⃗ → (∀ t → t ∈ⱽ t⃗ → P t) → P (f $̇ t⃗)) → ∀ t → P t
+term-elim P H1 H2 (# n) = H1 n
+term-elim P H1 H2 (f $̇ t⃗) = H2 f t⃗ H where
+  H : ∀ {n} {t⃗ : 𝕍 Term n} t → t ∈ⱽ t⃗ → P t
+  H t (here refl) = term-elim P H1 H2 t
+  H t (there t∈ⱽt⃗) = H t t∈ⱽt⃗
 
 ↑ₜ : Term → Term
 ↑ₜ = _[ #_ ∘ suc ]ₜ
@@ -84,4 +94,3 @@ _⊩_ : Theory → Formula → 𝕋
 
 _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
- 
