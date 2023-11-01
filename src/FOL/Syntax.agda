@@ -17,12 +17,6 @@ data Term : 𝕋 where
   #_ : ℕ → Term
   _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
 
-data Formula : 𝕋 where
-  ⊥̇ : Formula
-  _$̇_ : (R : 𝓡) → 𝕍 Term ∣ R ∣ᴿ → Formula
-  _→̇_ : Formula → Formula → Formula
-  ∀̇_ : Formula → Formula
-
 Subst : 𝕋
 Subst = ℕ → Term
 
@@ -34,6 +28,9 @@ _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 
 [] [ σ ]ₜ⃗ = []
 (t ∷ t⃗) [ σ ]ₜ⃗ = t [ σ ]ₜ ∷ t⃗ [ σ ]ₜ⃗
+
+↑ₜ : Term → Term
+↑ₜ = _[ #_ ∘ suc ]ₜ
 
 []ₜ⃗≡map⃗ : ∀ {n} (t⃗ : 𝕍 Term n) σ → t⃗ [ σ ]ₜ⃗ ≡ map⃗ (_[ σ ]ₜ) t⃗
 []ₜ⃗≡map⃗ [] σ = refl
@@ -47,8 +44,11 @@ term-elim P H1 H2 (f $̇ t⃗) = H2 f t⃗ H where
   H t (here refl) = term-elim P H1 H2 t
   H t (there t∈ⱽt⃗) = H t t∈ⱽt⃗
 
-↑ₜ : Term → Term
-↑ₜ = _[ #_ ∘ suc ]ₜ
+data Formula : 𝕋 where
+  ⊥̇ : Formula
+  _$̇_ : (R : 𝓡) → 𝕍 Term ∣ R ∣ᴿ → Formula
+  _→̇_ : Formula → Formula → Formula
+  ∀̇_ : Formula → Formula
 
 _[_]ᵩ : Formula → Subst → Formula
 ⊥̇       [ σ ]ᵩ = ⊥̇
@@ -65,11 +65,11 @@ _[_∷] : Formula → Term → Formula
 Context : 𝕋
 Context = 𝕃 Formula
 
-↑ : Context → Context
-↑ = map ↑ᵩ
-
 Theory : 𝕋₁
 Theory = 𝒫 Formula
+
+↑ : Context → Context
+↑ = map ↑ᵩ
 
 variable
   t : Term
