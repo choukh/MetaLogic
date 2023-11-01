@@ -4,9 +4,33 @@ module FOL.Soundness (ℒ : Language) where
 open import Foundation.Essential
 open import Foundation.Data.List.SetTheoretic
   renaming (_∈_ to _∈ᴸ_)
+open import Foundation.Data.Vec.SetTheoretic
+  renaming (_∈_ to _∈⃗_)
 
 open import FOL.Syntax ℒ
 open import FOL.Semantics ℒ
+
+⊨ₜ-∘ : ⦃ _ : Interpretation D ⦄ →
+  ∀ 𝓋 σ t → (𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ
+⊨ₜ-∘ 𝓋 σ = term-elim _ (λ _ → refl) H where
+  H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → (_⊨ₜ_ 𝓋 ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ) →
+    (_⊨ₜ_ 𝓋 ∘ σ) ⊨ₜ (f $̇ t⃗) ≡ 𝓋 ⊨ₜ (f $̇ t⃗) [ σ ]ₜ
+  H f t⃗ IH = cong (funMap f) H2 where
+    H2 : (𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ⃗ t⃗ ≡ 𝓋 ⊨ₜ⃗ t⃗ [ σ ]ₜ⃗
+    H2 rewrite ⊨ₜ⃗≡map⃗ (𝓋 ⊨ₜ_ ∘ σ) t⃗ | ⊨ₜ⃗≡map⃗ 𝓋 (t⃗ [ σ ]ₜ⃗) | []ₜ⃗≡map⃗ t⃗ σ =
+      map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map-ext IH ⟩
+      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
+      map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
+
+⊨ᵩ-∘ : ⦃ _ : Interpretation D ⦄ →
+  ∀ 𝓋 φ σ → (𝓋 ⊨ₜ_ ∘ σ) ⊨ᵩ φ ↔ 𝓋 ⊨ᵩ φ [ σ ]ᵩ
+⊨ᵩ-∘ 𝓋 ⊥̇ σ = ↔-refl
+⊨ᵩ-∘ 𝓋 (R $̇ t⃗) σ = ↔-cong (λ t → relMap R t holds) H where
+  H = map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map-cong (⊨ₜ-∘ 𝓋 σ) t⃗ ⟩
+      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
+      map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
+⊨ᵩ-∘ 𝓋 (φ →̇ ψ) σ = ↔-cong-→ (⊨ᵩ-∘ 𝓋 φ σ) (⊨ᵩ-∘ 𝓋 ψ σ)
+⊨ᵩ-∘ 𝓋 (∀̇ φ) σ = {!   !}
 
 semanticExplosion : ⦃ _ : Interpretation D ⦄ → ExplodingBottom →
   ∀ 𝓋 φ → 𝓋 ⊨ᵩ ⊥̇ → 𝓋 ⊨ᵩ φ
@@ -14,20 +38,6 @@ semanticExplosion exp 𝓋 ⊥̇ bot = bot
 semanticExplosion exp 𝓋 (R $̇ t⃗) bot = exp 𝓋 R t⃗ bot
 semanticExplosion exp 𝓋 (φ →̇ ψ) bot _ = semanticExplosion exp 𝓋 ψ bot
 semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₛ 𝓋) φ bot
-
-⊨ₜ-∘ : ⦃ _ : Interpretation D ⦄ →
-  ∀ 𝓋 σ t → (𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ
-⊨ₜ-∘ 𝓋 σ = term-elim _ (λ _ → refl) {!   !}
-
-⊨ᵩ-∘ : ⦃ _ : Interpretation D ⦄ →
-  ∀ 𝓋 φ σ → (𝓋 ⊨ₜ_ ∘ σ) ⊨ᵩ φ ↔ 𝓋 ⊨ᵩ φ [ σ ]ᵩ
-⊨ᵩ-∘ 𝓋 ⊥̇ σ = ↔-refl
-⊨ᵩ-∘ 𝓋 (R $̇ t⃗) σ = ↔-cong (λ t → relMap R t holds) H where
-  H = map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ cong (λ f → map⃗ f t⃗) (funExt $ ⊨ₜ-∘ 𝓋 σ) ⟩
-      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
-      map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
-⊨ᵩ-∘ 𝓋 (φ →̇ ψ) σ = ↔-cong-→ (⊨ᵩ-∘ 𝓋 φ σ) (⊨ᵩ-∘ 𝓋 ψ σ)
-⊨ᵩ-∘ 𝓋 (∀̇ φ) σ = {!   !}
 
 soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ

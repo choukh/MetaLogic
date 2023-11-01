@@ -5,7 +5,7 @@ open import Foundation.Essential
 open import Foundation.Data.List.SetTheoretic
   renaming (_∈_ to _∈ᴸ_)
 open import Foundation.Data.Vec.SetTheoretic
-  renaming (_∈_ to _∈ⱽ_)
+  renaming (_∈_ to _∈⃗_)
 
 open Language ℒ
 
@@ -37,12 +37,12 @@ _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 []ₜ⃗≡map⃗ (_ ∷ t⃗) σ = cong (_ ∷_) $ []ₜ⃗≡map⃗ t⃗ σ
 
 term-elim : (P : Term → 𝕋 ℓ) → (∀ n → P (# n)) →
-  (∀ f t⃗ → (∀ t → t ∈ⱽ t⃗ → P t) → P (f $̇ t⃗)) → ∀ t → P t
+  (∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → P t) → P (f $̇ t⃗)) → ∀ t → P t
 term-elim P H1 H2 (# n) = H1 n
 term-elim P H1 H2 (f $̇ t⃗) = H2 f t⃗ H where
-  H : ∀ {n} {t⃗ : 𝕍 Term n} t → t ∈ⱽ t⃗ → P t
+  H : ∀ {n} {t⃗ : 𝕍 Term n} t → t ∈⃗ t⃗ → P t
   H t (here refl) = term-elim P H1 H2 t
-  H t (there t∈ⱽt⃗) = H t t∈ⱽt⃗
+  H t (there t∈⃗t⃗) = H t t∈⃗t⃗
 
 data Formula : 𝕋 where
   ⊥̇ : Formula

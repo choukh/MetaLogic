@@ -4,7 +4,7 @@ open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
 
 open import Relation.Binary.PropositionalEquality public
-  using (sym; cong)
+  using (_≗_; sym; cong)
 
 open import Cubical.Data.Equality public
   using (
