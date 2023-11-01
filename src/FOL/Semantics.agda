@@ -9,7 +9,7 @@ open Language ℒ
 open import FOL.Syntax ℒ
 
 record Interpretation (Domain : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
-  infix 10 _⊨ᵩ_ _⊨_ _⊫_
+  infix 10 _⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨_ _⊫_
 
   field
     funMap : (f : 𝓕) → 𝕍 Domain ∣ f ∣ᶠ → Domain
@@ -19,21 +19,22 @@ record Interpretation (Domain : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   Assignment : 𝕋 _
   Assignment = ℕ → Domain
 
-  eval : Assignment → Term → Domain
-  eval⃗ : ∀ {n} → Assignment → 𝕍 Term n → 𝕍 Domain n
+  _⊨ₜ_ : Assignment → Term → Domain
+  _⊨ₜ⃗_ : ∀ {n} → Assignment → 𝕍 Term n → 𝕍 Domain n
 
-  eval 𝓋 (# n) = 𝓋 n
-  eval 𝓋 (f $̇ t⃗) = funMap f (eval⃗ 𝓋 t⃗)
+  𝓋 ⊨ₜ # n = 𝓋 n
+  𝓋 ⊨ₜ f $̇ t⃗ = funMap f (𝓋 ⊨ₜ⃗ t⃗)
 
-  eval⃗ 𝓋 [] = []
-  eval⃗ 𝓋 (t ∷ t⃗) = eval 𝓋 t ∷ eval⃗ 𝓋 t⃗
+  𝓋 ⊨ₜ⃗ [] = []
+  𝓋 ⊨ₜ⃗ (t ∷ t⃗) = 𝓋 ⊨ₜ t ∷ 𝓋 ⊨ₜ⃗ t⃗
 
-  eval⃗≡map⃗-eval : ∀ {n} 𝓋 (t⃗ : 𝕍 Term n) → eval⃗ 𝓋 t⃗ ≡ map⃗ (eval 𝓋) t⃗
-  eval⃗≡map⃗-eval = {!   !}
+  ⊨ₜ⃗≡map⃗ : ∀ {n} (t⃗ : 𝕍 Term n) 𝓋 → 𝓋 ⊨ₜ⃗ t⃗ ≡ map⃗ (𝓋 ⊨ₜ_) t⃗
+  ⊨ₜ⃗≡map⃗ [] 𝓋 = refl
+  ⊨ₜ⃗≡map⃗ (x ∷ t⃗) 𝓋 = cong (_ ∷_) $ ⊨ₜ⃗≡map⃗ t⃗ 𝓋
 
   _⊨ᵩ_ : Assignment → Formula → 𝕋 _
   𝓋 ⊨ᵩ ⊥̇ = bottom holds
-  𝓋 ⊨ᵩ R $̇ t⃗ = relMap R (eval⃗ 𝓋 t⃗) holds
+  𝓋 ⊨ᵩ R $̇ t⃗ = relMap R (map⃗ (𝓋 ⊨ₜ_) t⃗) holds
   𝓋 ⊨ᵩ φ →̇ ψ = 𝓋 ⊨ᵩ φ → 𝓋 ⊨ᵩ ψ
   𝓋 ⊨ᵩ ∀̇ φ = (x : Domain) → (x ∷ₛ 𝓋) ⊨ᵩ φ
 
