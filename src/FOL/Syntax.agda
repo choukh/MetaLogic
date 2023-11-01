@@ -32,16 +32,19 @@ _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 ↑ₜ : Term → Term
 ↑ₜ = _[ #_ ∘ suc ]ₜ
 
+↑ₜ⃗ : ∀ {n} → 𝕍 Term n → 𝕍 Term n
+↑ₜ⃗ = _[ #_ ∘ suc ]ₜ⃗
+
 []ₜ⃗≡map⃗ : ∀ {n} (t⃗ : 𝕍 Term n) σ → t⃗ [ σ ]ₜ⃗ ≡ map⃗ (_[ σ ]ₜ) t⃗
 []ₜ⃗≡map⃗ [] σ = refl
 []ₜ⃗≡map⃗ (_ ∷ t⃗) σ = cong (_ ∷_) $ []ₜ⃗≡map⃗ t⃗ σ
 
-term-elim : (P : Term → 𝕋 ℓ) → (∀ n → P (# n)) →
+term-elim : {P : Term → 𝕋 ℓ} → (∀ n → P (# n)) →
   (∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → P t) → P (f $̇ t⃗)) → ∀ t → P t
-term-elim P H1 H2 (# n) = H1 n
-term-elim P H1 H2 (f $̇ t⃗) = H2 f t⃗ H where
+term-elim H1 H2 (# n) = H1 n
+term-elim {P} H1 H2 (f $̇ t⃗) = H2 f t⃗ H where
   H : ∀ {n} {t⃗ : 𝕍 Term n} t → t ∈⃗ t⃗ → P t
-  H t (here refl) = term-elim P H1 H2 t
+  H t (here refl) = term-elim H1 H2 t
   H t (there t∈⃗t⃗) = H t t∈⃗t⃗
 
 data Formula : 𝕋 where
