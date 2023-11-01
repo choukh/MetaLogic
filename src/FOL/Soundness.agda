@@ -16,10 +16,13 @@ semanticExplosion exp 𝓋 (φ →̇ ψ) bot _ = semanticExplosion exp 𝓋 ψ b
 semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₛ 𝓋) φ bot
 
 ⊨subst-iff : ⦃ _ : Interpretation D ⦄ →
-  ∀ 𝓋 φ σ → (eval 𝓋 ∘ σ) ⊨ᵩ φ ↔ 𝓋 ⊨ᵩ φ [ σ ]ᵩ
+  ∀ 𝓋 φ σ → 𝓋 ⊨ᵩ φ [ σ ]ᵩ ↔ (eval 𝓋 ∘ σ) ⊨ᵩ φ
 ⊨subst-iff 𝓋 ⊥̇ σ = ↔-refl
-⊨subst-iff 𝓋 (R $̇ x) σ = {!   !}
-⊨subst-iff 𝓋 (φ →̇ ψ) σ = →↔→ (⊨subst-iff 𝓋 φ σ) (⊨subst-iff 𝓋 ψ σ)
+⊨subst-iff 𝓋 (R $̇ t⃗) σ = ↔-cong (λ t → relMap R t holds) H where
+  H : eval⃗ 𝓋 (map⃗ (_[ σ ]ₜ) t⃗) ≡ eval⃗ (eval 𝓋 ∘ σ) t⃗
+  H = {!   !}
+  --{! map-∘ (eval 𝓋) (_[ σ ]ₜ) t⃗  !}
+⊨subst-iff 𝓋 (φ →̇ ψ) σ = ↔-cong-→ (⊨subst-iff 𝓋 φ σ) (⊨subst-iff 𝓋 ψ σ)
 ⊨subst-iff 𝓋 (∀̇ φ) σ = {!   !}
 
 soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →

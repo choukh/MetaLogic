@@ -28,6 +28,9 @@ record Interpretation (Domain : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   eval⃗ 𝓋 [] = []
   eval⃗ 𝓋 (t ∷ t⃗) = eval 𝓋 t ∷ eval⃗ 𝓋 t⃗
 
+  eval⃗≡map⃗-eval : ∀ {n} 𝓋 (t⃗ : 𝕍 Term n) → eval⃗ 𝓋 t⃗ ≡ map⃗ (eval 𝓋) t⃗
+  eval⃗≡map⃗-eval = {!   !}
+
   _⊨ᵩ_ : Assignment → Formula → 𝕋 _
   𝓋 ⊨ᵩ ⊥̇ = bottom holds
   𝓋 ⊨ᵩ R $̇ t⃗ = relMap R (eval⃗ 𝓋 t⃗) holds

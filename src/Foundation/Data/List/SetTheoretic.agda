@@ -15,25 +15,25 @@ open import Data.List.Relation.Binary.Subset.Propositional public
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
 
-∈→Σ[]? : ∀ {xs : 𝕃 A} {x} → x ∈ xs → Σ n ⸴ xs [ n ]? ＝ some x
+∈→Σ[]? : ∀ {xs : 𝕃 A} {x} → x ∈ xs → Σ n ⸴ xs [ n ]? ≡ some x
 ∈→Σ[]? {xs = x ∷ xs} (here refl) = 0 , refl
 ∈→Σ[]? {xs = y ∷ xs} (there x∈xs) with ∈→Σ[]? x∈xs
 ... | n , H = suc n , H
 
-[]?→∈ : ∀ (xs : 𝕃 A) {x n} → xs [ n ]? ＝ some x → x ∈ xs
+[]?→∈ : ∀ (xs : 𝕃 A) {x n} → xs [ n ]? ≡ some x → x ∈ xs
 []?→∈ (x ∷ xs) {n = zero} refl = here refl
 []?→∈ (y ∷ xs) {n = suc n} eq = there $ []?→∈ xs eq
 
-∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ⸴ x ∈ xs ∧ y ＝ f x) → y ∈ map f xs
+∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ⸴ x ∈ xs ∧ y ≡ f x) → y ∈ map f xs
 ∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
 
-∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ⸴ x ∈ xs ∧ y ＝ f x
+∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ⸴ x ∈ xs ∧ y ≡ f x
 ∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
 
 map⊆P-intro : {xs : 𝕃 A} {f : A → B} →
   (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
 map⊆P-intro {P} H y y∈map with ∈map-elim y∈map
-... | x , x∈xs , y＝fx = subst P y＝fx $ H x x∈xs
+... | x , x∈xs , y≡fx = subst P y≡fx $ H x x∈xs
 
 infixr 6 _[×]_
 _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
@@ -44,10 +44,10 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 ∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro $ _ , y∈ , refl
 ∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ _ $ ∈[×]-intro x∈ y∈
 
-[×]-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs [×] ys) ＝ length xs * length ys
+[×]-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs [×] ys) ≡ length xs * length ys
 [×]-length [] _ = refl
 [×]-length (x ∷ xs) ys =
-  length (map (x ,_) ys ++ xs [×] ys)         ＝⟨ length-++ (map (x ,_) ys) ⟩
-  length (map (x ,_) ys) + length (xs [×] ys) ＝⟨ cong (_+ _) (length-map _ ys) ⟩
-  length ys + length (xs [×] ys)              ＝⟨ cong (_ +_) ([×]-length xs ys) ⟩
+  length (map (x ,_) ys ++ xs [×] ys)         ≡⟨ length-++ (map (x ,_) ys) ⟩
+  length (map (x ,_) ys) + length (xs [×] ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
+  length ys + length (xs [×] ys)              ≡⟨ cong (_ +_) ([×]-length xs ys) ⟩
   length ys + length xs * length ys           ∎

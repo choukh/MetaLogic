@@ -15,10 +15,10 @@ open import Cubical.Data.Sigma
   using (Σ≡Prop)
 
 SigEqProp : isPred P → {u v : Σ A P}
-       → (p : u .fst ＝ v .fst) → u ＝ v
+       → (p : u .fst ≡ v .fst) → u ≡ v
 SigEqProp pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)
 
-ProdEq : {x y : A × B} → fst x ＝ fst y → snd x ＝ snd y → x ＝ y
+ProdEq : {x y : A × B} → fst x ≡ fst y → snd x ≡ snd y → x ≡ y
 ProdEq refl refl = refl
 
 discrete× : discrete A → discrete B → discrete (A × B)

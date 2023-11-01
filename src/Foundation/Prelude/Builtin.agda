@@ -24,11 +24,11 @@ open import Agda.Builtin.List public
 
 open import Agda.Builtin.Equality public
   using (refl)
-  renaming (_≡_ to _＝_)
+  renaming (_≡_ to _≡_)
 
 open import Agda.Builtin.Cubical.Path public
   using ()
-  renaming (_≡_ to _＝🧊_)
+  renaming (_≡_ to _≡🧊_)
 
 open import Agda.Builtin.Sigma public
   using (Σ; fst; snd)

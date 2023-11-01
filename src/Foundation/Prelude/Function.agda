@@ -19,4 +19,4 @@ flip2 : ∀ {A : 𝕋 ℓ} {B : 𝕋 ℓ′} {C : 𝕋 ℓ″} {D : A → B → 
 flip2 f y z x = f x y z
 
 constFunc : (A → B) → 𝕋 _
-constFunc f = ∀ x y → f x ＝ f y
+constFunc f = ∀ x y → f x ≡ f y

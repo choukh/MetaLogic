@@ -25,11 +25,11 @@ Empty←🧊 ()
 Empty≅🧊 : ⊥ ≅ ⊥🧊
 Empty≅🧊 = mk≅ Empty→🧊 Empty←🧊 (λ ()) (λ ())
 
-Empty＝🧊 : ⊥ ＝ ⊥🧊
-Empty＝🧊 = ua Empty≅🧊
+Empty≡🧊 : ⊥ ≡ ⊥🧊
+Empty≡🧊 = ua Empty≅🧊
 
 isProp⊥ : isProp ⊥
-isProp⊥ = subst isProp Empty＝🧊 (isProp←🧊 isProp⊥🧊)
+isProp⊥ = subst isProp Empty≡🧊 (isProp←🧊 isProp⊥🧊)
 
 isSet⊥ : isSet ⊥
 isSet⊥ = isProp→isSet isProp⊥
@@ -43,11 +43,11 @@ Empty*←🧊 ()
 Empty*≅🧊 : ⊥* {ℓ} ≅ ⊥*🧊
 Empty*≅🧊 = mk≅ Empty*→🧊 Empty*←🧊 (λ ()) (λ ())
 
-Empty*＝🧊 : ⊥* {ℓ} ＝ ⊥*🧊
-Empty*＝🧊 = ua Empty*≅🧊
+Empty*≡🧊 : ⊥* {ℓ} ≡ ⊥*🧊
+Empty*≡🧊 = ua Empty*≅🧊
 
 isProp⊥* : isProp (⊥* {ℓ})
-isProp⊥* = subst isProp Empty*＝🧊 (isProp←🧊 isProp⊥*🧊)
+isProp⊥* = subst isProp Empty*≡🧊 (isProp←🧊 isProp⊥*🧊)
 
 isSet* : isSet (⊥* {ℓ})
 isSet* = isProp→isSet isProp⊥*

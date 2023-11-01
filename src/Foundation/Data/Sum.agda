@@ -19,28 +19,28 @@ Sum←🧊 : A 🧊.⊎ B → A ⊎ B
 Sum←🧊 (inl x) = inj₁ x
 Sum←🧊 (inr y) = inj₂ y
 
-Sum→←🧊 : (x : A 🧊.⊎ B) → Sum→🧊 (Sum←🧊 x) ＝ x
+Sum→←🧊 : (x : A 🧊.⊎ B) → Sum→🧊 (Sum←🧊 x) ≡ x
 Sum→←🧊 (inl x) = refl
 Sum→←🧊 (inr x) = refl
 
-Sum←→🧊 : (x : A ⊎ B) → Sum←🧊 (Sum→🧊 x) ＝ x
+Sum←→🧊 : (x : A ⊎ B) → Sum←🧊 (Sum→🧊 x) ≡ x
 Sum←→🧊 (inj₁ x) = refl
 Sum←→🧊 (inj₂ y) = refl
 
 Sum≅🧊 : A ⊎ B ≅ A 🧊.⊎ B
 Sum≅🧊 = mk≅ Sum→🧊 Sum←🧊 Sum→←🧊 Sum←→🧊
 
-Sum＝🧊 : A ⊎ B ＝ A 🧊.⊎ B
-Sum＝🧊 = ua Sum≅🧊
+Sum≡🧊 : A ⊎ B ≡ A 🧊.⊎ B
+Sum≡🧊 = ua Sum≅🧊
 
 isProp⊎ : isProp A → isProp B → (A → B → ⊥) → isProp (A ⊎ B)
-isProp⊎ pA pB disj = subst isProp Sum＝🧊 $
+isProp⊎ pA pB disj = subst isProp Sum≡🧊 $
   isProp←🧊 $ 🧊.isProp⊎ (isProp→🧊 pA) (isProp→🧊 pB) λ x y → Empty→🧊 (disj x y)
 
 isSet⊎ : isSet A → isSet B → isSet (A ⊎ B)
-isSet⊎ sA sB = subst isSet Sum＝🧊 $
+isSet⊎ sA sB = subst isSet Sum≡🧊 $
   isSet←🧊 $ 🧊.isSet⊎ (isSet→🧊 sA) (isSet→🧊 sB)
 
 discrete⊎ : discrete A → discrete B → discrete (A ⊎ B)
-discrete⊎ dA dB = subst discrete Sum＝🧊 $
+discrete⊎ dA dB = subst discrete Sum≡🧊 $
   discrete←🧊 $ 🧊.discrete⊎ (discrete→🧊 dA) (discrete→🧊 dB)

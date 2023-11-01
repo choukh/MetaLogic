@@ -17,14 +17,14 @@ import Cubical.Relation.Nullary as 🧊
 ¬←🧊 ¬x x with ¬x x
 ...| ()
 
-¬→←🧊 : (¬x : 🧊.¬ A) → ¬→🧊 (¬←🧊 ¬x) ＝ ¬x
+¬→←🧊 : (¬x : 🧊.¬ A) → ¬→🧊 (¬←🧊 ¬x) ≡ ¬x
 ¬→←🧊 ¬x = funExt λ x → exfalso $ ¬←🧊 ¬x x
 
-¬←→🧊 : (¬x : ¬ A) → ¬←🧊 (¬→🧊 ¬x) ＝ ¬x
+¬←→🧊 : (¬x : ¬ A) → ¬←🧊 (¬→🧊 ¬x) ≡ ¬x
 ¬←→🧊 ¬x = funExt λ x → exfalso $ ¬x x
 
 ¬≅🧊 : ¬ A ≅ (🧊.¬ A)
 ¬≅🧊 = mk≅ ¬→🧊 ¬←🧊 ¬→←🧊 ¬←→🧊
 
-¬＝🧊 : ¬ A ＝ (🧊.¬ A)
-¬＝🧊 = ua ¬≅🧊
+¬≡🧊 : ¬ A ≡ (🧊.¬ A)
+¬≡🧊 = ua ¬≅🧊

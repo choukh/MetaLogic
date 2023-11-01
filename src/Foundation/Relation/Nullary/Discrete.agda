@@ -15,10 +15,10 @@ open import Cubical.Relation.Nullary as 🧊
   )
 
 discrete→🧊 : discrete A → discrete🧊 A
-discrete→🧊 H x y = Dec→🧊 $ subst Dec (sym Eq＝🧊) (H x y)
+discrete→🧊 H x y = Dec→🧊 $ subst Dec (sym Eq≡🧊) (H x y)
 
 discrete←🧊 : discrete🧊 A → discrete A
-discrete←🧊 H x y = Dec←🧊 $ subst 🧊.Dec Eq＝🧊 (H x y)
+discrete←🧊 H x y = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
 
 discrete→isSet : discrete A → isSet A
 discrete→isSet = isSet←🧊 ∘ discrete🧊→isSet🧊 ∘ discrete→🧊

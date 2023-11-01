@@ -37,39 +37,39 @@ isPredHolds = str
 ℙ←🧊 : ℙ🧊 ℓ → ℙ ℓ
 ℙ←🧊 (P , pP) = P , (isProp←🧊 pP)
 
-ℙ→←🧊 : (𝗣 : ℙ🧊 ℓ) → ℙ→🧊 (ℙ←🧊 𝗣) ＝ 𝗣
+ℙ→←🧊 : (𝗣 : ℙ🧊 ℓ) → ℙ→🧊 (ℙ←🧊 𝗣) ≡ 𝗣
 ℙ→←🧊 𝗣 = SigEqProp H refl where
   H : isPred (isProp🧊 {ℓ})
-  H = subst isPred (sym $ funExt $ λ x → isProp＝🧊) isPredIsProp
+  H = subst isPred (sym $ funExt $ λ x → isProp≡🧊) isPredIsProp
 
-ℙ←→🧊 : (𝗣 : ℙ ℓ) → ℙ←🧊 (ℙ→🧊 𝗣) ＝ 𝗣
+ℙ←→🧊 : (𝗣 : ℙ ℓ) → ℙ←🧊 (ℙ→🧊 𝗣) ≡ 𝗣
 ℙ←→🧊 𝗣 = SigEqProp isPredIsProp refl
 
 ℙ≅🧊 : ℙ ℓ ≅ ℙ🧊 ℓ
 ℙ≅🧊 = mk≅ ℙ→🧊 ℙ←🧊 ℙ→←🧊 ℙ←→🧊
 
-ℙ＝🧊 : ℙ ℓ ＝ ℙ🧊 ℓ
-ℙ＝🧊 = ua ℙ≅🧊
+ℙ≡🧊 : ℙ ℓ ≡ ℙ🧊 ℓ
+ℙ≡🧊 = ua ℙ≅🧊
 
 isSetℙ : isSet (ℙ ℓ)
-isSetℙ = subst isSet ℙ＝🧊 (isSet←🧊 isSetHProp)
+isSetℙ = subst isSet ℙ≡🧊 (isSet←🧊 isSetHProp)
 
 --------------------------------------------------------------------------------
 -- Propositional extensionality
 
-propExt : isProp A → isProp B → (A ↔ B) → A ＝ B
+propExt : isProp A → isProp B → (A ↔ B) → A ≡ B
 propExt pA pB iff = Eq←🧊 $ 🧊.hPropExt (isProp→🧊 pA) (isProp→🧊 pB) (iff .⇒) (iff .⇐)
 
-propExt⁻ : A ＝ B → (A ↔ B)
+propExt⁻ : A ≡ B → (A ↔ B)
 propExt⁻ eq = subst (_↔ _) eq ↔-refl
 
-ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ＝ 𝗤
+ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ≡ 𝗤
 ℙExt {𝗣} {𝗤} H = SigEqProp isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
 
-ℙExt⁻ : 𝗣 ＝ 𝗤 → 𝗣 holds ↔ 𝗤 holds
+ℙExt⁻ : 𝗣 ≡ 𝗤 → 𝗣 holds ↔ 𝗤 holds
 ℙExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
 
-propTruncExt : A ↔ B → ∥ A ∥₁ ＝ ∥ B ∥₁
+propTruncExt : A ↔ B → ∥ A ∥₁ ≡ ∥ B ∥₁
 propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 _ _) λ _ → is1 _ _
 
 --------------------------------------------------------------------------------
@@ -78,6 +78,6 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 ∥_∥ : 𝕋 ℓ → ℙ ℓ
 ∥ A ∥ = ∥ A ∥₁ , is1
 
-ℙTruncExt : A ↔ B → ∥ A ∥ ＝ ∥ B ∥
+ℙTruncExt : A ↔ B → ∥ A ∥ ≡ ∥ B ∥
 ℙTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)
  

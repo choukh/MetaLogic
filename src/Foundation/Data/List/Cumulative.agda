@@ -14,17 +14,17 @@ open import Foundation.Data.List.SetTheoretic public
 𝕃ₙ A = ℕ → 𝕃 A
 
 Cumulative : 𝕃ₙ A → 𝕋 _
-Cumulative f = ∀ n → Σ xs ⸴ f (suc n) ＝ f n ++ xs
+Cumulative f = ∀ n → Σ xs ⸴ f (suc n) ≡ f n ++ xs
 
 module _ {f : 𝕃ₙ A} (cum : Cumulative f) where
 
-  cum-≤→++ : {m n : ℕ} → m ≤ n → Σ xs ⸴ f n ＝ f m ++ xs
+  cum-≤→++ : {m n : ℕ} → m ≤ n → Σ xs ⸴ f n ≡ f m ++ xs
   cum-≤→++ {m = n} {n} ≤-refl = [] , sym (++-identityʳ (f n))
   cum-≤→++ {m} {suc n} (≤-step m≤n) with cum n | cum-≤→++ m≤n
   ... | xs , H₁ | ys , H₂ = (ys ++ xs) ,
-    f (suc n)         ＝⟨ H₁ ⟩
-    f n ++ xs         ＝⟨ cong (_++ xs) H₂ ⟩
-    (f m ++ ys) ++ xs ＝⟨ ++-assoc (f m) ys xs ⟩
+    f (suc n)         ≡⟨ H₁ ⟩
+    f n ++ xs         ≡⟨ cong (_++ xs) H₂ ⟩
+    (f m ++ ys) ++ xs ≡⟨ ++-assoc (f m) ys xs ⟩
     f m ++ ys ++ xs   ∎
 
   cum-≤→⊆ : {m n : ℕ} → m ≤ n → f m ⊆ f n

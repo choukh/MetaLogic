@@ -21,7 +21,7 @@ import Cubical.Foundations.HLevels as 🧊
 -- Definition 1
 
 isProp : 𝕋 ℓ → 𝕋 ℓ
-isProp A = (x y : A) → x ＝ y
+isProp A = (x y : A) → x ≡ y
 
 isPred : (A → 𝕋 ℓ) → 𝕋 _
 isPred P = ∀ x → isProp (P x)
@@ -36,7 +36,7 @@ isPred2 P₂ = ∀ x y → isProp (P₂ x y)
 -- Definition 2
 
 isSet : 𝕋 ℓ → 𝕋 ℓ
-isSet A = (x y : A) → isProp (x ＝ y)
+isSet A = (x y : A) → isProp (x ≡ y)
 
 isSets : (A → 𝕋 ℓ) → 𝕋 _
 isSets P = ∀ x → isSet (P x)
@@ -67,10 +67,10 @@ isPred←🧊 H x = isProp←🧊 (H x)
 -- Mapping 2
 
 isSet→🧊 : isSet A → isSet🧊 A
-isSet→🧊 H x y = isProp→🧊 $ subst isProp (sym Eq＝🧊) (H x y)
+isSet→🧊 H x y = isProp→🧊 $ subst isProp (sym Eq≡🧊) (H x y)
 
 isSet←🧊 : isSet🧊 A → isSet A
-isSet←🧊 H x y = isProp←🧊 $ subst isProp🧊 Eq＝🧊 (H x y)
+isSet←🧊 H x y = isProp←🧊 $ subst isProp🧊 Eq≡🧊 (H x y)
 
 mapIsSet : (isSet🧊 A → isSet🧊 B) → (isSet A → isSet B)
 mapIsSet F = isSet←🧊 ∘ F ∘ isSet→🧊
@@ -87,17 +87,17 @@ isProp→isSet pA = isSet←🧊 $ 🧊.isProp→isSet $ isProp→🧊 pA
 --------------------------------------------------------------------------------
 -- Equiv
 
-isProp＝🧊 : isProp A ＝ isProp🧊 A
-isProp＝🧊 = EqΠ2 λ _ _ → Eq＝🧊
+isProp≡🧊 : isProp A ≡ isProp🧊 A
+isProp≡🧊 = EqΠ2 λ _ _ → Eq≡🧊
 
-isSet＝🧊 : isSet A ＝ isSet🧊 A
-isSet＝🧊 = EqΠ2 λ x y → subst (λ - → isProp - ＝ isProp🧊 (x ＝🧊 y)) Eq＝🧊 isProp＝🧊
+isSet≡🧊 : isSet A ≡ isSet🧊 A
+isSet≡🧊 = EqΠ2 λ x y → subst (λ - → isProp - ≡ isProp🧊 (x ≡🧊 y)) Eq≡🧊 isProp≡🧊
 
 isPredIsProp : isPred (isProp {ℓ})
-isPredIsProp _ = isProp←🧊 (subst isProp🧊 isProp＝🧊 🧊.isPropIsProp)
+isPredIsProp _ = isProp←🧊 (subst isProp🧊 isProp≡🧊 🧊.isPropIsProp)
 
 isPredIsSet : isPred (isSet {ℓ})
-isPredIsSet _ = isProp←🧊 (subst isProp🧊 isSet＝🧊 🧊.isPropIsSet)
+isPredIsSet _ = isProp←🧊 (subst isProp🧊 isSet≡🧊 🧊.isPropIsSet)
 
 --------------------------------------------------------------------------------
 -- Π
