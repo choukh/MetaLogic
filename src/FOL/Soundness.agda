@@ -55,7 +55,7 @@ open import FOL.Semantics ℒ
   ((x ∷ₛ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₛ ↑ₜ ∘ σ)) ⊨ᵩ φ ↔⟨ ⊨ᵩ-∘ (x ∷ₛ 𝓋) φ (# 0 ∷ₛ ↑ₜ ∘ σ) ⟩
   (x ∷ₛ 𝓋) ⊨ᵩ φ [ # 0 ∷ₛ ↑ₜ ∘ σ ]ᵩ      ↔∎
   where
-  H : ∀ x n → (x ∷ₛ (𝓋 ⊨ₜ_) ∘ σ) n ≡ ((x ∷ₛ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₛ ↑ₜ ∘ σ)) n
+  H : ∀ x → x ∷ₛ (𝓋 ⊨ₜ_) ∘ σ ≗ (x ∷ₛ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₛ ↑ₜ ∘ σ)
   H x zero = refl
   H x (suc n) = ∷ₛ⊨ₜ↑ₜ x 𝓋 (σ n)
 
@@ -72,16 +72,27 @@ semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₛ �
 
 soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
-soundness⟨ C ⟩ H (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
-soundness⟨ C ⟩ H (ImpI IH) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ H IH c 𝓋
+soundness⟨ C ⟩ _ (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
+soundness⟨ C ⟩ Γ⊢ (ImpI H) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ Γ⊢ H c 𝓋
   λ { φ (here refl) → 𝓋⊨φ
     ; φ (there φ∈Γ) → 𝓋⊨Γ φ φ∈Γ }
-soundness⟨ C ⟩ H (ImpE IH₁ IH₂) c 𝓋 𝓋⊨Γ = soundness⟨ C ⟩ H IH₁ c 𝓋 𝓋⊨Γ $ soundness⟨ C ⟩ H IH₂ c 𝓋 𝓋⊨Γ
-soundness⟨ C ⟩ H (AllI IH) c 𝓋 𝓋⊨Γ x = soundness⟨ C ⟩ H IH c (x ∷ₛ 𝓋) $
+soundness⟨ C ⟩ Γ⊢ (ImpE H₁ H₂) c 𝓋 𝓋⊨Γ = soundness⟨ C ⟩ Γ⊢ H₁ c 𝓋 𝓋⊨Γ $ soundness⟨ C ⟩ Γ⊢ H₂ c 𝓋 𝓋⊨Γ
+soundness⟨ C ⟩ Γ⊢ (AllI H) c 𝓋 𝓋⊨Γ x = soundness⟨ C ⟩ Γ⊢ H c (x ∷ₛ 𝓋) $
   map⊆P-intro λ φ φ∈Γ → ∷ₛ⊨ᵩ↑ᵩ x 𝓋 φ .⇒ $ 𝓋⊨Γ φ φ∈Γ
-soundness⟨ C ⟩ H (AllE IH) c 𝓋 𝓋⊨Γ = {!   !}
-soundness⟨ C ⟩ H (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (H c .snd) 𝓋 φ $ soundness⟨ C ⟩ H Γ⊢⊥̇ c 𝓋 𝓋⊨Γ
-soundness⟨ C ⟩ H (Peirce φ ψ) c 𝓋 _ = H c .fst 𝓋 φ ψ
+
+soundness⟨ C ⟩ Γ⊢ (AllE {φ} {t} H) c 𝓋 𝓋⊨Γ = H1 where
+  H1 : 𝓋 ⊨ᵩ φ [ t ∷]
+  H1 = ⊨ᵩ-∘ 𝓋 φ (t ∷ₛ #_) .⇒ H2 where
+    H2 : (𝓋 ⊨ₜ_ ∘ (t ∷ₛ #_)) ⊨ᵩ φ
+    H2 = ⊨ᵩ-ext eq φ .⇒ H3 where
+      H3 : ((𝓋 ⊨ₜ t) ∷ₛ 𝓋) ⊨ᵩ φ
+      H3 = soundness⟨ C ⟩ Γ⊢ H c 𝓋 𝓋⊨Γ (𝓋 ⊨ₜ t)
+      eq : ∀ n → ((𝓋 ⊨ₜ t) ∷ₛ 𝓋) n ≡ 𝓋 ⊨ₜ (t ∷ₛ #_) n
+      eq zero = refl
+      eq (suc n) = refl
+
+soundness⟨ C ⟩ Γ⊢ (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (Γ⊢ c .snd) 𝓋 φ $ soundness⟨ C ⟩ Γ⊢ Γ⊢⊥̇ c 𝓋 𝓋⊨Γ
+soundness⟨ C ⟩ Γ⊢ (Peirce φ ψ) c 𝓋 _ = Γ⊢ c .fst 𝓋 φ ψ
 
 soundness : ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
 soundness Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ⊢φ
@@ -114,4 +125,3 @@ standard = classical , id
 
 consistency : [] ⊬ ⊥̇
 consistency ⊢⊥̇ = soundness ⊢⊥̇ standard (λ _ → tt) λ _ ()
- 
