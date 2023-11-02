@@ -1,3 +1,10 @@
+> 交流Q群: 893531731  
+> 本文源码: [Github - FOL.Syntax.lagda.md]()  
+> 高亮渲染: [GitHub Pages - FOL.Syntax.html]()  
+
+# 一阶逻辑： 2.语法
+
+```
 open import FOL.Language
 module FOL.Syntax (ℒ : Language) where
 
@@ -89,3 +96,4 @@ _⊩_ : Theory → Formula → 𝕋
 
 _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
+```

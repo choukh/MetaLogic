@@ -1,3 +1,10 @@
+> 交流Q群: 893531731  
+> 本文源码: [Github - Foundation.Essential.lagda.md]()  
+> 高亮渲染: [GitHub Pages - Foundation.Essential.html]()  
+
+# 数学基础: 简介
+
+```agda
 module Foundation.Essential where
 
 open import Foundation.Prelude public
@@ -22,3 +29,4 @@ open import Foundation.Relation.Nullary.Discrete public
 open import Foundation.Relation.Unary.Countable public
 open import Foundation.Relation.Unary.Enumerable as E public
 open E.ListView public
+```
