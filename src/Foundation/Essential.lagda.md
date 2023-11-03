@@ -1,10 +1,8 @@
 # 数学基础
 
 > 交流Q群: 893531731  
-> 本文源码: [Github - Foundation.Essential.lagda.md]()  
-> 高亮渲染: [GitHub Pages - Foundation.Essential.html]()  
-
-yuque test
+> 本文源码: [Github - Foundation.Essential.lagda.md](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Essential.lagda.md)  
+> 高亮渲染: [GitHub Pages - Foundation.Essential.html](https://choukh.github.io/MetaLogic/Foundation.Essential.html)  
 
 ```agda
 module Foundation.Essential where

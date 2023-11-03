@@ -1,10 +1,10 @@
 # 一阶逻辑: 语法
 
 > 交流Q群: 893531731  
-> 本文源码: [Github - FOL.Syntax.lagda.md]()  
-> 高亮渲染: [GitHub Pages - FOL.Syntax.html]()  
+> 本文源码: [Github - FOL.Syntax.lagda.md](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md)  
+> 高亮渲染: [GitHub Pages - FOL.Syntax.html](https://choukh.github.io/MetaLogic/FOL.Syntax.html)  
 
-```
+```agda
 open import FOL.Language
 module FOL.Syntax (ℒ : Language) where
 
