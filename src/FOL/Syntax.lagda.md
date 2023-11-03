@@ -1,8 +1,8 @@
+# 一阶逻辑: 语法
+
 > 交流Q群: 893531731  
 > 本文源码: [Github - FOL.Syntax.lagda.md]()  
 > 高亮渲染: [GitHub Pages - FOL.Syntax.html]()  
-
-# 一阶逻辑: 语法
 
 ```
 open import FOL.Language

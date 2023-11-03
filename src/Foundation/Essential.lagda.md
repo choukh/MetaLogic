@@ -1,8 +1,8 @@
+# 数学基础
+
 > 交流Q群: 893531731  
 > 本文源码: [Github - Foundation.Essential.lagda.md]()  
 > 高亮渲染: [GitHub Pages - Foundation.Essential.html]()  
-
-# 数学基础
 
 ```agda
 module Foundation.Essential where
