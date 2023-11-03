@@ -1,8 +1,11 @@
+---
+url: fol.language
+---
+
 # 一阶逻辑: 语言
 
 > 交流Q群: 893531731  
-> 本文源码: [Github - FOL.Language.lagda.md](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language.agda)  
-> 高亮渲染: [GitHub Pages - FOL.Language.html](https://choukh.github.io/MetaLogic/FOL.Language.html)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Language.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.language)
 
 ```agda
 module FOL.Language where

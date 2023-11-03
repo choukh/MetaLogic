@@ -1,4 +1,4 @@
-- [0 数学基础](essential.lagda)
+- [0 数学基础](foundation.essential)
 - [1 一阶逻辑](fol)
-  - [1.1 语言](language.lagda)
-  - [1.2 语法](syntax.lagda)
+  - [1.1 语言](fol.language)
+  - [1.2 语法](fol.syntax)

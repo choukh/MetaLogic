@@ -1,8 +1,11 @@
+---
+url: fol.syntax
+---
+
 # 一阶逻辑: 语法
 
 > 交流Q群: 893531731  
-> 本文源码: [Github - FOL.Syntax.lagda.md](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md)  
-> 高亮渲染: [GitHub Pages - FOL.Syntax.html](https://choukh.github.io/MetaLogic/FOL.Syntax.html)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax)
 
 ```agda
 open import FOL.Language
