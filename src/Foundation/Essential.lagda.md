@@ -4,6 +4,8 @@
 > 本文源码: [Github - Foundation.Essential.lagda.md]()  
 > 高亮渲染: [GitHub Pages - Foundation.Essential.html]()  
 
+yuque test
+
 ```agda
 module Foundation.Essential where
 

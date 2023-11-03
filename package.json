@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.2"
+  },
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.md": [
+      "waque upload"
+    ]
+  }
+}
