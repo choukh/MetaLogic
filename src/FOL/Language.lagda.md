@@ -2,7 +2,7 @@
 > 本文源码: [Github - FOL.Language.lagda.md]()  
 > 高亮渲染: [GitHub Pages - FOL.Language.html]()  
 
-# 一阶逻辑: 1.语言
+# 一阶逻辑: 语言
 
 ```agda
 module FOL.Language where

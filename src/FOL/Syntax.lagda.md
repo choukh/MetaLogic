@@ -2,7 +2,7 @@
 > 本文源码: [Github - FOL.Syntax.lagda.md]()  
 > 高亮渲染: [GitHub Pages - FOL.Syntax.html]()  
 
-# 一阶逻辑： 2.语法
+# 一阶逻辑: 语法
 
 ```
 open import FOL.Language
