@@ -57,7 +57,7 @@ cong2 f refl refl = refl
 subst : (P : A → 𝕋 ℓ) {x y : A} → y ≡ x → P x → P y
 subst _ refl H = H
 
-subst2 : {x y : A} {z w : B} (R : A → B → 𝕋 ℓ) →
+subst2 : (R : A → B → 𝕋 ℓ) {x y : A} {z w : B} →
          x ≡ y → z ≡ w → R x z → R y w
 subst2 R refl refl = id
 
