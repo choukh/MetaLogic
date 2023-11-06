@@ -4,9 +4,6 @@ url: fol.syntax
 
 # 一阶逻辑: 语法
 
-> 交流Q群: 893531731  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax)
-
 ```agda
 open import FOL.Language
 module FOL.Syntax (ℒ : Language) where
@@ -100,3 +97,7 @@ _⊩_ : Theory → Formula → 𝕋
 _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
 ```
+
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax)  
+> 交流Q群: 893531731

@@ -4,9 +4,6 @@ url: fol.language
 
 # 一阶逻辑: 语言
 
-> 交流Q群: 893531731  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Language.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.language)
-
 ```agda
 module FOL.Language where
 
@@ -35,3 +32,7 @@ record Language : 𝕋₁ where
   isSet𝓡 : isSet 𝓡
   isSet𝓡 = discrete→isSet discr𝓡
 ```
+
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Language.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.language)  
+> 交流Q群: 893531731
