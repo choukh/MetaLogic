@@ -18,7 +18,7 @@ url: foundation.essential
 
 ## 基础概念
 
-以下统一列出元语言中可以谈论的基础概念, 正篇中将直接使用它们而不再额外定义. 简单来说, 它们只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (propositional equality) 而不是道路 (path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
+以下统一列出元语言中可以谈论的基础概念, 正篇中将直接使用它们而不再额外定义. 简单来说, 它们只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (Propositional Equality) 而不是道路 (Path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
 
 ```agda
 module Foundation.Essential where
@@ -26,25 +26,53 @@ module Foundation.Essential where
 
 ### 前奏
 
-前奏是基础中的基础, 是定义其他基础概念所必须的基础概念, 以至于有些是原始概念. 具体涉及到 Cubical 类型论的规则, 这里不深入其引入细节, 而只作为一个黑盒使用.
-
-```agda
-open import Foundation.Prelude public
-```
-
-具体地, 我们有以下前奏:
+前奏 (Prelude) 是基础中的基础, 是定义其他基础概念所必须的基础概念, 以至于有些是原始概念, 如道路类型. 这些原始概念具体涉及到 Cubical 类型论的规则, 这里不深入其细节, 而只作为一个黑盒使用.
 
 #### 内置
 
-内置 (builtin) 模块主要包括有编译器支持的一些原始概念.
+```agda
+open import Foundation.Prelude.Builtin public
+```
+
+内置 (Builtin) 模块主要包括带编译器支持的一些原始概念, 如宇宙和道路类型等, 以及一些基本数据类型:
+
+- 宇宙: 类型宇宙 `𝕋`, 宇宙层级 `Level`, 零级宇宙 `0ℓ`, 后继宇宙 `_⁺`, 宇宙二元并 `_⊔_`, 宇宙提升 `Lift`.
+- 同一性类型: 命题相等类型 `_≡_`, 道路类型 `_≡🧊_`.
+- 基本数据类型: 单元类型 `⊤`, 布尔类型 `𝔹`, 自然数类型 `ℕ`, 列表 (有序不定长有限集合) 类型 `𝕃`, Σ类型 `Σ`.
+
+注意, 对某些相似概念的 Cubical 版本, 我们会在其名字中带上“🧊”, 以示区别. 此外, 我们对符号作如下约定:
+
+- 宇宙层级编号: `ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level`
+- 位于任意宇宙的类型: `A B C D T : 𝕋 ℓ`
+- 类型族 / 一元关系: `P Q : A → 𝕋 ℓ`
+- 二元关系: `R S : A → B → 𝕋 ℓ`
+- 依值类型族: `P₂ Q₂ : (x : A) → P x → 𝕋 ℓ`
+
+注意当我们说“任意”的时候指的是 arbitrary, 而对于 forall, 我们一定会说“所有”或“对任意”. 我们保留“谓词”这个名称给可以证明是命题的一元关系. 最后, 我们约定Σ类型 `Σ A (λ x → P)`, 即满足 `P` 的 `A`, 可以简记为 `Σ x ꞉ A ⸴ P`, 或者 `Σ x ⸴ P`.
 
 #### 函数
 
+```agda
+open import Foundation.Prelude.Function public
+```
+
 #### 命题相等
+
+```agda
+open import Foundation.Prelude.Equality public
+```
 
 #### 同伦层级
 
+```agda
+open import Foundation.Prelude.HLevel public
+```
+
 #### 其他
+
+```agda
+open import Foundation.Prelude.Misc public
+```
 
 ### 逻辑
 
