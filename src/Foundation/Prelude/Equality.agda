@@ -89,4 +89,3 @@ Iso←🧊 i = mk≅ (fun i) (inv i) (Eq←🧊 ∘ rightInv i) (Eq←🧊 ∘ l
 
 ua : A ≅ B → A ≡ B
 ua = ua≃ ∘ Iso→Equiv
- 

@@ -23,7 +23,7 @@ module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (
   search n (witness p) | no ¬p = exfalso (¬p p)
   search n (step↓ wₛ)  | no ¬p = search (suc n) wₛ
 
-  constSearch : ∀ {n} → constFunc (search n)
+  constSearch : ∀ {n} → isId (search n)
   constSearch {n} w w' with
        decA n | w         | w'
   ... | yes p | _         | _         = refl
@@ -34,7 +34,7 @@ module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (
   minWit : Σ ℕ A → Σ ℕ A
   minWit (_ , p) = search 0 $ initial $ witness p
 
-  constMinWit : constFunc minWit
+  constMinWit : isId minWit
   constMinWit (_ , pₙ) (_ , qₘ) = constSearch (initial $ witness pₙ) (initial $ witness qₘ)
 
   ε : ∃ ℕ A → Σ ℕ A

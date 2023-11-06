@@ -40,7 +40,7 @@ elim1³→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → P x y z
 elim1³→p H = elim3 $ isProp→🧊 ∘₃ H
 
-rec1→s : isSet B → (f : A → B) → constFunc f → ∥ A ∥₁ → B
+rec1→s : isSet B → (f : A → B) → isId f → ∥ A ∥₁ → B
 rec1→s setB f H = PT.SetElim.rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
 
 rec1→1 : (A → ∥ B ∥₁) → ∥ A ∥₁ → ∥ B ∥₁
