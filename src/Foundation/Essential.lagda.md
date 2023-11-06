@@ -18,7 +18,7 @@ url: foundation.essential
 
 ## 基础概念
 
-以下统一列出元语言中可以谈论的基础概念, 正篇中将直接使用它们而不再额外定义. 简单来说, 它们只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (Propositional Equality) 而不是道路 (Path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
+以下统一列出元语言中可以谈论的基础概念, 后篇中将直接使用 (`import`) 它们而不再额外定义. 为了节省篇幅, 本篇也只是 `import` 更底层的已经定义好的模块, 请需要了解细节的读者自己查看[源码](https://github.com/choukh/MetaLogic/tree/main/src/Foundation). 简单来说, 这些模块只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (Propositional Equality) 而不是道路 (Path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
 
 ```agda
 module Foundation.Essential where
