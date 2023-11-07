@@ -15,7 +15,7 @@ open import Data.List.Relation.Binary.Subset.Propositional public
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
 
-∈→Σ[]? : ∀ {xs : 𝕃 A} {x} → x ∈ xs → Σ n ⸴ xs [ n ]? ≡ some x
+∈→Σ[]? : ∀ {xs : 𝕃 A} {x} → x ∈ xs → Σ n ， xs [ n ]? ≡ some x
 ∈→Σ[]? {xs = x ∷ xs} (here refl) = 0 , refl
 ∈→Σ[]? {xs = y ∷ xs} (there x∈xs) with ∈→Σ[]? x∈xs
 ... | n , H = suc n , H
@@ -24,10 +24,10 @@ open import Data.List.Relation.Unary.Any public
 []?→∈ (x ∷ xs) {n = zero} refl = here refl
 []?→∈ (y ∷ xs) {n = suc n} eq = there $ []?→∈ xs eq
 
-∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ⸴ x ∈ xs ∧ y ≡ f x) → y ∈ map f xs
+∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ， x ∈ xs ∧ y ≡ f x) → y ∈ map f xs
 ∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
 
-∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ⸴ x ∈ xs ∧ y ≡ f x
+∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ， x ∈ xs ∧ y ≡ f x
 ∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
 
 map⊆P-intro : {xs : 𝕃 A} {f : A → B} →

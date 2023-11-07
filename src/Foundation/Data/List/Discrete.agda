@@ -17,7 +17,7 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
   ... | some n = some (suc n)
   ... | none = none
 
-x∈→Σ[x]⁻¹? : {xs : 𝕃 A} {x : A} → x ∈ xs → Σ n ⸴ xs [ x ]⁻¹? ≡ some n
+x∈→Σ[x]⁻¹? : {xs : 𝕃 A} {x : A} → x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
 x∈→Σ[x]⁻¹? {y ∷ xs} {x} _ with x ≟ y
 ...                    | yes p = 0 , refl
 x∈→Σ[x]⁻¹? (here p)     | no ¬p = exfalso (¬p p)

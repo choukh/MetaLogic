@@ -48,5 +48,5 @@ variable
 Σ₋-syntax = Σ₋
 
 infix 1 Σ-syntax Σ₋-syntax
-syntax Σ-syntax A (λ x → P) = Σ x ꞉ A ⸴ P
-syntax Σ₋-syntax (λ x → P) = Σ x ⸴ P
+syntax Σ-syntax A (λ x → P) = Σ x ꞉ A ， P
+syntax Σ₋-syntax (λ x → P) = Σ x ， P
