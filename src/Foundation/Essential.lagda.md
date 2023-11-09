@@ -171,7 +171,7 @@ open import Foundation.Prop.Iff public
 open import Foundation.Prop.Universe public
 ```
 
-命题宇宙 `ℙ ℓ` 定义为带命题结构 (`isProp`) 的类型宇宙 `𝕋 ℓ`, 即 `ℙ ℓ = TypeWithStr ℓ isProp`. 继承自类型宇宙的层级, 命题宇宙也分层级, 其中最底层记作 `ℙ₀`.
+命题宇宙 `ℙ ℓ` 定义为带结构 `isProp` 的类型宇宙 `𝕋 ℓ`, 即 `ℙ ℓ = TypeWithStr ℓ isProp`. 继承自类型宇宙的层级, 命题宇宙也分层级, 其中最底层记作 `ℙ₀`.
 
 我们用粗体的**命题**指代命题宇宙的项, 以区分作为类型的命题. 我们约定使用 `𝗣 𝗤 𝗥` 等符号表示**命题**. “**命题** `𝗣` 成立”记作 `𝗣 holds`, 定义为左投影 `typ 𝗣`. 而右投影 `str 𝗣` 则说明了 `𝗣 holds` 确实是一个命题.
 
