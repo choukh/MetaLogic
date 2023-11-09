@@ -23,11 +23,8 @@ import Cubical.Foundations.Univalence as 🧊
 ℙ : ∀ ℓ → 𝕋 (ℓ ⁺)
 ℙ ℓ = TypeWithStr ℓ isProp
 
-ℙₒ : 𝕋 (ℓ0 ⁺)
-ℙₒ = ℙ ℓ0
-
-variable
-  𝗣 𝗤 𝗥 : ℙ ℓ
+ℙ₀ : 𝕋 (ℓ0 ⁺)
+ℙ₀ = ℙ ℓ0
 
 _holds : ℙ ℓ → 𝕋 ℓ
 _holds = typ
@@ -35,13 +32,16 @@ _holds = typ
 isPredHolds : isPred (_holds {ℓ})
 isPredHolds = str
 
+variable
+  𝗣 𝗤 𝗥 : ℙ ℓ
+
 --------------------------------------------------------------------------------
 -- Instance
 
-⊥ₚ : ℙₒ
+⊥ₚ : ℙ₀
 ⊥ₚ = ⊥ , isProp⊥
 
-⊤ₚ : ℙₒ
+⊤ₚ : ℙ₀
 ⊤ₚ = ⊤ , isProp⊤
 
 --------------------------------------------------------------------------------
@@ -73,10 +73,10 @@ isSetℙ = subst isSet ℙ≡🧊 (isSet←🧊 isSetHProp)
 --------------------------------------------------------------------------------
 -- Propositional extensionality
 
-propExt : isProp A → isProp B → (A ↔ B) → A ≡ B
+propExt : isProp A → isProp B → A ↔ B → A ≡ B
 propExt pA pB iff = Eq←🧊 $ 🧊.hPropExt (isProp→🧊 pA) (isProp→🧊 pB) (iff .⇒) (iff .⇐)
 
-propExt⁻ : A ≡ B → (A ↔ B)
+propExt⁻ : A ≡ B → A ↔ B
 propExt⁻ eq = subst (_↔ _) eq ↔-refl
 
 ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ≡ 𝗤
@@ -91,8 +91,8 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 --------------------------------------------------------------------------------
 -- hProp truncation
 
-∥_∥ : 𝕋 ℓ → ℙ ℓ
-∥ A ∥ = ∥ A ∥₁ , is1
+∥_∥ₚ : 𝕋 ℓ → ℙ ℓ
+∥ A ∥ₚ = ∥ A ∥₁ , is1
 
-ℙTruncExt : A ↔ B → ∥ A ∥ ≡ ∥ B ∥
+ℙTruncExt : A ↔ B → ∥ A ∥ₚ ≡ ∥ B ∥ₚ
 ℙTruncExt iff = Σ≡p isPredIsProp (propTruncExt iff)

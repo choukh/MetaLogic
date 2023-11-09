@@ -42,5 +42,5 @@ infix 1 ∃-syntax ∃₋-syntax
 syntax ∃-syntax A (λ x → P) = ∃ x ꞉ A ， P
 syntax ∃₋-syntax (λ x → P) = ∃ x ， P
 
-exists : (a : A) (H : P a) → ∃ A P
-exists a H = ∣ a , H ∣₁
+ex : (a : A) (H : P a) → ∃ A P
+ex a H = ∣ a , H ∣₁

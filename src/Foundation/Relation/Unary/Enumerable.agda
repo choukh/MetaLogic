@@ -94,15 +94,15 @@ module ListView where
 
   Enum𝔹 : Enum 𝔹
   Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → [] , refl) ,
-    λ { true →  exists 0 (here refl)
-      ; false → exists 0 (there $ here refl) }
+    λ { true →  ex 0 (here refl)
+      ; false → ex 0 (there $ here refl) }
 
   eℕ : 𝕃ₙ ℕ
   eℕ zero = [ 0 ]
   eℕ (suc n) = eℕ n ++ [ suc n ]
 
   Enumℕ : Enum ℕ
-  Enumℕ = eℕ , (λ n → [ suc n ] , refl) , λ n → exists n (H n) where
+  Enumℕ = eℕ , (λ n → [ suc n ] , refl) , λ n → ex n (H n) where
     H : ∀ n → n ∈ eℕ n
     H zero = here refl
     H (suc n) = ∈-++⁺ʳ _ (here refl)
@@ -130,7 +130,7 @@ module ListView where
     h-wit : ∀ xy → h witness xy
     h-wit (x , y) = intro1²→1 (f-wit x) (g-wit y) H where
       H : Σ n ， x ∈ f n → Σ n ， y ∈ g n → ∃ n ， (x , y) ∈ h n
-      H (m , x∈fm) (n , x∈gn) = exists (suc (m + n)) (∈-++⁺ʳ _ H2) where
+      H (m , x∈fm) (n , x∈gn) = ex (suc (m + n)) (∈-++⁺ʳ _ H2) where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
 
