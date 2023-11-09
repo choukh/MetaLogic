@@ -5,7 +5,7 @@ open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Product public
   using (curry; uncurry)
-  renaming (_×_ to infixr 4.2 _×_)
+  renaming (_×_ to infixr 3 _×_)
 
 open import Data.Product.Properties public
   using ()
@@ -14,12 +14,12 @@ open import Data.Product.Properties public
 open import Cubical.Data.Sigma
   using (Σ≡Prop)
 
-SigEqProp : isPred P → {u v : Σ A P}
+Σ≡p : isPred P → {u v : Σ A P}
        → (p : u .fst ≡ v .fst) → u ≡ v
-SigEqProp pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)
+Σ≡p pP H = Eq←🧊 $ Σ≡Prop (isPred→🧊 pP) (Eq→🧊 H)
 
-ProdEq : {x y : A × B} → fst x ≡ fst y → snd x ≡ snd y → x ≡ y
-ProdEq refl refl = refl
+×≡ : {x y : A × B} → fst x ≡ fst y → snd x ≡ snd y → x ≡ y
+×≡ refl refl = refl
 
 discrete× : discrete A → discrete B → discrete (A × B)
 discrete× dA dB = discreteΣ dA dB

@@ -1,7 +1,7 @@
 module Foundation.Set.Powerset where
 
 open import Foundation.Prelude
-open import Foundation.Logic
+open import Foundation.Prop.Universe
 
 import Cubical.Foundations.Powerset as 🧊
 

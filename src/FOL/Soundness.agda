@@ -48,8 +48,8 @@ instance
   ℐ : Interpretation ⊤
   ℐ = record
     { funMap = λ _ _ → tt
-    ; relMap = λ _ _ → ⊥ , isProp⊥
-    ; bottom = ⊥ , isProp⊥ }
+    ; relMap = λ _ _ → ⊥ₚ
+    ; bottom = ⊥ₚ }
 
 Dec⊨ᵩ : (𝓋 : Assignment) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
 Dec⊨ᵩ 𝓋 ⊥̇       = no λ ()

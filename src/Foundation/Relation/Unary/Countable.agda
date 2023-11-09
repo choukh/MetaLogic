@@ -1,8 +1,8 @@
 module Foundation.Relation.Unary.Countable where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
 open import Foundation.Function.Bundles
+open import Foundation.Prop.Truncation
 
 countable : 𝕋 ℓ → 𝕋 _
 countable A = ∥ A ↣ ℕ ∥₁

@@ -1,8 +1,12 @@
-module Foundation.Logic.Prop where
+module Foundation.Prop.Universe where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
-open import Foundation.Logic.Iff
+open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
+
+open import Foundation.Data.Empty
+open import Foundation.Data.Unit
+open import Foundation.Data.Sigma
 
 open import Cubical.Foundations.HLevels public
   using ()
@@ -31,6 +35,18 @@ _holds = typ
 isPredHolds : isPred (_holds {ℓ})
 isPredHolds = str
 
+--------------------------------------------------------------------------------
+-- Instance
+
+⊥ₚ : ℙₒ
+⊥ₚ = ⊥ , isProp⊥
+
+⊤ₚ : ℙₒ
+⊤ₚ = ⊤ , isProp⊤
+
+--------------------------------------------------------------------------------
+-- Cubical
+
 ℙ→🧊 : ℙ ℓ → ℙ🧊 ℓ
 ℙ→🧊 (P , pP) = P , (isProp→🧊 pP)
 
@@ -38,12 +54,12 @@ isPredHolds = str
 ℙ←🧊 (P , pP) = P , (isProp←🧊 pP)
 
 ℙ→←🧊 : (𝗣 : ℙ🧊 ℓ) → ℙ→🧊 (ℙ←🧊 𝗣) ≡ 𝗣
-ℙ→←🧊 𝗣 = SigEqProp H refl where
+ℙ→←🧊 𝗣 = Σ≡p H refl where
   H : isPred (isProp🧊 {ℓ})
   H = subst isPred (sym $ funExt $ λ x → isProp≡🧊) isPredIsProp
 
 ℙ←→🧊 : (𝗣 : ℙ ℓ) → ℙ←🧊 (ℙ→🧊 𝗣) ≡ 𝗣
-ℙ←→🧊 𝗣 = SigEqProp isPredIsProp refl
+ℙ←→🧊 𝗣 = Σ≡p isPredIsProp refl
 
 ℙ≅🧊 : ℙ ℓ ≅ ℙ🧊 ℓ
 ℙ≅🧊 = mk≅ ℙ→🧊 ℙ←🧊 ℙ→←🧊 ℙ←→🧊
@@ -64,7 +80,7 @@ propExt⁻ : A ≡ B → (A ↔ B)
 propExt⁻ eq = subst (_↔ _) eq ↔-refl
 
 ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ≡ 𝗤
-ℙExt {𝗣} {𝗤} H = SigEqProp isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
+ℙExt {𝗣} {𝗤} H = Σ≡p isPredIsProp (propExt (isPredHolds 𝗣) (isPredHolds 𝗤) H)
 
 ℙExt⁻ : 𝗣 ≡ 𝗤 → 𝗣 holds ↔ 𝗤 holds
 ℙExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
@@ -79,5 +95,4 @@ propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 
 ∥ A ∥ = ∥ A ∥₁ , is1
 
 ℙTruncExt : A ↔ B → ∥ A ∥ ≡ ∥ B ∥
-ℙTruncExt iff = SigEqProp isPredIsProp (propTruncExt iff)
- 
+ℙTruncExt iff = Σ≡p isPredIsProp (propTruncExt iff)

@@ -1,7 +1,7 @@
-module Foundation.Logic.Iff where
+module Foundation.Prop.Iff where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
+open import Foundation.Prop.Truncation
 
 --------------------------------------------------------------------------------
 -- Bi-implication (iff) of Type (which has a seperate proof of prop-hood)

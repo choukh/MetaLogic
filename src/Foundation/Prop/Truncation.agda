@@ -1,4 +1,4 @@
-module Foundation.HITs.PropositionalTruncation where
+module Foundation.Prop.Truncation where
 
 open import Foundation.Prelude
 

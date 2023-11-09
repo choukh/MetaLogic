@@ -1,10 +1,11 @@
 module Foundation.Data.List.SetTheoretic where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
+
 open import Foundation.Function.Bundles
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
+open import Foundation.Data.Sigma
 
 open import Data.List.Membership.Propositional public
   using (_∈_; _∉_)
@@ -24,10 +25,10 @@ open import Data.List.Relation.Unary.Any public
 []?→∈ (x ∷ xs) {n = zero} refl = here refl
 []?→∈ (y ∷ xs) {n = suc n} eq = there $ []?→∈ xs eq
 
-∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ， x ∈ xs ∧ y ≡ f x) → y ∈ map f xs
+∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ， x ∈ xs × y ≡ f x) → y ∈ map f xs
 ∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
 
-∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ， x ∈ xs ∧ y ≡ f x
+∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ， x ∈ xs × y ≡ f x
 ∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
 
 map⊆P-intro : {xs : 𝕃 A} {f : A → B} →

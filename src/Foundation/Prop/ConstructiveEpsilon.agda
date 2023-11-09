@@ -1,9 +1,12 @@
 {-# OPTIONS --no-hidden-argument-puns #-}
 
-module Foundation.Logic.ConstructiveEpsilon where
+module Foundation.Prop.ConstructiveEpsilon where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Truncation
+
+open import Foundation.Data.Empty
 open import Foundation.Data.Nat
 open import Foundation.Relation.Nullary.Decidable
 

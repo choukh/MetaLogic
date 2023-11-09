@@ -1,15 +1,14 @@
-module Foundation.Logic.Basic where
+module Foundation.Prop.Logic where
 
 open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
-open import Foundation.HITs.PropositionalTruncation public
+open import Foundation.Prop.Truncation
 
-open import Foundation.Data.Empty public
-open import Foundation.Data.Unit public
-open import Foundation.Relation.Nullary.Negation public
+open import Foundation.Data.Empty
+open import Foundation.Relation.Nullary.Negation
 
-open import Foundation.Data.Sigma public
-  using (_×_; SigEqProp; ProdEq)
+open import Foundation.Data.Sigma
+  using (_×_)
 
 open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)

@@ -2,9 +2,11 @@ module Foundation.Relation.Unary.Enumerable where
 
 open import Foundation.Prelude
 open import Foundation.Function.Bundles
+open import Foundation.Prop.Truncation
 
-open import Foundation.Logic
-open import Foundation.Logic.ConstructiveEpsilon
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Iff
+open import Foundation.Prop.ConstructiveEpsilon
 
 open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder

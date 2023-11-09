@@ -1,8 +1,8 @@
 open import Foundation.Prelude
-open import Foundation.Logic
 open import Foundation.Relation.Nullary.Discrete
 module Foundation.Data.List.Discrete (_≟_ : discrete A) where
 
+open import Foundation.Data.Empty
 open import Foundation.Data.Bool
 open import Foundation.Data.Maybe
 open import Foundation.Data.List

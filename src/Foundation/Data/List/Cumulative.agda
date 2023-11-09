@@ -1,7 +1,6 @@
 module Foundation.Data.List.Cumulative where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Basic
 open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Maybe

@@ -1,8 +1,8 @@
 module Foundation.Function.Bundles where
 
 open import Foundation.Prelude
-open import Foundation.Logic.Iff
-open import Foundation.Logic.Prop
+open import Foundation.Prop.Iff
+open import Foundation.Prop.Universe
 open import Foundation.Data.Sigma
 
 open import Function public
@@ -73,7 +73,7 @@ Iso→←ⓢ {A} {B} sA sB record { to = f ; from = g ; to-cong = f-cong ; from-
   subst2 (λ x y → _ ≡ record { to-cong = x ; from-cong = y })
     (isProp-f-cong (cong f) f-cong) (isProp-g-cong (cong g) g-cong) $
       subst (λ x → lhs ≡ record { inverse = x })
-        (ProdEq (isProp-r r _) (isProp-l l _)) refl
+        (×≡ (isProp-r r _) (isProp-l l _)) refl
   where
   lhs : A ⓢ.↔ B
   lhs = record { inverse = (λ eq → subst (λ - → f - ≡ _) eq (r refl)) , (λ eq → subst (λ - → g - ≡ _) eq (l refl)) }
