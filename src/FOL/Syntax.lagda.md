@@ -9,10 +9,6 @@ open import FOL.Language
 module FOL.Syntax (ℒ : Language) where
 
 open import Foundation.Essential
-open import Foundation.Data.List.SetTheoretic
-  renaming (_∈_ to _∈ᴸ_)
-open import Foundation.Data.Vec.SetTheoretic
-  renaming (_∈_ to _∈⃗_)
 
 open Language ℒ
 

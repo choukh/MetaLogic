@@ -9,8 +9,14 @@ open import Data.List public
 open import Data.List.Properties public
   using (length-map; length-++; ++-assoc; ++-identityʳ)
 
+open import Cubical.Data.List
+  using (isOfHLevelList)
+
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
+
+isSet𝕃 : isSet A → isSet (𝕃 A)
+isSet𝕃 = mapIsSet (isOfHLevelList 0)
 
 _[_]? : 𝕃 A → ℕ → A ？
 (x ∷ _)  [ zero ]?  = some x

@@ -2,8 +2,6 @@ open import FOL.Language
 module FOL.Semantics (ℒ : Language) where
 
 open import Foundation.Essential
-open import Foundation.Data.List.SetTheoretic
-  renaming (_∈_ to _∈ᴸ_)
 
 open Language ℒ
 open import FOL.Syntax ℒ

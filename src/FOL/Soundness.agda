@@ -2,8 +2,6 @@ open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
 
 open import Foundation.Essential
-open import Foundation.Data.List.SetTheoretic
-open import Foundation.Data.Vec.SetTheoretic
 
 open import FOL.Syntax ℒ
 open import FOL.Syntax.Properties ℒ
