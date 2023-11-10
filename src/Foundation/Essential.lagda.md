@@ -10,13 +10,13 @@ url: foundation.essential
 
 需要注意的是, HoTT 实际上是一系列理论的统称, 就像“集合论”有 ZFC, NBG, MK 等等一样. 本文具体使用的 HoTT 叫做 [Cubical Agda](https://agda.readthedocs.io/en/v2.6.4/language/cubical.html). 它非常严格, 以至于可以通过计算机来检查证明语句的正确性. 实际上它就是一种编程语言, 只不过其生态着重于数学证明而非软件应用. 借助 [Agda 的文学编程](https://agda.readthedocs.io/en/latest/tools/literate-programming.html) 功能, [本 Markdown 文件](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Essential.lagda.md) 实际上就是 Agda 源码, 可以直接做类型检查, 以检验证明语句的正确性. 基于这一特性, 我们实验性地采用以下编排方式: 非形式的自然语言与代码级的形式语言并行使用, 交替排列, 构成双重元语言, 以构筑对象语言. 我们会将 Agda 语句放在代码块中, 而正文的自然语言则可以认为是对这些代码的注释. 我们希望两种元语言可以相互解释, 互为补充.
 
-当然, 这要求读者对 HoTT 和 Agda 都有一定的了解. 我们不会在本文中对这些内容进行详细的介绍, 而是假设读者已经具备了一定的基础. 如果读者对 HoTT 和 Agda 还不熟悉, 我们推荐读者阅读以下资料:
+当然, 这要求读者对 HoTT 和 Agda 都有一定的了解. 我们不会在本文中对这些内容进行详细的介绍, 而是假设读者已经具备了一定的基础. 如果读者对 HoTT 和 Agda 还不熟悉, 推荐阅读以下资料:
 
 - HoTT入门: [HoTT Book](https://homotopytypetheory.org/book/)
 - Agda + 泛等基础入门: [Introduction to Univalent Foundations of Mathematics with Agda](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
 - 中文版快速参考: [Agda 泛等基础](https://www.yuque.com/ocau/hset/ti2u9nvok36hmibm)
 
-以下快速复习一遍元语言中可以谈论的基础概念, 后篇中将直接使用 (`import`) 它们而不再额外定义. 为了节省篇幅, 本篇也只是 `import` 更底层的已经定义好的模块, 请需要了解细节的读者自己查看[源码](https://github.com/choukh/MetaLogic/tree/main/src/Foundation). 简单来说, 这些模块只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (Propositional Equality) 而不是道路 (Path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
+我们快速复习一遍元语言中可以谈论的基础概念, 后篇中将直接使用 (`import`) 它们而不再额外定义. 为了节省篇幅, 本篇也只是 `import` 更底层的已经定义好的模块, 请需要了解细节的读者自己查看[源码](https://github.com/choukh/MetaLogic/tree/main/src/Foundation). 简单来说, 这些模块只不过是对 [Cubical 标准库](https://github.com/agda/cubical) 的重新封装, 以满足我们的特殊需求: 尽可能使用命题相等 (Propositional Equality) 而不是道路 (Path), 以方便我们的形式化, 因为我们不涉及高阶同伦概念.
 
 ```agda
 module Foundation.Essential where
@@ -41,12 +41,13 @@ open import Foundation.Prelude.Builtin public
 注意, 对某些相似概念的 Cubical 版本, 我们会在其名字中带上“🧊”, 以示区别. 此外, 我们对符号作如下约定:
 
 - 宇宙层级序号 `ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level`
-- 任意给定宇宙的类型 `A B C D T : 𝕋 ℓ`
+- 任意给定宇宙的类型 `A B C D X : 𝕋 ℓ`
 - 类型族 / 性质 / 一元关系 `P Q : A → 𝕋 ℓ`
+  - ※ 我们保留“谓词”这个名称给可以证明是命题的一元关系
 - 二元关系 `R S : A → B → 𝕋 ℓ`
 - 依值类型族 `P₂ Q₂ : (x : A) → P x → 𝕋 ℓ`
 
-注意当我们说“任意给定”的时候指的是 arbitrary, 而对于 forall, 我们一定会说“所有”或“对任意”. 我们保留“谓词”这个名称给可以证明是命题的一元关系. 最后, 我们约定Σ类型 `Σ A (λ x → P)`, 即满足 `P` 的 `A`, 可以简记为 `Σ x ꞉ A ， P` 或者 `Σ x ， P`.
+我们约定Σ类型 `Σ A (λ x → P)`, 即满足 `P` 的 `A`, 可以简记为 `Σ x ꞉ A ， P` 或者 `Σ x ， P`.
 
 ### 函数
 
@@ -123,12 +124,13 @@ open import Foundation.Prop.Truncation public
 
 命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `is1` 用于证明命题截断后的类型的项确实都是相等的. 有以下常用引理:
 
-- `rec1` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
-- `rec1²` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
+- `rec1→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
+- `rec1²→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
+- `elim1→p` : `rec1` 的依值版本
+- `elim1²→p` : `rec1²` 的依值版本
 - `map1` : 可以通过证明 `A → B` 来证明 `∥ A ∥₁ → ∥ B ∥₁`
 - `map1²` : 可以通过证明 `A → B → C` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁`
-- `elim1` : `rec1` 的依值版本
-- `elim1²` : `rec1²` 的依值版本
+- `rec1→s` : 如果目标 `B` 是集合, 且 `f : A → B` 是常函数, 那么我们可以通过 `f` 来构造 `∥ A ∥₁ → B`
 
 ### 逻辑
 
@@ -189,9 +191,40 @@ open import Foundation.Prop.Universe public
 
 ## 集合
 
+元语言中的集合主要包括一些数据类型, 例如自然数, 列表等, 在后面的小节单独介绍. 除此之外, 我们谈论的集合主要是幂集.
+
+### 幂集
+
 ```agda
 open import Foundation.Set.Powerset public
 ```
+
+给定任意类型 `X : 𝕋 ℓ`, 我们把 `X` 到命题宇宙 `ℙ ℓ` 的函数叫做 `X` 的幂集, 记作 `𝒫 X`, 它的项也叫 `X` 的子集. 可以证明幂集确实是一个集合 (`isSet𝒫`).
+
+给定项 `x : X` 和子集 `A : 𝒫 X`, 属于关系 `x ∈ A` 定义为 `A x holds`. `A` 是取值到 `ℙ ℓ` 的函数, 这保证了属于关系是取值到命题的 (`isProp∈`).
+
+### 集合截断
+
+```agda
+open import Foundation.Set.Truncation public
+```
+
+与命题截断类似地, 我们有集合截断 `∥_∥₂`, 它将高阶群胚截断为集合.
+
+- `rec2→s` : 如果目标 `B` 是命题, 那么我们可以通过证明 `A → B` 来证明 `∥ A ∥₂ → B`
+- `rec2²→s` : 如果目标 `C` 是命题, 那么我们可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → C`
+- `elim2→s` : `rec1` 的依值版本
+- `elim2²→s` : `rec1²` 的依值版本
+- `map2` : 可以通过证明 `A → B` 来证明 `∥ A ∥₂ → ∥ B ∥₂`
+- `map2²` : 可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → ∥ C ∥₂`
+
+### 集合宇宙
+
+```agda
+open import Foundation.Set.Universe public
+```
+
+与命题宇宙类似地, 集合宇宙 `𝕊 ℓ` 定义为 `𝕋 ℓ` 配备上结构 `isSet`, 即 `𝕊 ℓ = TypeWithStr ℓ isSet`. 但我们中一般不直接使用 `𝕊`. 为了方便处理, 我们会尽可能地使用它们的柯里化版本, 即说 "给定类型 `A`, 如果它是命题 (或集合), 那么怎么怎么样", 而不说 "给定**命题** (或**集合**) `𝗔`, 怎么怎么样". 需要注意的是, 集合宇宙 `𝕊 ℓ` 本身不是集合, 而是一个群胚.
 
 ## 函数
 

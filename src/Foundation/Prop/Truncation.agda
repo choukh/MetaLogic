@@ -28,15 +28,15 @@ elim1→p : {P : ∥ A ∥₁ → 𝕋 ℓ} → ((a : ∥ A ∥₁) → isProp (
       → ((x : A) → P ∣ x ∣₁) → (a : ∥ A ∥₁) → P a
 elim1→p H = elim $ isProp→🧊 ∘ H
 
-elim1²→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → 𝕋 ℓ}
-         (Pprop : (x : ∥ A ∥₁) (y : ∥ B ∥₁) → isProp (P x y))
-         (f : (a : A) (b : B) → P ∣ a ∣₁ ∣ b ∣₁)
+elim1²→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → 𝕋 ℓ} →
+         ((x : ∥ A ∥₁) (y : ∥ B ∥₁) → isProp (P x y)) →
+         ((a : A) (b : B) → P ∣ a ∣₁ ∣ b ∣₁) →
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) → P x y
 elim1²→p H = elim2 $ isProp→🧊 ∘₂ H
 
-elim1³→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ}
-         (Pprop : ((x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → isProp (P x y z)))
-         (g : (a : A) (b : B) (c : C) → P (∣ a ∣₁) ∣ b ∣₁ ∣ c ∣₁)
+elim1³→p : {P : ∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁ → 𝕋 ℓ} →
+         (((x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → isProp (P x y z))) →
+         ((a : A) (b : B) (c : C) → P (∣ a ∣₁) ∣ b ∣₁ ∣ c ∣₁) →
          (x : ∥ A ∥₁) (y : ∥ B ∥₁) (z : ∥ C ∥₁) → P x y z
 elim1³→p H = elim3 $ isProp→🧊 ∘₃ H
 
