@@ -36,7 +36,7 @@ open import Foundation.Prelude.Builtin public
 
 - 宇宙: 类型宇宙 `𝕋`, 宇宙层级 `Level`, 零级宇宙 `0ℓ`, 后继宇宙 `_⁺`, 宇宙二元并 `_⊔_`, 宇宙提升 `Lift`
 - 同一性类型: 命题相等类型 `_≡_`, 道路类型 `_≡🧊_`
-- 基本数据类型: 单元类型 `⊤`, 布尔类型 `𝔹`, 自然数类型 `ℕ`, 列表 (有序不定长有限集合) 类型 `𝕃`, Σ类型 `Σ`
+- 基本数据类型: 单元类型 `⊤`, 布尔类型 `𝔹`, 自然数类型 `ℕ`, 列表 (不定长可数有限) 类型 `𝕃`, Σ类型 `Σ`
 
 注意, 对某些相似概念的 Cubical 版本, 我们会在其名字中带上“🧊”, 以示区别. 此外, 我们对符号作如下约定:
 
@@ -147,6 +147,8 @@ open import Foundation.Prop.Logic public
 - 合取 `_×_`, 要求两边都是命题
 - 全称量化 `∀ x →`, 只要右边是命题就是命题
 
+我们有命题截断上的反证法 `exfalso₁ : ∥ A ∥₁ → ¬ A → B`.
+
 #### 析取
 
 逻辑析取 `_∨_` 定义为**和类型 (sum type)** 的命题截断, 即 `A ∨ B = ∥ A ⊎ B ∥₁`. 因为和类型的项起码有两种 (左边或右边) 不同的构造方式, 但析取不关心具体是哪种, 所以必须要做命题截断, 以确保所有证明项都相等. 我们有析取的引入规则 `inl` 和 `inr`, 对于消去我们直接使用模式匹配.
@@ -226,24 +228,97 @@ open import Foundation.Set.Universe public
 
 与命题宇宙类似地, 集合宇宙 `𝕊 ℓ` 定义为 `𝕋 ℓ` 配备上结构 `isSet`, 即 `𝕊 ℓ = TypeWithStr ℓ isSet`. 但我们中一般不直接使用 `𝕊`. 为了方便处理, 我们会尽可能地使用它们的柯里化版本, 即说 "给定类型 `A`, 如果它是命题 (或集合), 那么怎么怎么样", 而不说 "给定**命题** (或**集合**) `𝗔`, 怎么怎么样". 需要注意的是, 集合宇宙 `𝕊 ℓ` 本身不是集合, 而是一个群胚.
 
+## 数据类型
+
+数据类型又叫归纳类型, 可以简单地认为它们就是一些良基树, 树的节点叫做构造子. 例如自然数类型 `ℕ` 的构造子有 `zero` 和 `suc`, 我们可以构造自然数的项, 例如 `suc (suc zero)`. 我们把数据类型分成四类: 命题, 集合, 组合, 容器.
+
+### 命题
+
+命题数据类型只有两种: 空类型 `⊥` 与单元类型 `⊤`, 它们分别具有基数 $0$ 和 $1$.
+
+#### 空类型
+
+```agda
+open import Foundation.Data.Empty public
+```
+
+空类型 `⊥` 没有任何构造子, 所以它没有任何项, 也就是说它是不可证的命题, 即恒假. 空类型 `⊥` 是命题 (`isProp⊥`), 也是集合 (`isSet⊥`). 空类型 `⊥` 位于 `𝕋₀`, 但我们还有一个宇宙多态版的空类型 `⊥* : 𝕋 ℓ`, 它也是命题 (`isProp⊥*`), 也是集合 (`isSet⊥*`).
+
+#### 单元类型
+
+```agda
+open import Foundation.Data.Unit public
+```
+
+单元类型 `⊤` 只有一个构造子 `tt`, 所以它只有一个项, 也就是说它是恒真的命题. 单元类型 `⊤` 是命题 (`isProp⊤`), 也是集合 (`isSet⊤`). 单元类型 `⊤` 位于 `𝕋₀`, 但我们还有一个宇宙多态版的单元类型 `⊤* : 𝕋 ℓ`, 它也是命题 (`isProp⊤*`), 也是集合 (`isSet⊤*`).
+
+### 集合
+
+集合数据类型有可数多个, 我们主要关心的是布尔类型 `𝔹` 和自然数类型 `ℕ`, 它们分别具有基数 $2$ 和 $\aleph_0$.
+
+#### 布尔类型
+
+```agda
+open import Foundation.Data.Bool public
+```
+
+布尔类型 `𝔹` 有两个构造子 `true` 和 `false`. 布尔类型 `𝔹` 是集合 (`isSet𝔹`).
+
+#### 自然数类型
+
+```agda
+open import Foundation.Data.Nat public
+```
+
+自然数类型 `ℕ` 有两个构造子 `zero` 和 `suc : ℕ → ℕ`. 自然数类型 `ℕ` 是集合 (`isSetℕ`).
+
+### 组合
+
+组合数据类型用于对任意给定的两个类型做某种形式的组合.
+
+#### Σ类型
+
+```agda
+open import Foundation.Data.Sigma public
+```
+
+Σ类型 `Σ A P` 的项具有 `(x , p)` 的形式, 其中 `x : A` 而 `p : P x`. Σ类型具有基数 $\sum_{x \in A} |P(x)|$. 如果 `A` 和 `P x` 都是命题 (或集合), 那么这个 `Σ A P` 也是命题 (或集合).
+
+当 `P` 不依值于 `A` 的时候就成了普通的积类型 `A × B`, 它的项具有 `(a , b)` 的形式, 其中 `a : A` 而 `b : B`. 积类型具有基数 $|A| \times |B|$. 如果 `A` 和 `B` 都是命题 (或集合), 那么这个 `A × B` 也是命题 (或集合).
+
+#### 和类型
+
+```agda
+open import Foundation.Data.Sum public
+```
+
+和类型 `A ⊎ B` 就是对类型 `A` 和 `B` 做不交并, 它的项具有 `inl a` 或 `inr b` 的形式, 其中 `a : A` 而 `b : B`. 和类型具有基数 $|A| + |B|$. 如果 `A` 和 `B` 都是命题且它们互斥, 那么这个 `A ⊎ B` 是命题; 如果 `A` 和 `B` 都是集合, 那么这个 `A ⊎ B` 是集合.
+
+### 容器
+
+容器数据类型以某种形式容纳了另一个给定类型 `A` 的某些项.
+
+#### 列表
+
+```agda
+open import Foundation.Data.List public
+```
+
+列表 `𝕃 A` 是不定长可数有限类型. 不定长是指列表的类型签名中不储存长度信息, 可数是指列表的项有一个典范线序, 有限是指列表的长度是个自然数.
+
+#### 向量
+
+```agda
+open import Foundation.Data.Vec public
+```
+
+向量 `𝕍 A n` 是定长可数有限类型. 定长是指向量的类型签名中储存了长度信息 `n`.
+
 ## 函数
 
 ```agda
 open import Foundation.Function.Bundles public
 open import Foundation.Function.Sequance public
-```
-
-## 数据类型
-
-```agda
-open import Foundation.Data.Empty public
-open import Foundation.Data.Unit public
-open import Foundation.Data.Bool public
-open import Foundation.Data.Nat public
-open import Foundation.Data.Sigma public
-open import Foundation.Data.Sum public
-open import Foundation.Data.List public
-open import Foundation.Data.Vec public
 ```
 
 ## 关系
