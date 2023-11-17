@@ -1,32 +1,52 @@
-module Foundation.Function.SubSpace where
+module Foundation.Function.SubSpaces where
 
 open import Foundation.Prelude
 open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
 open import Foundation.Prop.Universe
 open import Foundation.Data.Sigma
 
-open import Function public
-  using (_↣_; _↠_)
+open import Cubical.Functions.Surjection public
+  using ()
+  renaming (isSurjection to surjective)
+
+open import Cubical.Functions.Surjection
+  using (isEmbedding×isSurjection→isEquiv)
+
+open import Cubical.Functions.Embedding
+  using (isEmbedding; injEmbedding)
+
+open import Cubical.Foundations.Equiv
+  using (isEquiv; equivToIso)
 
 open import Function as ⓢ
-  using (
-    _⇔_; mk⇔;
-    Injective; Surjective
-  )
+  using (_⇔_; mk⇔)
 
 open ⓢ.Equivalence
 
 injective : (A → B) → 𝕋 _
-injective = Injective _≡_ _≡_
+injective f = ∀ {x y} → f x ≡ f y → x ≡ y
 
-surjective : (A → B) → 𝕋 _
-surjective = Surjective _≡_ _≡_
+bijective : (A → B) → 𝕋 _
+bijective f = injective f × surjective f
 
-mk↣ : (f : A → B) → injective f → A ↣ B
-mk↣ f = ⓢ.mk↣
+isPropInjective : {f : A → B} → isSet A → isProp (injective f)
+isPropInjective sA = isPropΠ₋2 λ _ _ → isProp→ (sA _ _)
 
-mk↠ : (f : A → B) → surjective f → A ↠ B
-mk↠ f = ⓢ.mk↠
+isPropSurjective : {f : A → B} → isProp (surjective f)
+isPropSurjective = isPropΠ λ _ → is1
+
+isPropBijective : {f : A → B} → isSet A → isProp (bijective f)
+isPropBijective sA = isProp× (isPropInjective sA) isPropSurjective
+
+_↣_ : 𝕋 ℓ → 𝕋 ℓ′ → 𝕋 _
+A ↣ B = Σ (A → B) injective
+
+_↠_ : 𝕋 ℓ → 𝕋 ℓ′ → 𝕋 _
+A ↠ B = Σ (A → B) surjective
+
+_⤖_ : 𝕋 ℓ → 𝕋 ℓ′ → 𝕋 _
+A ⤖ B = Σ (A → B) bijective
 
 Iff→ⓢ : A ↔ B → A ⇔ B
 Iff→ⓢ (⇒: ⇒ ⇐: ⇐) = mk⇔ ⇒ ⇐
@@ -94,3 +114,10 @@ Iso≅ⓢ sA sB = mk≅ Iso→ⓢ Iso←ⓢ (Iso→←ⓢ sA sB) Iso←→ⓢ
 
 Iso≡ⓢ : isSet A → isSet B → (A ≅ B) ≡ (A ⓢ.↔ B)
 Iso≡ⓢ sA sB = ua $ Iso≅ⓢ sA sB
+
+⤖→≅ : isSet B → A ⤖ B → A ≅ B
+⤖→≅ sB (f , inj , surj) = Iso←🧊 $ equivToIso (f , equiv) where
+  equiv : isEquiv f
+  equiv = isEmbedding×isSurjection→isEquiv (emb , surj) where
+    emb : isEmbedding f
+    emb = injEmbedding (isSet→🧊 sB) (Eq→🧊 ∘ inj ∘ Eq←🧊)

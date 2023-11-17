@@ -330,6 +330,8 @@ open import Foundation.Data.Vec.SetTheoretic public
 
 ## 函数
 
+函数 `A → B` 在我们的元语言里是原始概念. 以下列出几种常用函数.
+
 ### 序列
 
 ```agda
@@ -341,18 +343,18 @@ open import Foundation.Function.Sequance public
 ### 子空间
 
 ```agda
-open import Foundation.Function.SubSpace public
+open import Foundation.Function.SubSpaces public
 ```
 
-#### 单射
-
-#### 满射
-
-#### 同构
+把 `A → B` 看作函数空间, 我们关心以下几种特殊的“子空间”: 单射 `_↣_`, 满射 `_↠_`, 双射 `_⤖_`, 同构 `_≅_`.
 
 ## 关系
 
+关系是取值到 `𝕋 ℓ` 的n元函数. 以下按元数列出几种常用关系.
+
 ### 零元关系
+
+零元关系就是命题. 我们主要关心 `⊥` 这个命题, 并把它的衍生概念都放在零元关系 `Nullary` 模块中.
 
 #### 否定
 
@@ -360,11 +362,15 @@ open import Foundation.Function.SubSpace public
 open import Foundation.Relation.Nullary.Negation public
 ```
 
+否定 `¬_` 即是取某 `A` 到 `⊥` 的函数, 即 `¬_ = λ A → A → ⊥`.
+
 #### 可判定
 
 ```agda
 open import Foundation.Relation.Nullary.Decidable public
 ```
+
+我们说 `A` 的可判定, 记作 `Dec A`, 当且仅当 `A` 或 `¬ A`. 如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPropDec`).
 
 #### 离散
 
@@ -372,7 +378,17 @@ open import Foundation.Relation.Nullary.Decidable public
 open import Foundation.Relation.Nullary.Discrete public
 ```
 
+我们说 `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定. 如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete).
+
 ### 一元关系
+
+#### 可数
+
+```agda
+open import Foundation.Relation.Unary.Countable public
+```
+
+我们说 `A` 可数, 当且仅当存在 `A` 到 `ℕ` 的单射 `A ↣ ℕ`; 说 `A` 可数无限, 当且仅当存在 `A` 到 `ℕ` 的 `A ↠ ℕ`.
 
 #### 可枚举
 
@@ -381,11 +397,7 @@ open import Foundation.Relation.Unary.Enumerable as E public
 open E.ListView public
 ```
 
-#### 可数
-
-```agda
-open import Foundation.Relation.Unary.Countable public
-```
+我们说 `A` 可枚举, 当且仅当存在函数 `f : ℕ → A ⊎ ⊤`, 使得对任意 `x : A`, 存在 `n` 满足 `f n ≡ x`.
 
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Essential.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Essential.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.essential)  

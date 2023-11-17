@@ -1,7 +1,7 @@
 module Foundation.Relation.Unary.Countable where
 
 open import Foundation.Prelude
-open import Foundation.Function.SubSpace
+open import Foundation.Function.SubSpaces
 open import Foundation.Prop.Truncation
 
 countable : 𝕋 ℓ → 𝕋 _

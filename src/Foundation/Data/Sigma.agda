@@ -23,3 +23,6 @@ open import Cubical.Data.Sigma
 
 discrete× : discrete A → discrete B → discrete (A × B)
 discrete× dA dB = discreteΣ dA dB
+
+isProp× : isProp A → isProp B → isProp (A × B)
+isProp× pA pB = isPropΣ pA (λ _ → pB)

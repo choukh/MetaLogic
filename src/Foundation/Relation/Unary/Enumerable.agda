@@ -1,7 +1,7 @@
 module Foundation.Relation.Unary.Enumerable where
 
 open import Foundation.Prelude
-open import Foundation.Function.SubSpace
+open import Foundation.Function.SubSpaces
 open import Foundation.Prop.Truncation
 
 open import Foundation.Prop.Logic
@@ -49,7 +49,7 @@ module MaybeView where
   discr→enum→count : discrete A → enumerable A → countable A
   discr→enum→count {A} disA = map1 H where
     H : Enum A → A ↣ ℕ
-    H (f , H) = mk↣ g₁ g₁-inj where
+    H (f , H) = g₁ , g₁-inj where
       g : ∀ x → Σ n ， f n ≡ some x
       g x = ε sets dis (H x) where
         sets : isSets (λ n → f n ≡ some x)
