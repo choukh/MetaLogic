@@ -21,9 +21,9 @@ open import FOL.Semantics ℒ
       map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
       map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
 
-∷ₛ⊨ₜ↑ₜ : ⦃ _ : Interpretation D ⦄ →
-  ∀ (x : D) 𝓋 t → 𝓋 ⊨ₜ t ≡ (x ∷ₛ 𝓋) ⊨ₜ ↑ₜ t
-∷ₛ⊨ₜ↑ₜ x 𝓋 t = ⊨ₜ-∘ (x ∷ₛ 𝓋) (#_ ∘ suc) t
+∷ₙ⊨ₜ↑ₜ : ⦃ _ : Interpretation D ⦄ →
+  ∀ (x : D) 𝓋 t → 𝓋 ⊨ₜ t ≡ (x ∷ₙ 𝓋) ⊨ₜ ↑ₜ t
+∷ₙ⊨ₜ↑ₜ x 𝓋 t = ⊨ₜ-∘ (x ∷ₙ 𝓋) (#_ ∘ suc) t
 
 ⊨ₜ-ext : ⦃ _ : Interpretation D ⦄ →
   ∀ {𝓋 𝓊} → 𝓋 ≗ 𝓊 → ∀ t → 𝓋 ⊨ₜ t ≡ 𝓊 ⊨ₜ t
@@ -37,7 +37,7 @@ open import FOL.Semantics ℒ
 ⊨ᵩ-ext eq (R $̇ t⃗) = ↔-cong (λ t → relMap R t holds) (map-cong (⊨ₜ-ext eq) t⃗)
 ⊨ᵩ-ext eq (φ →̇ ψ) = ↔-cong-→ (⊨ᵩ-ext eq φ) (⊨ᵩ-ext eq ψ)
 ⊨ᵩ-ext {𝓋} {𝓊} eq (∀̇ φ) = ↔-cong-Π λ x → ⊨ᵩ-ext (H x) φ where
-  H : ∀ x → x ∷ₛ 𝓋 ≗ x ∷ₛ 𝓊
+  H : ∀ x → x ∷ₙ 𝓋 ≗ x ∷ₙ 𝓊
   H x zero = refl
   H x (suc n) = eq n
 
@@ -50,14 +50,14 @@ open import FOL.Semantics ℒ
       map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
 ⊨ᵩ-∘ 𝓋 (φ →̇ ψ) σ = ↔-cong-→ (⊨ᵩ-∘ 𝓋 φ σ) (⊨ᵩ-∘ 𝓋 ψ σ)
 ⊨ᵩ-∘ 𝓋 (∀̇ φ) σ = ↔-cong-Π λ x →
-  (x ∷ₛ (𝓋 ⊨ₜ_) ∘ σ) ⊨ᵩ φ               ↔⟨ ⊨ᵩ-ext (H x) φ ⟩
-  ((x ∷ₛ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₛ ↑ₜ ∘ σ)) ⊨ᵩ φ ↔⟨ ⊨ᵩ-∘ (x ∷ₛ 𝓋) φ (# 0 ∷ₛ ↑ₜ ∘ σ) ⟩
-  (x ∷ₛ 𝓋) ⊨ᵩ φ [ # 0 ∷ₛ ↑ₜ ∘ σ ]ᵩ      ↔∎
+  (x ∷ₙ (𝓋 ⊨ₜ_) ∘ σ) ⊨ᵩ φ               ↔⟨ ⊨ᵩ-ext (H x) φ ⟩
+  ((x ∷ₙ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₙ ↑ₜ ∘ σ)) ⊨ᵩ φ ↔⟨ ⊨ᵩ-∘ (x ∷ₙ 𝓋) φ (# 0 ∷ₙ ↑ₜ ∘ σ) ⟩
+  (x ∷ₙ 𝓋) ⊨ᵩ φ [ # 0 ∷ₙ ↑ₜ ∘ σ ]ᵩ      ↔∎
   where
-  H : ∀ x → x ∷ₛ (𝓋 ⊨ₜ_) ∘ σ ≗ (x ∷ₛ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₛ ↑ₜ ∘ σ)
+  H : ∀ x → x ∷ₙ (𝓋 ⊨ₜ_) ∘ σ ≗ (x ∷ₙ 𝓋) ⊨ₜ_ ∘ (# 0 ∷ₙ ↑ₜ ∘ σ)
   H x zero = refl
-  H x (suc n) = ∷ₛ⊨ₜ↑ₜ x 𝓋 (σ n)
+  H x (suc n) = ∷ₙ⊨ₜ↑ₜ x 𝓋 (σ n)
 
-∷ₛ⊨ᵩ↑ᵩ : ⦃ _ : Interpretation D ⦄ →
-  ∀ (x : D) 𝓋 φ → 𝓋 ⊨ᵩ φ ↔ (x ∷ₛ 𝓋) ⊨ᵩ ↑ᵩ φ
-∷ₛ⊨ᵩ↑ᵩ x 𝓋 φ = ⊨ᵩ-∘ (x ∷ₛ 𝓋) φ (#_ ∘ suc)
+∷ₙ⊨ᵩ↑ᵩ : ⦃ _ : Interpretation D ⦄ →
+  ∀ (x : D) 𝓋 φ → 𝓋 ⊨ᵩ φ ↔ (x ∷ₙ 𝓋) ⊨ᵩ ↑ᵩ φ
+∷ₙ⊨ᵩ↑ᵩ x 𝓋 φ = ⊨ᵩ-∘ (x ∷ₙ 𝓋) φ (#_ ∘ suc)

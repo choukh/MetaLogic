@@ -2,11 +2,11 @@ module Foundation.Function.Sequance where
 
 open import Foundation.Prelude
 
-infix 8 _∷ₛ_
+infix 8 _∷ₙ_
 
-Seq : 𝕋 ℓ → 𝕋 ℓ
-Seq A = ℕ → A
+InfSeq : 𝕋 ℓ → 𝕋 ℓ
+InfSeq A = ℕ → A
 
-_∷ₛ_ : A → Seq A → Seq A
-(t ∷ₛ σ) zero = t
-(t ∷ₛ σ) (suc n) = σ n
+_∷ₙ_ : A → InfSeq A → InfSeq A
+(t ∷ₙ σ) zero = t
+(t ∷ₙ σ) (suc n) = σ n

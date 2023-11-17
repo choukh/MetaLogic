@@ -1,4 +1,4 @@
-module Foundation.Function.Bundles where
+module Foundation.Function.SubSpace where
 
 open import Foundation.Prelude
 open import Foundation.Prop.Iff
