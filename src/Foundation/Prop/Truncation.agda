@@ -12,8 +12,8 @@ open import Cubical.HITs.PropositionalTruncation as PT
     elim; elim2; elim3
   )
 
-is1 : isProp ∥ A ∥₁
-is1 = isProp←🧊 squash₁
+trunct1 : isProp ∥ A ∥₁
+trunct1 = isProp←🧊 squash₁
 
 rec1→p : isProp B → (A → B) → ∥ A ∥₁ → B
 rec1→p pB = rec $ isProp→🧊 pB
@@ -44,10 +44,10 @@ rec1→s : isSet B → (f : A → B) → isId f → ∥ A ∥₁ → B
 rec1→s setB f H = PT.SetElim.rec→Set (isSet→🧊 setB) f λ x y → Eq→🧊 (H x y)
 
 rec1→1 : (A → ∥ B ∥₁) → ∥ A ∥₁ → ∥ B ∥₁
-rec1→1 H a = rec1→p is1 H a
+rec1→1 H a = rec1→p trunct1 H a
 
 intro1→1 : ∥ A ∥₁ → (A → ∥ B ∥₁) → ∥ B ∥₁
-intro1→1 a H = rec1→p is1 H a
+intro1→1 a H = rec1→p trunct1 H a
 
 intro1²→1 : ∥ A ∥₁ → ∥ B ∥₁ → (A → B → ∥ C ∥₁) → ∥ C ∥₁
-intro1²→1 a b H = rec1²→p is1 H a b
+intro1²→1 a b H = rec1²→p trunct1 H a b

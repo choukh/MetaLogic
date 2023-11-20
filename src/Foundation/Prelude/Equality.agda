@@ -8,14 +8,12 @@ open import Relation.Binary.PropositionalEquality public
 
 open import Cubical.Data.Equality public
   using (
-    funExt;
-    _≃_
+    funExt; _≃_
   )
   renaming (
     happly        to funExt⁻;
     eqToPath      to Eq→🧊;
     pathToEq      to Eq←🧊;
-    Path≡Eq       to Eq≡˘🧊;
     Iso           to infix 4 _≅_;
     iso           to mk≅;
     isoToIsoPath  to Iso→🧊;
@@ -23,7 +21,8 @@ open import Cubical.Data.Equality public
     ua            to ua≃
   )
 
-open _≅_ public
+open import Cubical.Data.Equality
+  using (eqToPath-pathToEq; pathToEq-eqToPath)
 
 open import Cubical.Foundations.Isomorphism public
   using ()
@@ -33,19 +32,22 @@ open import Cubical.Foundations.Equiv public
   using ()
   renaming (_≃_ to _≃🧊_)
 
+open _≅_ public
+open _≅🧊_ public
+
+--------------------------------------------------------------------------------
+-- Properties
+
 infixr 30 _∙_
 _∙_ : {x y z : A} → x ≡ y → y ≡ z → x ≡ z
 refl ∙ q = q
 
-infixr 2 step-≡ step-≡˘
-step-≡ : (x : A) {y z : A} → y ≡ z → x ≡ y → x ≡ z
-step-≡ _ p q = q ∙ p
+infixr 2 _≡⟨_⟩_ _≡˘⟨_⟩_
+_≡⟨_⟩_ : (x : A) {y z : A} → x ≡ y → y ≡ z → x ≡ z
+_ ≡⟨ p ⟩ q = p ∙ q
 
-step-≡˘ : (x : A) {y z : A} → y ≡ z → y ≡ x → x ≡ z
-step-≡˘ _ p q = sym q ∙ p
-
-syntax step-≡ x y p = x ≡⟨ p ⟩ y
-syntax step-≡˘ x y p = x ≡˘⟨ p ⟩ y
+_≡˘⟨_⟩_ : (x : A) {y z : A} → y ≡ x → y ≡ z → x ≡ z
+_ ≡˘⟨ p ⟩ q = sym p ∙ q
 
 infix 3 _∎
 _∎ : (x : A) → x ≡ x
@@ -73,6 +75,9 @@ funExt2 : {R : A → B → 𝕋 ℓ} {f g : (x : A) (y : B) → R x y} →
           ((x : A) (y : B) → f x y ≡ g x y) → f ≡ g
 funExt2 H = funExt λ x → funExt λ y → H x y
 
+ua : A ≅ B → A ≡ B
+ua = ua≃ ∘ Iso→Equiv
+
 EqΠ : (∀ x → P x ≡ Q x) → (∀ x → P x) ≡ (∀ x → Q x)
 EqΠ H with funExt H
 ... | refl = refl
@@ -80,12 +85,37 @@ EqΠ H with funExt H
 EqΠ2 : (∀ x y → R x y ≡ S x y) → (∀ x y → R x y) ≡ (∀ x y → S x y)
 EqΠ2 H = EqΠ λ x → EqΠ λ y → H x y
 
+--------------------------------------------------------------------------------
+-- 🧊 Conversion
+
+Eq→←🧊 : {x y : A} (p : x ≡🧊 y) → Eq→🧊 (Eq←🧊 p) ≡ p
+Eq→←🧊 = Eq←🧊 ∘ eqToPath-pathToEq
+
+Eq←→🧊 : {x y : A} (p : x ≡ y) → Eq←🧊 (Eq→🧊 p) ≡ p
+Eq←→🧊 = Eq←🧊 ∘ pathToEq-eqToPath
+
+Eq≅🧊 : {x y : A} → (x ≡ y) ≅ (x ≡🧊 y)
+Eq≅🧊 = mk≅ Eq→🧊 Eq←🧊 Eq→←🧊 Eq←→🧊
+
 Eq≡🧊 : {x y : A} → (x ≡ y) ≡ (x ≡🧊 y)
-Eq≡🧊 = sym Eq≡˘🧊
+Eq≡🧊 = ua Eq≅🧊
 
 Iso←🧊 : A ≅🧊 B → A ≅ B
 Iso←🧊 i = mk≅ (fun i) (inv i) (Eq←🧊 ∘ rightInv i) (Eq←🧊 ∘ leftInv i)
   where open _≅🧊_
 
-ua : A ≅ B → A ≡ B
-ua = ua≃ ∘ Iso→Equiv
+Iso≅🧊 : (A ≅ B) ≅ (A ≅🧊 B)
+Iso≅🧊 = mk≅ Iso→🧊 Iso←🧊 (Eq←🧊 ∘ right) left where
+  right : ∀ iso → Iso→🧊 (Iso←🧊 iso) ≡🧊 iso
+  fun (right iso i) = iso .fun
+  inv (right iso i) = iso .inv
+  rightInv (right iso i) y = eqToPath-pathToEq (iso .rightInv y) i
+  leftInv (right iso i) y = eqToPath-pathToEq (iso .leftInv y) i
+  left : ∀ iso → Iso←🧊 (Iso→🧊 iso) ≡ iso
+  left (mk≅ fun inv rightInv leftInv) = cong2 (mk≅ fun inv)
+    (funExt $ Eq←→🧊 ∘ rightInv)
+    (funExt $ Eq←→🧊 ∘ leftInv)
+
+Iso≡🧊 : (A ≅ B) ≡ (A ≅🧊 B)
+Iso≡🧊 = ua Iso≅🧊
+ 

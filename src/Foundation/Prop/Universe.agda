@@ -86,13 +86,13 @@ propExt⁻ eq = subst (_↔ _) eq ↔-refl
 ℙExt⁻ H = subst (λ - → - holds ↔ _) H ↔-refl
 
 propTruncExt : A ↔ B → ∥ A ∥₁ ≡ ∥ B ∥₁
-propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → is1 _ _) λ _ → is1 _ _
+propTruncExt iff = ua $ mk≅ (map1 $ iff .⇒) (map1 $ iff .⇐) (λ _ → trunct1 _ _) λ _ → trunct1 _ _
 
 --------------------------------------------------------------------------------
 -- hProp truncation
 
 ∥_∥ₚ : 𝕋 ℓ → ℙ ℓ
-∥ A ∥ₚ = ∥ A ∥₁ , is1
+∥ A ∥ₚ = ∥ A ∥₁ , trunct1
 
 ℙTruncExt : A ↔ B → ∥ A ∥ₚ ≡ ∥ B ∥ₚ
 ℙTruncExt iff = Σ≡p isPredIsProp (propTruncExt iff)

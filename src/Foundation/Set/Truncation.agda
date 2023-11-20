@@ -12,8 +12,8 @@ open import Cubical.HITs.SetTruncation as PT
     elim; elim2
   )
 
-is2 : isSet ∥ A ∥₂
-is2 = isSet←🧊 squash₂
+trunct2 : isSet ∥ A ∥₂
+trunct2 = isSet←🧊 squash₂
 
 rec2→s : isSet B → (A → B) → ∥ A ∥₂ → B
 rec2→s sB = rec $ isSet→🧊 sB

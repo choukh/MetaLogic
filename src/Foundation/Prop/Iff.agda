@@ -106,4 +106,43 @@ isProp↔ propA propB = subst (λ X → isProp X) (ua $ Iso←🧊 $ iffIsoΣ) $
 ↔-map1 iff = ⇒: map1 (iff .⇒) ⇐: map1 (iff .⇐)
 
 ∥↔∥-map : ∥ A ↔ B ∥₁ → ∥ A ∥₁ ↔ ∥ B ∥₁
-∥↔∥-map = rec1→p (isProp↔ is1 is1) ↔-map1
+∥↔∥-map = rec1→p (isProp↔ trunct1 trunct1) ↔-map1
+
+--------------------------------------------------------------------------------
+-- Stdlib
+
+open import Function as ⓢ
+  using (_⇔_; mk⇔)
+
+open ⓢ.Equivalence
+
+Iff→ⓢ : A ↔ B → A ⇔ B
+Iff→ⓢ (⇒: ⇒ ⇐: ⇐) = mk⇔ ⇒ ⇐
+
+Iff←ⓢ : A ⇔ B → A ↔ B
+Iff←ⓢ H = ⇒: H .to ⇐: H .from
+
+isProp⇔ : isProp A → isProp B → isProp (A ⇔ B)
+isProp⇔ {A} {B} pA pB
+  record { to = f₁ ; from = g₁ ; to-cong = f-cong₁ ; from-cong = g-cong₁ }
+  record { to = f₂ ; from = g₂ ; to-cong = f-cong₂ ; from-cong = g-cong₂ }
+  with isProp→ pB f₁ f₂ | isProp→ pA g₁ g₂
+... | refl | refl = subst2 (λ x y → _ ≡ record { to-cong = x ; from-cong = y })
+  (isProp-f-cong f-cong₁ f-cong₂) (isProp-g-cong g-cong₁ g-cong₂) refl
+  where
+  isProp-f-cong : isProp (∀ {x y} → x ≡ y → f₁ x ≡ f₁ y)
+  isProp-f-cong = isPropΠ₋2 λ _ _ → isProp→ (isProp→isSet pB _ _)
+  isProp-g-cong : isProp (∀ {x y} → x ≡ y → g₁ x ≡ g₁ y)
+  isProp-g-cong = isPropΠ₋2 λ _ _ → isProp→ (isProp→isSet pA _ _)
+
+Iff→←ⓢ : isProp A → isProp B → (H : A ⇔ B) → Iff→ⓢ (Iff←ⓢ H) ≡ H
+Iff→←ⓢ pA pB _ = isProp⇔ pA pB _ _
+
+Iff←→ⓢ : isProp A → isProp B → (H : A ↔ B) → Iff←ⓢ (Iff→ⓢ H) ≡ H
+Iff←→ⓢ pA pB _ = isProp↔ pA pB _ _
+
+Iff≅ⓢ : isProp A → isProp B → (A ↔ B) ≅ (A ⇔ B)
+Iff≅ⓢ pA pB = mk≅ Iff→ⓢ Iff←ⓢ (Iff→←ⓢ pA pB) (Iff←→ⓢ pA pB)
+
+Iff≡ⓢ : isProp A → isProp B → (A ↔ B) ≡ (A ⇔ B)
+Iff≡ⓢ pA pB = ua $ Iff≅ⓢ pA pB

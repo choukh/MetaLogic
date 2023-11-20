@@ -12,7 +12,7 @@ open import Data.Product.Properties public
   renaming (≡-dec to discreteΣ)
 
 open import Cubical.Data.Sigma
-  using (Σ≡Prop)
+  using (Σ≡Prop; Σ-cong-snd)
 
 Σ≡p : isPred P → {u v : Σ A P}
        → (p : u .fst ≡ v .fst) → u ≡ v
@@ -20,6 +20,9 @@ open import Cubical.Data.Sigma
 
 ×≡ : {x y : A × B} → fst x ≡ fst y → snd x ≡ snd y → x ≡ y
 ×≡ refl refl = refl
+
+Σcong₂ : ((x : A) → P x ≡ Q x) → Σ A P ≡ Σ A Q
+Σcong₂ eq = Eq←🧊 $ Σ-cong-snd $ Eq→🧊 ∘ eq
 
 discrete× : discrete A → discrete B → discrete (A × B)
 discrete× dA dB = discreteΣ dA dB

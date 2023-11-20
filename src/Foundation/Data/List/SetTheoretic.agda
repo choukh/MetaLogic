@@ -2,7 +2,7 @@ module Foundation.Data.List.SetTheoretic where
 
 open import Foundation.Prelude
 
-open import Foundation.Function.SubSpaces
+open import Foundation.Function.Isomorphism
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
 open import Foundation.Data.Sigma

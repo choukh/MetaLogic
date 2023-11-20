@@ -122,7 +122,7 @@ open import Foundation.Prelude.Misc public
 open import Foundation.Prop.Truncation public
 ```
 
-命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `is1` 用于证明命题截断后的类型的项确实都是相等的. 有以下常用引理:
+命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `trunct1` 用于证明命题截断后的类型的项确实都是相等的. 有以下常用引理:
 
 - `rec1→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
 - `rec1²→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
@@ -189,7 +189,7 @@ open import Foundation.Prop.Universe public
 - 命题截断外延性 `propTruncExt : A ↔ B → ∥ A ∥₁ ≡ ∥ B ∥₁`
 - **命题**截断外延性 `ℙTruncExt : A ↔ B → ∥ A ∥ₚ ≡ ∥ B ∥ₚ`
 
-其中**命题**截断 `∥ A ∥ₚ` 定义为 `∥ A ∥₁ , is1`.
+其中**命题**截断 `∥ A ∥ₚ` 定义为 `∥ A ∥₁ , trunct1`.
 
 ## 集合
 
