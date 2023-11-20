@@ -1,7 +1,7 @@
 module Foundation.Relation.Unary.Enumerable where
 
 open import Foundation.Prelude
-open import Foundation.Function.SubSpaces
+open import Foundation.Function.Bijection
 open import Foundation.Prop.Truncation
 
 open import Foundation.Prop.Logic

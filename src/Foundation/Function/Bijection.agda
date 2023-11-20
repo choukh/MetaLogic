@@ -1,4 +1,4 @@
-module Foundation.Function.SubSpaces where
+module Foundation.Function.Bijection where
 
 open import Foundation.Prelude
 open import Foundation.Prop.Logic
