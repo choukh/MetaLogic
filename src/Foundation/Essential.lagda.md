@@ -43,7 +43,7 @@ module Foundation.Essential where
 **<u>定理</u>** 定理的自然语言表述
 **<u>证明</u>** 定理的自然语言证明
 
-```text
+```PlainText
 theorem_name : Theorem_Type
 theorem_name = proof
 ```
@@ -435,7 +435,7 @@ open import Foundation.Relation.Nullary.Discrete public
 
 **<u>定义</u>** `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定
 
-如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete).
+如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete`).
 
 ### 一元关系
 
