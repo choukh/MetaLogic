@@ -22,6 +22,32 @@ url: foundation.essential
 module Foundation.Essential where
 ```
 
+## 凡例
+
+### 定义
+
+**<u>定义</u>** 定义名 (`definition_name`), 当且仅当定义的自然语言表述
+
+**<u>定义</u>** 定义名 (`definition_name : Definition_Type`)
+
+### 不带证明的定理
+
+定理的自然语言表述 (`theorem_name`)
+
+**<u>定理</u>** 定理名 (`theorem_name : Theorem_Type`)
+
+**<u>定理</u> `theorem_name`** 定理的自然语言表述
+
+### 带证明的定理
+
+**<u>定理</u>** 定理的自然语言表述
+**<u>证明</u>** 定理的自然语言证明
+
+```text
+theorem_name : Theorem_Type
+theorem_name = proof
+```
+
 ## 前奏
 
 前奏 (Prelude) 是基础中的基础, 是定义其他基础概念所必须的基础概念, 以至于有些是原始概念, 如道路类型. 这些原始概念具体涉及到 Cubical 类型论的规则, 这里不深入其细节, 而只作为一个黑盒使用.
@@ -55,7 +81,7 @@ open import Foundation.Prelude.Builtin public
 open import Foundation.Prelude.Function public
 ```
 
-前奏中的函数模块主要定义与函数有关的一些便利记法:
+**<u>定义</u>** 与函数有关的一些便利记法
 
 - 恒等函数 `id = λ x → x`
 - 恒等函数性 `isId = λ f → ∀ x y → f x ≡ f y`
@@ -71,7 +97,7 @@ open import Foundation.Prelude.Function public
 open import Foundation.Prelude.Equality public
 ```
 
-本模块给出了相等的基本性质:
+**<u>定理</u>** 相等的基本性质
 
 - 对称性 `sym`, 传递性 `_∙_`
   - 注意自反性 `refl` 不需要专门给出, 它是相等类型的唯一构造子
@@ -118,7 +144,9 @@ open import Foundation.Prelude.Misc public
 open import Foundation.Prop.Truncation public
 ```
 
-命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `trunct1` 用于证明命题截断后的类型的项确实都是相等的. 有以下常用引理:
+命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `trunct1` 用于证明命题截断后的类型的项确实都是相等的.
+
+**<u>定理</u>** 命题截断的性质
 
 - `rec1→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
 - `rec1²→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
@@ -143,7 +171,7 @@ open import Foundation.Prop.Logic public
 - 合取 `_×_`, 要求两边都是命题
 - 全称量化 `∀ x →`, 只要右边是命题就是命题
 
-我们有命题截断上的反证法 `exfalso₁ : ∥ A ∥₁ → ¬ A → B`.
+**<u>定理</u>** 命题截断上的归谬法 `exfalso₁ : ∥ A ∥₁ → ¬ A → B`
 
 #### 析取
 
@@ -175,10 +203,13 @@ open import Foundation.Prop.Universe public
 
 我们用粗体的**命题**指代命题宇宙的项, 以区分作为类型的命题. 我们约定使用 `𝗣 𝗤 𝗥` 等符号表示**命题**. “**命题** `𝗣` 成立”记作 `𝗣 holds`, 定义为左投影 `typ 𝗣`. 而右投影 `str 𝗣` 则说明了 `𝗣 holds` 确实是一个命题.
 
-以下是**命题**的一些实例和性质:
+**<u>定义</u>** **命题**的实例
 
 - 恒假**命题** `⊥ₚ`, 定义为 `⊥ , isProp⊥`, 因为 `⊥` 是一个命题
 - 恒真**命题** `⊤ₚ`, 定义为 `⊤ , isProp⊤`, 因为 `⊤` 是一个命题
+
+**<u>定理</u>** **命题**的性质
+
 - 任意层级的命题宇宙 `ℙ ℓ` 本身是一个集合, 该性质记作 `isSetℙ`
 - 命题外延性 `propExt : isProp A → isProp B → A ↔ B → A ≡ B`
 - **命题**外延性 `ℙExt : 𝗣 holds ↔ 𝗤 holds → 𝗣 ≡ 𝗤`
@@ -208,6 +239,8 @@ open import Foundation.Set.Truncation public
 ```
 
 与命题截断类似地, 我们有集合截断 `∥_∥₂`, 它将高阶群胚截断为集合.
+
+**<u>定理</u>** 集合截断的性质
 
 - `rec2→s` : 如果目标 `B` 是命题, 那么我们可以通过证明 `A → B` 来证明 `∥ A ∥₂ → B`
 - `rec2²→s` : 如果目标 `C` 是命题, 那么我们可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → C`
@@ -342,7 +375,9 @@ open import Foundation.Function.Sequance public
 open import Foundation.Function.Isomorphism public
 ```
 
-同构 (`_≅_`) 是类型间的一对互逆的函数, 它构成了类型宇宙中的一种等价关系 (`idIso`, `invIso`, `compIso`). 当 `A` 是集合的时候, `A ≡ B` 与 `A ≅ B` 同构 (`univalence`).
+同构 (`_≅_`) 是类型间的一对互逆的函数, 它构成了类型宇宙中的一种等价关系 (`idIso`, `invIso`, `compIso`).
+
+**<u>定理</u> `univalence`** 当 `A` 是集合的时候, `A ≡ B` 与 `A ≅ B` 同构
 
 ### 双射
 
@@ -350,21 +385,21 @@ open import Foundation.Function.Isomorphism public
 open import Foundation.Function.Bijection public
 ```
 
-定义
+**定义**
 
 - 单射性 `injective = λ f → ∀ {x y} → f x ≡ f y → x ≡ y`
-- 满射性 `surjective = λ f → ∀ y → ∃λ x → f x ≡ y`
+- 满射性 `surjective = λ f → ∀ y → ∃ x ， f x ≡ y`
 - 双射性 `bijective = λ f → injective f × surjective f`
 
 它们都是命题 (`isPropInjective`, `isPropSurjective`, `isPropBijective`).
 
-定义
+**定义**
 
 - 单射 `A ↣ B = Σ (A → B) injective`
 - 满射 `A ↠ B = Σ (A → B) surjective`
 - 双射 `A ⤖ B = Σ (A → B) bijective`
 
-如果 `A` 和 `B` 都是集合, 那么 `A ≅ B` 与 `A ⤖ B` 相等 (`Iso≡Bij`).
+**<u>定理</u> `Iso≡Bij`** 如果 `A` 和 `B` 都是集合, 那么 `A ≅ B` 与 `A ⤖ B` 相等
 
 ## 关系
 
@@ -388,7 +423,9 @@ open import Foundation.Relation.Nullary.Negation public
 open import Foundation.Relation.Nullary.Decidable public
 ```
 
-我们说 `A` 的可判定, 记作 `Dec A`, 当且仅当 `A` 或 `¬ A`. 如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPropDec`).
+**<u>定义</u>** `A` 可判定, 记作 `Dec A`, 当且仅当 `A` 或 `¬ A`
+
+如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPropDec`).
 
 #### 离散
 
@@ -396,7 +433,9 @@ open import Foundation.Relation.Nullary.Decidable public
 open import Foundation.Relation.Nullary.Discrete public
 ```
 
-我们说 `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定. 如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete).
+**<u>定义</u>** `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定
+
+如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete).
 
 ### 一元关系
 
@@ -406,7 +445,11 @@ open import Foundation.Relation.Nullary.Discrete public
 open import Foundation.Relation.Unary.Countable public
 ```
 
-我们说 `A` 可数, 当且仅当存在 `A` 到 `ℕ` 的单射 `A ↣ ℕ`; 说 `A` 可数无限, 当且仅当存在 `A` 到 `ℕ` 的 `A ↠ ℕ`.
+**<u>定义</u>**
+
+- `A` 可数 (`countable`), 当且仅当存在 `A` 到 `ℕ` 的单射 `A ↣ ℕ`
+- `A` 可数无限 (`countablyInfinite`), 当且仅当存在 `A` 到 `ℕ` 的同构 `A ≅ ℕ`
+- `A` 无限 (`infinite`), 当且仅当存在 `ℕ` 到 `A` 的单射 `ℕ ↣ A`
 
 #### 可枚举
 
@@ -415,7 +458,17 @@ open import Foundation.Relation.Unary.Enumerable as E public
 open E.ListView public
 ```
 
-我们说 `A` 可枚举, 当且仅当存在函数 `f : ℕ → A ⊎ ⊤`, 使得对任意 `x : A`, 存在 `n` 满足 `f n ≡ x`.
+**<u>定义</u>** `A` 可枚举, 当且仅当存在函数 `f : ℕ → A ⊎ ⊤`, 使得对任意 `x : A`, 存在 `n` 满足 `f n ≡ x`
+
+**<u>定理</u> `discr→enum→count`** 如果 `A` 离散 (这意味着 `A` 是集合), 并且 `A` 可枚举, 那么 `A` 可数
+
+我们通常使用可枚举的另一种定义:
+
+**<u>定义</u>** 我们说列表的无穷序列 (`f : InfSeq (𝕃 A)`) 是累积的 (`Cumulative`), 当且仅当对任意 `n` 都存在 `xs : 𝕃 A` 使得 `f n ≡ f m ++ xs`, 其中 `_++_` 是列表的拼接操作
+
+**<u>定义</u>** `A` 可枚举, 当且仅当存在累积的 `f : InfSeq (𝕃 A)`, 使得对任意 `x : A`, 存在 `n` 满足 `x ∈ᴸ f n`
+
+这两种定义是逻辑等价的 (`enumerable↔Ⓜ`).
 
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Essential.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Essential.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.essential)  
