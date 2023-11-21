@@ -28,7 +28,7 @@ module Foundation.Essential where
 
 **<u>定义</u>** 定义名 (`definition_name`), 当且仅当定义的自然语言表述
 
-**<u>定义</u>** 定义名 (`definition_name : Definition_Type`)
+**<u>定义</u>** 定义名 (`definition_name = Definition_Term`)
 
 ### 不带证明的定理
 
@@ -470,6 +470,7 @@ open E.ListView public
 
 这两种定义是逻辑等价的 (`enumerable↔Ⓜ`).
 
+---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Essential.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Essential.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.essential)  
 > 交流Q群: 893531731
