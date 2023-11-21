@@ -28,7 +28,9 @@ module Foundation.Essential where
 
 ### 定义
 
-**<u>定义</u>** 定义名 (`definition_name`), 当且仅当定义的自然语言表述.
+**<u>定义</u>** 定义名 (`definition_name`), 当且仅当 定义的自然语言表述.
+
+**<u>定义</u>** 定义的自然语言表述 叫做 定义名 (`definition_name`).
 
 **<u>定义</u>** 定义名 (`definition_name = definition_term`).
 
@@ -466,9 +468,9 @@ open E.ListView public
 
 我们通常使用可枚举的另一种定义:
 
-**<u>定义</u>** 我们说列表的无穷序列 (`f : InfSeq (𝕃 A)`) 是累积的 (`Cumulative`), 当且仅当对任意 `n` 都存在 `xs : 𝕃 A` 使得 `f n ≡ f m ++ xs`, 其中 `_++_` 是列表的拼接操作.
+**<u>定义</u>** 我们说列表的无穷序列 (`f : ℕ → 𝕃 A`) 是累积的 (`Cumulative`), 当且仅当对任意 `n` 都存在 `xs : 𝕃 A` 使得 `f n ≡ f m ++ xs`, 其中 `_++_` 是列表的拼接操作.
 
-**<u>定义</u>** `A` 可枚举, 当且仅当存在累积的 `f : InfSeq (𝕃 A)`, 使得对任意 `x : A`, 存在 `n` 满足 `x ∈ᴸ f n`.
+**<u>定义</u>** `A` 可枚举, 当且仅当存在累积的 `f : ℕ → 𝕃 A`, 使得对任意 `x : A`, 存在 `n` 满足 `x ∈ᴸ f n`.
 
 这两种定义是逻辑等价的 (`enumerable↔Ⓜ`).
 
