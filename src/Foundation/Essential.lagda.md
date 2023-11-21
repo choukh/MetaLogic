@@ -72,7 +72,7 @@ open import Foundation.Prelude.Builtin public
 - 任意给定宇宙的类型 `A B C D X : 𝕋 ℓ`
 - 类型族 / 性质 / 一元关系 `P Q : A → 𝕋 ℓ`
   - ※ 我们保留“谓词”这个名称给可以证明是命题的一元关系
-- 二元关系 `R S : A → B → 𝕋 ℓ`
+- 二元关系 `R R₁ R₂ : A → B → 𝕋 ℓ`
 - 依值类型族 `P₂ Q₂ : (x : A) → P x → 𝕋 ℓ`
 
 我们约定Σ类型 `Σ A (λ x → P)`, 即满足 `P` 的 `A`, 可以简记为 `Σ x ꞉ A ， P` 或者 `Σ x ， P`.
@@ -152,8 +152,8 @@ open import Foundation.Prop.Truncation public
 
 - `rec1→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
 - `rec1²→p` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
-- `elim1→p` : `rec1` 的依值版本
-- `elim1²→p` : `rec1²` 的依值版本
+- `elim1→p` : `rec1→p` 的依值版本
+- `elim1²→p` : `rec1²→p` 的依值版本
 - `map1` : 可以通过证明 `A → B` 来证明 `∥ A ∥₁ → ∥ B ∥₁`
 - `map1²` : 可以通过证明 `A → B → C` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → ∥ C ∥₁`
 - `rec1→s` : 如果目标 `B` 是集合, 且 `f : A → B` 是常函数, 那么我们可以通过 `f` 来构造 `∥ A ∥₁ → B`
@@ -246,8 +246,8 @@ open import Foundation.Set.Truncation public
 
 - `rec2→s` : 如果目标 `B` 是命题, 那么我们可以通过证明 `A → B` 来证明 `∥ A ∥₂ → B`
 - `rec2²→s` : 如果目标 `C` 是命题, 那么我们可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → C`
-- `elim2→s` : `rec1` 的依值版本
-- `elim2²→s` : `rec1²` 的依值版本
+- `elim2→s` : `rec2→s` 的依值版本
+- `elim2²→s` : `rec2²→s` 的依值版本
 - `map2` : 可以通过证明 `A → B` 来证明 `∥ A ∥₂ → ∥ B ∥₂`
 - `map2²` : 可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → ∥ C ∥₂`
 

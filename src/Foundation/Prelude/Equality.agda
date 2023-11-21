@@ -82,7 +82,7 @@ EqΠ : (∀ x → P x ≡ Q x) → (∀ x → P x) ≡ (∀ x → Q x)
 EqΠ H with funExt H
 ... | refl = refl
 
-EqΠ2 : (∀ x y → R x y ≡ S x y) → (∀ x y → R x y) ≡ (∀ x y → S x y)
+EqΠ2 : (∀ x y → R₁ x y ≡ R₂ x y) → (∀ x y → R₁ x y) ≡ (∀ x y → R₂ x y)
 EqΠ2 H = EqΠ λ x → EqΠ λ y → H x y
 
 --------------------------------------------------------------------------------

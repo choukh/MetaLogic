@@ -1,7 +1,7 @@
+open import Foundation.Essential
+
 open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
-
-open import Foundation.Essential
 
 open import FOL.Syntax ℒ
 open import FOL.Syntax.Properties ℒ
