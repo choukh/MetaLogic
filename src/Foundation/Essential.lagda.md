@@ -28,11 +28,11 @@ module Foundation.Essential where
 
 ### 定义
 
-**<u>定义</u>** 定义名 (`definition_name`), 当且仅当 定义的自然语言表述.
-
-**<u>定义</u>** 定义的自然语言表述 叫做 定义名 (`definition_name`).
+定义的自然语言表述 叫做 定义名 (`definition_name`).
 
 **<u>定义</u>** 定义名 (`definition_name = definition_term`).
+
+**<u>定义</u>** 定义名 (`definition_name`), 当且仅当 定义的自然语言表述.
 
 ### 不带证明的定理
 
@@ -389,7 +389,7 @@ open import Foundation.Function.Isomorphism public
 open import Foundation.Function.Bijection public
 ```
 
-**定义**
+**<u>定义</u>**
 
 - 单射性 `injective = λ f → ∀ {x y} → f x ≡ f y → x ≡ y`
 - 满射性 `surjective = λ f → ∀ y → ∃ x ， f x ≡ y`
@@ -397,7 +397,7 @@ open import Foundation.Function.Bijection public
 
 它们都是命题 (`isPropInjective`, `isPropSurjective`, `isPropBijective`).
 
-**定义**
+**<u>定义</u>**
 
 - 单射 `A ↣ B = Σ (A → B) injective`
 - 满射 `A ↠ B = Σ (A → B) surjective`
