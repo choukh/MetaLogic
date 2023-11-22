@@ -1,5 +1,4 @@
 open import Foundation.Essential
-
 open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
 

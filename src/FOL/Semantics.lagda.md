@@ -1,5 +1,11 @@
-open import Foundation.Essential
+---
+url: fol.semantics
+---
 
+# 一阶逻辑: 语义
+
+```agda
+open import Foundation.Essential
 open import FOL.Language
 module FOL.Semantics (ℒ : Language) where
 
@@ -83,3 +89,4 @@ record Model ℓ : 𝕋 (ℓ ⁺) where
 _isA_modelOf_ : Model ℓ → Variant ℓ → Theory → 𝕋 _
 ℳ isA C modelOf 𝒯 = C ∧ ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
   where open Model ℳ
+```
