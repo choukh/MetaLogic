@@ -1,3 +1,10 @@
+---
+url: fol.soundness
+---
+
+# 一阶逻辑: 语义
+
+```agda
 open import Foundation.Essential
 open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
@@ -7,7 +14,7 @@ open import FOL.Syntax.Properties ℒ
 open import FOL.Semantics ℒ
 open import FOL.Semantics.Properties ℒ
 
-semanticExplosion : ⦃ _ : Interpretation D ⦄ → ExplodingBottom →
+semanticExplosion : ⦃ _ : Interpretation D ⦄ → Exploding⊥ᴵ →
   ∀ 𝓋 φ → 𝓋 ⊨ᵩ ⊥̇ → 𝓋 ⊨ᵩ φ
 semanticExplosion exp 𝓋 ⊥̇ bot = bot
 semanticExplosion exp 𝓋 (R $̇ t⃗) bot = exp 𝓋 R t⃗ bot
@@ -44,11 +51,11 @@ soundness Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ⊢φ
 instance
   ℐ : Interpretation ⊤
   ℐ = record
-    { funMap = λ _ _ → tt
-    ; relMap = λ _ _ → ⊥ₚ
-    ; bottom = ⊥ₚ }
+    { fᴵ = λ _ _ → tt
+    ; Rᴵ = λ _ _ → ⊥ₚ
+    ; ⊥ᴵ = ⊥ₚ }
 
-Dec⊨ᵩ : (𝓋 : Assignment) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
+Dec⊨ᵩ : (𝓋 : Valuation) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
 Dec⊨ᵩ 𝓋 ⊥̇       = no λ ()
 Dec⊨ᵩ 𝓋 (R $̇ x) = no λ ()
 Dec⊨ᵩ 𝓋 (φ →̇ ψ) with Dec⊨ᵩ 𝓋 φ | Dec⊨ᵩ 𝓋 ψ
@@ -69,3 +76,4 @@ standard = classical , id
 
 consistency : [] ⊬ ⊥̇
 consistency ⊢⊥̇ = soundness ⊢⊥̇ standard (λ _ → tt) λ _ ()
+```

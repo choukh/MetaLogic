@@ -419,7 +419,11 @@ open import Foundation.Function.Bijection public
 open import Foundation.Relation.Nullary.Negation public
 ```
 
-否定 `¬_` 即是取某 `A` 到 `⊥` 的函数, 即 `¬_ = λ A → A → ⊥`.
+**<u>定义</u>** 否定的相关概念
+
+- 否定 `¬_ = λ A → A → ⊥`
+- 非空 `nonEmpty = λ A → ¬ ¬ A`
+- 稳定 `Stable = λ A → nonEmpty A → A`
 
 #### 可判定
 
