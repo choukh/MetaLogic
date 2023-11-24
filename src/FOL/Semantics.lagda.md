@@ -2,7 +2,7 @@
 url: fol.semantics
 ---
 
-# 一阶逻辑: 语义
+# 一阶逻辑 ▸ 语义
 
 之前我们介绍了一阶逻辑的函数符号, 关系符号和变量等, 它们都是抽象符号, 没有具体所指. 在本篇中, 我们将对它们进行解释, 以赋予一阶逻辑语义. 与前面讲的语法类似, 本篇的所有内容都是以语言 `ℒ` 为参数的. 同时, 我们用 `ℒ` 实例化了前一篇提到的语法, 并将其引入.
 
@@ -98,7 +98,7 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 ```
 
 **<u>定理</u>** 对任意 `𝓋` 和 `φ`, `𝓋 ⊨ᵩ φ` 是一个命题.
-**<u>证明</u>** 由上面的定义, 分四种情况. 对于第一和第四种情况, 因为 `_holds` 是谓词, 所以是命题. 而第二和第三种分别是函数类型和Π类型, 其命题性都依赖于 `→` 的右边的类型的命题性, 而这只需递归调用该定理 (使用归纳假设) 即得. ∎
+**<u>递归证明</u>** 由上面的定义, 分四种情况. 对于第一和第四种情况, 因为 `_holds` 是谓词, 所以是命题. 而第二和第三种分别是函数类型和Π类型, 其命题性都依赖于 `→` 的右边的类型的命题性, 而这只需递归调用本定理 (使用归纳假设) 即得. ∎
 
 ```agda
   isProp⊨ᵩ : ∀ 𝓋 φ → isProp (𝓋 ⊨ᵩ φ)
@@ -243,3 +243,8 @@ _isA_modelOf_ : Structure ℓ → Variant ℓ → Theory → 𝕋 _
 ℳ isA 𝒞 modelOf 𝒯 = 𝒞 ∧ ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
   where open Structure ℳ
 ```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics)  
+> 交流Q群: 893531731

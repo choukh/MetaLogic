@@ -2,7 +2,7 @@
 url: fol.soundness
 ---
 
-# 一阶逻辑: 可靠性
+# 一阶逻辑 ▸ 可靠性
 
 ```agda
 open import Foundation.Essential
@@ -74,3 +74,8 @@ classical 𝓋 φ ψ pierce with Dec⊨ᵩ 𝓋 φ
 consistency : [] ⊬ ⊥̇
 consistency ⊢⊥̇ = soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
 ```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Soundness.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Soundness.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.soundness)  
+> 交流Q群: 893531731

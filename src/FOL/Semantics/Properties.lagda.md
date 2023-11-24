@@ -1,3 +1,10 @@
+---
+url: fol.semantics.properties
+---
+
+# 一阶逻辑 ▸ 语义 ▸ 性质
+
+```agda
 open import FOL.Language
 module FOL.Semantics.Properties (ℒ : Language) where
 
@@ -61,3 +68,9 @@ open import FOL.Semantics ℒ
 ∷ₙ⊨ᵩ↑ᵩ : ⦃ _ : Interpretation D ⦄ →
   ∀ (x : D) 𝓋 φ → 𝓋 ⊨ᵩ φ ↔ (x ∷ₙ 𝓋) ⊨ᵩ ↑ᵩ φ
 ∷ₙ⊨ᵩ↑ᵩ x 𝓋 φ = ⊨ᵩ-∘ (x ∷ₙ 𝓋) φ (#_ ∘ suc)
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/Properties.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.Properties.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.properties)  
+> 交流Q群: 893531731
