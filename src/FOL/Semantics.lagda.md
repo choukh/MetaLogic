@@ -108,16 +108,15 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   isProp⊨ᵩ 𝓋 (R $̇ t⃗) = isPredHolds (Rᴵ R (map⃗ (𝓋 ⊨ₜ_) t⃗))
 ```
 
-**<u>定义</u>** 我们说语境 `Γ` 在 `𝓋` 下有效, 记作 `𝓋 ⊨̌ Γ`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ᴸ Γ` 成立.
+**<u>定义</u>** 有效性
+
+- 我们说语境 `Γ` 在 `𝓋` 下有效, 记作 `𝓋 ⊨̌ Γ`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ᴸ Γ` 成立
+- 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊫̌ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立
 
 ```agda
   _⊨̌_ : Valuation D → Context → 𝕋 _
   𝓋 ⊨̌ Γ = ∀ φ → φ ∈ᴸ Γ → 𝓋 ⊨ᵩ φ
-```
 
-**<u>定义</u>** 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊫̌ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
-
-```agda
   _⊫̌_ : Valuation D → Theory → 𝕋 _
   𝓋 ⊫̌ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
@@ -164,20 +163,12 @@ _⊑_ : Variant ℓ → Variant ℓ → 𝕋 _
 - 爆炸变体: 经典变体和爆炸⊥变体的交
 
 ```agda
-Classical : Variant ℓ
-Classical = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
-
-Standard⊥ : Variant ℓ
-Standard⊥ = ⊥ᴵ holds → ⊥
-
-Exploding⊥ : Variant ℓ
-Exploding⊥ = ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
-
-Std : Variant ℓ
-Std = Classical ∧ Standard⊥
-
-Exp : Variant ℓ
-Exp = Classical ∧ Exploding⊥
+Classical Standard⊥ Exploding⊥ Std Exp : Variant ℓ
+Classical   = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
+Standard⊥   = ⊥ᴵ holds → ⊥
+Exploding⊥  = ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+Std         = Classical ∧ Standard⊥
+Exp         = Classical ∧ Exploding⊥
 ```
 
 **<u>定理</u>** 爆炸变体包含于标准变体.
@@ -222,11 +213,9 @@ _⊫_ : Theory → Formula → 𝕋ω
 **<u>证明</u>** 由 `isProp⊨ᵩ` 显然成立. ∎
 
 ```agda
-isProp⊨ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
+isProp⊨ isProp⊫ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
 isProp⊨ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
   let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
-
-isProp⊫ : ∀ 𝒯 {𝒞 : Variant ℓ} φ → isProp (𝒯 ⊫⟨ 𝒞 ⟩ φ)
 isProp⊫ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
   let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 ```
@@ -247,7 +236,7 @@ record Structure ℓ : 𝕋 (ℓ ⁺) where
     ⦃ ℐ ⦄ : Interpretation Domain
 ```
 
-**<u>定义</u>** 我们说 `ℳ` 是理论 `𝒯` 的一个 `𝒞` 模型, 记作 `ℳ isA 𝒞 modelOf 𝒯`, 当且仅当 `ℳ` 中的解释 `ℐ` 是一个 `𝒞` 变体, 且`ℳ` 中的赋值 `𝓋` 使得对任意 `φ ∈ 𝒯` 有 `𝓋 ⊨ᵩ φ` 成立.
+**<u>定义</u>** 我们说 `ℳ` 是理论 `𝒯` 的一个 `𝒞` 模型, 记作 `ℳ isA 𝒞 modelOf 𝒯`, 当且仅当 `ℳ` 中的解释 `ℐ` 是一个 `𝒞` 变体, 且`ℳ` 中的赋值 `𝓋` 使得任意 `φ ∈ 𝒯` 有效.
 
 ```agda
 _isA_modelOf_ : Structure ℓ → Variant ℓ → Theory → 𝕋 _
