@@ -2,7 +2,7 @@
 url: fol.soundness
 ---
 
-# 一阶逻辑: 语义
+# 一阶逻辑: 可靠性
 
 ```agda
 open import Foundation.Essential
