@@ -31,7 +31,7 @@ bijective : (A → B) → 𝕋 _
 bijective f = injective f × surjective f
 
 isPropInjective : {f : A → B} → isSet A → isProp (injective f)
-isPropInjective sA = isPropΠ₋2 λ _ _ → isProp→ (sA _ _)
+isPropInjective sA = isPropΠ̅2 λ _ _ → isProp→ (sA _ _)
 
 isPropSurjective : {f : A → B} → isProp (surjective f)
 isPropSurjective = isPropΠ λ _ → trunct1

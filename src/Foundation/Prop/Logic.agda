@@ -32,15 +32,15 @@ inr x = ∣ inj₂ x ∣₁
 ∃ : (A : 𝕋 ℓ) (P : A → 𝕋 ℓ′) → 𝕋 _
 ∃ A P = ∥ Σ A P ∥₁
 
-∃₋ : (P : A → 𝕋 ℓ′) → 𝕋 _
-∃₋ P = ∥ Σ₋ P ∥₁
+∃̅ : (P : A → 𝕋 ℓ′) → 𝕋 _
+∃̅ P = ∥ Σ̅ P ∥₁
 
 ∃-syntax = ∃
-∃₋-syntax = ∃₋
+∃̅-syntax = ∃̅
 
-infix 1 ∃-syntax ∃₋-syntax
+infix 1 ∃-syntax ∃̅-syntax
 syntax ∃-syntax A (λ x → P) = ∃ x ꞉ A ， P
-syntax ∃₋-syntax (λ x → P) = ∃ x ， P
+syntax ∃̅-syntax (λ x → P) = ∃ x ， P
 
 ex : (a : A) (H : P a) → ∃ A P
 ex a H = ∣ a , H ∣₁

@@ -3,6 +3,7 @@ module Foundation.Prelude.Builtin where
 open import Agda.Primitive public
   using (Level; _⊔_)
   renaming (Set to 𝕋; lzero to ℓ0; lsuc to _⁺)
+  renaming (Setω to 𝕋ω)
 
 open import Level public
   using (Lift; lift; lower)
@@ -41,12 +42,12 @@ variable
   R R₁ R₂ : A → B → 𝕋 ℓ
   P₂ Q₂ : (x : A) → P x → 𝕋 ℓ
 
-Σ₋ : (P : A → 𝕋 ℓ) → 𝕋 _
-Σ₋ {A} = Σ A
+Σ̅ : (P : A → 𝕋 ℓ) → 𝕋 _
+Σ̅ {A} = Σ A
 
 Σ-syntax = Σ
-Σ₋-syntax = Σ₋
+Σ̅-syntax = Σ̅
 
-infix 1 Σ-syntax Σ₋-syntax
+infix 1 Σ-syntax Σ̅-syntax
 syntax Σ-syntax A (λ x → P) = Σ x ꞉ A ， P
-syntax Σ₋-syntax (λ x → P) = Σ x ， P
+syntax Σ̅-syntax (λ x → P) = Σ x ， P

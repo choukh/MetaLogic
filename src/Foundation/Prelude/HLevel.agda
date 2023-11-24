@@ -108,11 +108,14 @@ isPropΠ H = isProp←🧊 $ 🧊.isPropΠ $ isPred→🧊 H
 isPropΠ2 : isPred2 P₂ → isProp ((x : A) (y : P x) → P₂ x y)
 isPropΠ2 H = isPropΠ λ x → isPropΠ (H x)
 
-isPropΠ₋ : isPred P → isProp ({x : A} → P x)
-isPropΠ₋ H = isProp←🧊 (🧊.isPropImplicitΠ λ _ → isProp→🧊 (H _))
+isPropΠ̅ : isPred P → isProp ({x : A} → P x)
+isPropΠ̅ H = isProp←🧊 (🧊.isPropImplicitΠ λ _ → isProp→🧊 (H _))
 
-isPropΠ₋2 : isPred2 P₂ → isProp ({x : A} {y : P x} → P₂ x y)
-isPropΠ₋2 H = isPropΠ₋ λ _ → isPropΠ₋ (H _)
+isPropΠ̅2 : isPred2 P₂ → isProp ({x : A} {y : P x} → P₂ x y)
+isPropΠ̅2 H = isPropΠ̅ λ _ → isPropΠ̅ (H _)
+
+isPropΠ̿ : isPred P → isProp (⦃ x : A ⦄ → P x)
+isPropΠ̿ H = isProp←🧊 λ f g i ⦃ x ⦄ → (Eq→🧊 $ H x (f ⦃ x ⦄) (g ⦃ x ⦄)) i
 
 isSetΠ : isSets P → isSet ((x : A) → P x)
 isSetΠ H = isSet←🧊 $ 🧊.isSetΠ $ isSets→🧊 H

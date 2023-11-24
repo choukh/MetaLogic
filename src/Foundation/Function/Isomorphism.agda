@@ -39,13 +39,13 @@ Iso→←ⓢ {A} {B} sA sB record { to = f ; from = g ; to-cong = f-cong ; from-
   lhs : A ⓢ.↔ B
   lhs = record { inverse = (λ eq → subst (λ - → f - ≡ _) eq (r refl)) , (λ eq → subst (λ - → g - ≡ _) eq (l refl)) }
   isProp-f-cong : isProp (∀ {x y} → x ≡ y → f x ≡ f y)
-  isProp-f-cong = isPropΠ₋2 λ _ _ → isProp→ (sB _ _)
+  isProp-f-cong = isPropΠ̅2 λ _ _ → isProp→ (sB _ _)
   isProp-g-cong : isProp (∀ {x y} → x ≡ y → g x ≡ g y)
-  isProp-g-cong = isPropΠ₋2 λ _ _ → isProp→ (sA _ _)
+  isProp-g-cong = isPropΠ̅2 λ _ _ → isProp→ (sA _ _)
   isProp-r : isProp (∀ {x y} → y ≡ g x → f y ≡ x)
-  isProp-r = isPropΠ₋2 λ _ _ → isProp→ (sB _ _)
+  isProp-r = isPropΠ̅2 λ _ _ → isProp→ (sB _ _)
   isProp-l : isProp (∀ {x y} → y ≡ f x → g y ≡ x)
-  isProp-l = isPropΠ₋2 λ _ _ → isProp→ (sA _ _)
+  isProp-l = isPropΠ̅2 λ _ _ → isProp→ (sA _ _)
 
 Iso←→ⓢ : (H : A ≅ B) → Iso←ⓢ (Iso→ⓢ H) ≡ H
 Iso←→ⓢ (mk≅ fun inv rightInv leftInv) = refl

@@ -21,7 +21,7 @@ semanticExplosion exp 𝓋 (R $̇ t⃗) bot = exp 𝓋 R t⃗ bot
 semanticExplosion exp 𝓋 (φ →̇ ψ) bot _ = semanticExplosion exp 𝓋 ψ bot
 semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₙ 𝓋) φ bot
 
-soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exploding →
+soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exp →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
 soundness⟨ C ⟩ _ (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
 soundness⟨ C ⟩ Γ⊢ (ImpI H) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ Γ⊢ H c 𝓋
@@ -45,8 +45,8 @@ soundness⟨ C ⟩ Γ⊢ (AllE {φ} {t} H) c 𝓋 𝓋⊨Γ = H1 where
 soundness⟨ C ⟩ Γ⊢ (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExplosion (Γ⊢ c .snd) 𝓋 φ $ soundness⟨ C ⟩ Γ⊢ Γ⊢⊥̇ c 𝓋 𝓋⊨Γ
 soundness⟨ C ⟩ Γ⊢ (Peirce φ ψ) c 𝓋 _ = Γ⊢ c .fst 𝓋 φ ψ
 
-soundness : ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ Standard {ℓ} ⟩ φ
-soundness Γ⊢φ = soundness⟨ Standard ⟩ Std⊑Exp Γ⊢φ
+soundness : Γ ⊢ φ → Γ ⊨ φ
+soundness Γ⊢φ = soundness⟨ Std ⟩ Std⊑Exp Γ⊢φ
 
 instance
   ℐ : Interpretation ⊤
@@ -55,7 +55,7 @@ instance
     ; Rᴵ = λ _ _ → ⊥ₚ
     ; ⊥ᴵ = ⊥ₚ }
 
-Dec⊨ᵩ : (𝓋 : Valuation) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
+Dec⊨ᵩ : (𝓋 : Valuation ⊤) (φ : Formula) → Dec (𝓋 ⊨ᵩ φ)
 Dec⊨ᵩ 𝓋 ⊥̇       = no λ ()
 Dec⊨ᵩ 𝓋 (R $̇ x) = no λ ()
 Dec⊨ᵩ 𝓋 (φ →̇ ψ) with Dec⊨ᵩ 𝓋 φ | Dec⊨ᵩ 𝓋 ψ
@@ -71,9 +71,6 @@ classical 𝓋 φ ψ pierce with Dec⊨ᵩ 𝓋 φ
 ... | yes p = p
 ... | no ¬p = exfalso $ ¬p $ pierce λ p → exfalso $ ¬p p
 
-standard : Standard
-standard = classical , id
-
 consistency : [] ⊬ ⊥̇
-consistency ⊢⊥̇ = soundness ⊢⊥̇ standard (λ _ → tt) λ _ ()
+consistency ⊢⊥̇ = soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
 ```

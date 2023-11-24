@@ -118,4 +118,3 @@ Iso≅🧊 = mk≅ Iso→🧊 Iso←🧊 (Eq←🧊 ∘ right) left where
 
 Iso≡🧊 : (A ≅ B) ≡ (A ≅🧊 B)
 Iso≡🧊 = ua Iso≅🧊
- 

@@ -131,9 +131,9 @@ isProp⇔ {A} {B} pA pB
   (isProp-f-cong f-cong₁ f-cong₂) (isProp-g-cong g-cong₁ g-cong₂) refl
   where
   isProp-f-cong : isProp (∀ {x y} → x ≡ y → f₁ x ≡ f₁ y)
-  isProp-f-cong = isPropΠ₋2 λ _ _ → isProp→ (isProp→isSet pB _ _)
+  isProp-f-cong = isPropΠ̅2 λ _ _ → isProp→ (isProp→isSet pB _ _)
   isProp-g-cong : isProp (∀ {x y} → x ≡ y → g₁ x ≡ g₁ y)
-  isProp-g-cong = isPropΠ₋2 λ _ _ → isProp→ (isProp→isSet pA _ _)
+  isProp-g-cong = isPropΠ̅2 λ _ _ → isProp→ (isProp→isSet pA _ _)
 
 Iff→←ⓢ : isProp A → isProp B → (H : A ⇔ B) → Iff→ⓢ (Iff←ⓢ H) ≡ H
 Iff→←ⓢ pA pB _ = isProp⇔ pA pB _ _
