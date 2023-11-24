@@ -80,7 +80,7 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   ⊨ₜ⃗≡map⃗ 𝓋 (x ∷ t⃗) = cong (_ ∷_) $ ⊨ₜ⃗≡map⃗ 𝓋 t⃗
 ```
 
-类似地, 配合关系符号的解释 `Rᴵ`, 我们可以进一步确定公式的取值 `𝓋 ⊨ᵩ φ`.
+类似地, 配合关系符号的解释 `Rᴵ`, 我们可以进一步确定公式的取值 `𝓋 ⊨ᵩ φ`. 我们说 `φ` 在 `𝓋` 下**有效 (valid)** (当 `𝓋` 明确时, 简称 `φ` 有效), 当且仅当 `𝓋 ⊨ᵩ φ` 成立.
 
 **<u>递归定义</u>** 公式 `φ` 在赋值表 `𝓋` 下的取值
 
@@ -108,53 +108,92 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
   isProp⊨ᵩ 𝓋 (R $̇ t⃗) = isPredHolds (Rᴵ R (map⃗ (𝓋 ⊨ₜ_) t⃗))
 ```
 
-**<u>定义</u>** 我们说语境 `Γ` 在 `𝓋` 下有效, 记作 `𝓋 ⊨ Γ`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ᴸ Γ` 成立.
+**<u>定义</u>** 我们说语境 `Γ` 在 `𝓋` 下有效, 记作 `𝓋 ⊨̌ Γ`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ᴸ Γ` 成立.
 
 ```agda
   _⊨̌_ : Valuation D → Context → 𝕋 _
   𝓋 ⊨̌ Γ = ∀ φ → φ ∈ᴸ Γ → 𝓋 ⊨ᵩ φ
 ```
 
-**<u>定义</u>** 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊫ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
+**<u>定义</u>** 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊫̌ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
 
 ```agda
   _⊫̌_ : Valuation D → Theory → 𝕋 _
   𝓋 ⊫̌ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
 
-## 解释的变体
+**<u>注意</u>** 以上定义的 `_⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨̌_ _⊫̌_` 这六个概念都是以解释为参数的.
 
-上一小节我们留了一个抓手 `⊥ᴵ`, 接下来将说明它的用法.
+**<u>约定</u>** 我们一次只会谈论一种解释, 它在上下文中是明确的, 首次出现时会放在括号 `⦃ ⦄` 中来标明, 所以每次提到这些概念时不会一一带上某解释 `ℐ` 作为参数, 从而精简表达. 该约定表达为以下代码.
 
 ```agda
 open Interpretation ⦃...⦄ public
+```
 
+## 解释的变体
+
+前面我们只说了 `⊥̇` 应该解释到 `⊥ᴵ holds`, 而 `⊥ᴵ` 是什么需要进一步解释, 这将引出解释的变体.
+
+**<u>定义</u>** 满足某种约束 `𝒞` 的解释构成了解释的一种变体 (`Variant`), 称为 `C` 变体, 记作 `𝒞 : Variant ℓ`.
+
+```agda
 Variant : ∀ ℓ → 𝕋 _
 Variant ℓ = {D : 𝕋 ℓ} → ⦃ Interpretation D ⦄ → 𝕋 ℓ
+```
 
+**<u>注意</u>** 关于变体的定义的两点注意事项
+
+- 变体所带的宇宙层级参数 `ℓ` 是论域的宇宙层级
+- 定义中说的“变体”和“约束”几乎是同义词
+  - 满足约束 `𝒞` 的解释属于 `C` 变体
+  - “`𝒞`” 来自“约束” (constraint) 的首字母, 而 `𝒞` 所具有的类型命名为“变体” (`Variant`)
+
+**<u>定义</u>** 我们说变体 `𝒞₁` 包含于变体 `𝒞₂`, 当且仅当约束 `𝒞₂` 蕴含约束 `𝒞₁`.
+
+```agda
 _⊑_ : Variant ℓ → Variant ℓ → 𝕋 _
-𝒞₁ ⊑ 𝒞₂ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞₁ → 𝒞₂
+𝒞₁ ⊑ 𝒞₂ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞₂ → 𝒞₁
+```
 
+**<u>定义</u>** 常用变体
+
+- 经典变体: 使得排中律 (`((φ →̇ ψ) →̇ φ) →̇ φ`) 有效的解释
+- 标准⊥变体: 把 `⊥̇` 解释为 `⊥` 的解释
+- 爆炸⊥变体: 使得爆炸律 (`⊥̇ →̇ R $̇ t⃗`) 有效的解释
+- 标准变体: 经典变体和标准⊥变体的交
+- 爆炸变体: 经典变体和爆炸⊥变体的交
+
+```agda
 Classical : Variant ℓ
 Classical = ∀ 𝓋 φ ψ → 𝓋 ⊨ᵩ ((φ →̇ ψ) →̇ φ) →̇ φ
 
-Standard⊥ᴵ : Variant ℓ
-Standard⊥ᴵ = ⊥ᴵ holds → ⊥
+Standard⊥ : Variant ℓ
+Standard⊥ = ⊥ᴵ holds → ⊥
 
-Exploding⊥ᴵ : Variant ℓ
-Exploding⊥ᴵ = ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
+Exploding⊥ : Variant ℓ
+Exploding⊥ = ∀ 𝓋 R t⃗ → 𝓋 ⊨ᵩ ⊥̇ →̇ R $̇ t⃗
 
 Std : Variant ℓ
-Std = Classical ∧ Standard⊥ᴵ
+Std = Classical ∧ Standard⊥
 
 Exp : Variant ℓ
-Exp = Classical ∧ Exploding⊥ᴵ
+Exp = Classical ∧ Exploding⊥
+```
 
-Std⊑Exp : Std {ℓ} ⊑ Exp
-Std⊑Exp (cls , std⊥) = cls , λ _ _ _ → exfalso ∘ std⊥
+**<u>定理</u>** 爆炸变体包含于标准变体.
+**<u>证明</u>** 显然, 将 `⊥̇` 解释为 `⊥` 会使得爆炸律有效. ∎
+
+```agda
+Exp⊑Std : Exp {ℓ} ⊑ Std
+Exp⊑Std (cls , std⊥) = cls , λ _ _ _ → exfalso ∘ std⊥
 ```
 
 ## 语义蕴含
+
+**<u>定义</u>** **语义蕴含 (semantic consequence)**
+
+- 我们说语境 `Γ` 在层级 `ℓ` 中 `𝒞`-语义蕴含公式 `φ`, 记作 `Γ ⊨⟨ 𝒞 ⟩ φ` (其中 `𝒞 : Variant ℓ`), 当且仅当对解释到 `ℓ` 中论域 `D` 的任意 `𝒞` 变体 `ℐ` 都有: 任意使得 `Γ` 有效的 `𝓋` 都使得 `φ` 有效
+- 我们说理论 `𝒯` 在层级 `ℓ` 中 `𝒞`-语义蕴含公式 `φ`, 记作 `Γ ⊫⟨ 𝒞 ⟩ φ` (其中 `𝒞 : Variant ℓ`), 当且仅当对解释到 `ℓ` 中论域 `D` 的任意 `𝒞` 变体 `ℐ` 都有: 任意使得 `𝒯` 有效的 `𝓋` 都使得 `φ` 有效
 
 ```agda
 _⊨⟨_⟩_ : Context → Variant ℓ → Formula → 𝕋 _
@@ -164,20 +203,33 @@ _⊫⟨_⟩_ : Theory → Variant ℓ → Formula → 𝕋 _
 𝒯 ⊫⟨ 𝒞 ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞 → ∀ 𝓋 → 𝓋 ⊫̌ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
 
+**<u>定义</u>** 标准-语义蕴含
+
+- 我们说语境 `Γ` 语义蕴含 `φ`, 记作 `Γ ⊨ φ`, 当且仅当对任意宇宙层级 `ℓ` 都有 `Γ ⊨⟨ Std {ℓ} ⟩ φ`
+- 我们说理论 `𝒯` 语义蕴含 `φ`, 记作 `𝒯 ⊫ φ`, 当且仅当对任意宇宙层级 `ℓ` 都有 `𝒯 ⊫⟨ Std {ℓ} ⟩ φ`
+
+```agda
+_⊨_ : Context → Formula → 𝕋ω
+Γ ⊨ φ = ∀ {ℓ} → Γ ⊨⟨ Std {ℓ} ⟩ φ
+
+_⊫_ : Theory → Formula → 𝕋ω
+𝒯 ⊫ φ = ∀ {ℓ} → 𝒯 ⊫⟨ Std {ℓ} ⟩ φ
+```
+
+**<u>注意</u>** 语义蕴含 (semantic consequence) `_⊨_` 和上一讲的语法蕴含 (syntactic consequence) `_⊢_` 从两个不同的角度刻画了逻辑推理. 此外, 对象语言中的 `_→̇_` 又叫做实质蕴含 (material implication), 我们还有元语言蕴含 `→`, 注意区分这四种蕴含.
+
 **<u>定理</u>** 语义蕴含是命题.
 **<u>证明</u>** 由 `isProp⊨ᵩ` 显然成立. ∎
 
 ```agda
-isProp⊨⟨⟩ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
-isProp⊨⟨⟩ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
+isProp⊨ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
+isProp⊨ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
   let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 
-isProp⊫⟨⟩ : ∀ 𝒯 {𝒞 : Variant ℓ} φ → isProp (𝒯 ⊫⟨ 𝒞 ⟩ φ)
-isProp⊫⟨⟩ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
+isProp⊫ : ∀ 𝒯 {𝒞 : Variant ℓ} φ → isProp (𝒯 ⊫⟨ 𝒞 ⟩ φ)
+isProp⊫ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
   let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 ```
-
-**<u>注意</u>** 语义蕴含 `_⊨_` 和上一篇讲的语法蕴含 `_⊢_` 从两个不同的角度刻画了逻辑推理. 此外, 对象语言中的 `_→̇_` 又叫做实质蕴含, 我们还有元语言蕴含 `→`, 注意区分这四种蕴含.
 
 ## 结构与模型
 
@@ -195,7 +247,7 @@ record Structure ℓ : 𝕋 (ℓ ⁺) where
     ⦃ ℐ ⦄ : Interpretation Domain
 ```
 
-**<u>定义</u>** 我们说 `ℳ` 是理论 `𝒯` 的一个 `𝒞` 模型, 记作 `ℳ isA 𝒞 modelOf 𝒯`, 当且仅当 `ℳ` 中的解释 `ℐ` 是一个 `𝒞` 变体解释, 且`ℳ` 中的赋值 `𝓋` 使得对任意 `φ ∈ 𝒯` 有 `𝓋 ⊨ᵩ φ` 成立.
+**<u>定义</u>** 我们说 `ℳ` 是理论 `𝒯` 的一个 `𝒞` 模型, 记作 `ℳ isA 𝒞 modelOf 𝒯`, 当且仅当 `ℳ` 中的解释 `ℐ` 是一个 `𝒞` 变体, 且`ℳ` 中的赋值 `𝓋` 使得对任意 `φ ∈ 𝒯` 有 `𝓋 ⊨ᵩ φ` 成立.
 
 ```agda
 _isA_modelOf_ : Structure ℓ → Variant ℓ → Theory → 𝕋 _

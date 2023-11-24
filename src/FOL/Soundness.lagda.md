@@ -14,14 +14,14 @@ open import FOL.Syntax.Properties ℒ
 open import FOL.Semantics ℒ
 open import FOL.Semantics.Properties ℒ
 
-semanticExplosion : ⦃ _ : Interpretation D ⦄ → Exploding⊥ᴵ →
+semanticExplosion : ⦃ _ : Interpretation D ⦄ → Exploding⊥ →
   ∀ 𝓋 φ → 𝓋 ⊨ᵩ ⊥̇ → 𝓋 ⊨ᵩ φ
 semanticExplosion exp 𝓋 ⊥̇ bot = bot
 semanticExplosion exp 𝓋 (R $̇ t⃗) bot = exp 𝓋 R t⃗ bot
 semanticExplosion exp 𝓋 (φ →̇ ψ) bot _ = semanticExplosion exp 𝓋 ψ bot
 semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₙ 𝓋) φ bot
 
-soundness⟨_⟩ : (C : Variant ℓ) → C ⊑ Exp →
+soundness⟨_⟩ : (C : Variant ℓ) → Exp ⊑ C →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ C ⟩ φ
 soundness⟨ C ⟩ _ (Ctx φ∈Γ) _ _ 𝓋⊨Γ = 𝓋⊨Γ _ φ∈Γ
 soundness⟨ C ⟩ Γ⊢ (ImpI H) c 𝓋 𝓋⊨Γ 𝓋⊨φ = soundness⟨ C ⟩ Γ⊢ H c 𝓋
@@ -46,7 +46,7 @@ soundness⟨ C ⟩ Γ⊢ (FalseE {φ} Γ⊢⊥̇) c 𝓋 𝓋⊨Γ = semanticExp
 soundness⟨ C ⟩ Γ⊢ (Peirce φ ψ) c 𝓋 _ = Γ⊢ c .fst 𝓋 φ ψ
 
 soundness : Γ ⊢ φ → Γ ⊨ φ
-soundness Γ⊢φ = soundness⟨ Std ⟩ Std⊑Exp Γ⊢φ
+soundness Γ⊢φ = soundness⟨ Std ⟩ Exp⊑Std Γ⊢φ
 
 instance
   ℐ : Interpretation ⊤
