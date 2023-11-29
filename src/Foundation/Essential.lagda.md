@@ -44,7 +44,7 @@ module Foundation.Essential where
 
 ### 带证明的定理
 
-**<u>定理</u>** 定理的自然语言表述.  
+**<u>定理</u>** 定理名: 定理的自然语言表述.  
 **<u>证明</u>** 定理的自然语言证明. ∎
 
 ```PlainText
