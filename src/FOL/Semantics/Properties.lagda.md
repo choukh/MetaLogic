@@ -7,17 +7,16 @@ url: fol.semantics.properties
 这是一篇标题中带上标减号 (⁻) 的章节. 这表示这种章节不推荐线性阅读, 读者应该在需要时再回来查看. 因为这种章节只是一些枯燥引理及其证明的简单罗列, 而不包含动机的说明. 读者应该在使用这些引理的章节中寻找动机.
 
 ```agda
+open import Foundation.Essential
 open import FOL.Language
 module FOL.Semantics.Properties (ℒ : Language) where
-
-open import Foundation.Essential
-open import Foundation.Data.Vec.SetTheoretic
-  renaming (_∈_ to _∈⃗_)
 
 open import FOL.Syntax ℒ
 open import FOL.Syntax.Properties ℒ
 open import FOL.Semantics ℒ
 ```
+
+## 项取值的性质
 
 **<u>引理</u>** 项的取值与替换的复合性质:
 给变元替换表 `σ` 的值域中的项全部按赋值表 `𝓋` 取值, 得到一个新的赋值表 `𝓋 ⊨ₜ_ ∘ σ`, 用它对某项 `t` 取到的值等于先用 `σ` 替换 `t`, 再按 `𝓋` 取值.
@@ -54,7 +53,7 @@ open import FOL.Semantics ℒ
 **<u>引理</u>** 赋值表插值与项提升的抵消性质:
 往赋值表 `𝓋` 的头部插入任意对象 `x` 得到新赋值表 `x ∷ₙ 𝓋`, 在它之下, 提升后的项 `↑ₜ t` 的取值等于提升前的项 `t` 在 `𝓋` 下的取值.
 
-**<u>证明</u>** 即证 `𝓋 ⊨ₜ t ≡ (x ∷ₙ 𝓋) ⊨ₜ ↑ₜ t`. 由 `↑ₜ` 的定义, 它即是替换 `#_ ∘ suc`. 由项的取值与替换的复合性质即证. ∎
+**<u>证明</u>** 即证 `𝓋 ⊨ₜ t ≡ (x ∷ₙ 𝓋) ⊨ₜ ↑ₜ t`. 由 `↑ₜ` 的定义, 它即是替换 `#_ ∘ suc`. 由项的取值与替换的复合性质得证. ∎
 
 ```agda
 ∷ₙ⊨ₜ↑ₜ : ⦃ _ : Interpretation D ⦄ →
@@ -73,7 +72,7 @@ open import FOL.Semantics ℒ
 化简并换成 `map⃗` 表达, 即证
 `fᴵ f (map⃗ (𝓋 ⊨ₜ_) t⃗) ≡ fᴵ f (map⃗ (𝓊 ⊨ₜ_) t⃗)`.
 
-由 `cong` 和归纳假设即证. ∎
+由 `cong` 和归纳假设得证. ∎
 
 ```agda
 ⊨ₜ-ext : ⦃ _ : Interpretation D ⦄ →
@@ -82,6 +81,8 @@ open import FOL.Semantics ℒ
   H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → 𝓋 ⊨ₜ t ≡ 𝓊 ⊨ₜ t) → 𝓋 ⊨ₜ (f $̇ t⃗) ≡ 𝓊 ⊨ₜ (f $̇ t⃗)
   H f t⃗ IH rewrite ⊨ₜ⃗≡map⃗ 𝓋 t⃗ | ⊨ₜ⃗≡map⃗ 𝓊 t⃗ = cong (fᴵ f) (map-ext IH)
 ```
+
+## 公式取值的性质
 
 **<u>引理</u>** 公式取值的外延性:
 如果赋值表 `𝓋` 和 `𝓊` 逐点相等, 那么对任意公式 `φ` 都有 `𝓋 ⊨ᵩ φ ↔ 𝓊 ⊨ᵩ φ`.
@@ -152,7 +153,7 @@ open import FOL.Semantics ℒ
 **<u>引理</u>** 赋值表插值与公式提升的抵消性质:
 往赋值表 `𝓋` 的头部插入任意对象 `x` 得到新赋值表 `x ∷ₙ 𝓋`, 在它之下, 提升后的公式 `↑ᵩ φ` 的取值等于提升前的公式 `φ` 在 `𝓋` 下的取值.
 
-**<u>证明</u>** 即证 `𝓋 ⊨ᵩ φ ↔ (x ∷ₙ 𝓋) ⊨ᵩ ↑ᵩ φ`. 由 `↑ᵩ` 的定义, 它即是替换 `# 0 ∘ suc`. 由公式的取值与替换的复合性质即证. ∎
+**<u>证明</u>** 即证 `𝓋 ⊨ᵩ φ ↔ (x ∷ₙ 𝓋) ⊨ᵩ ↑ᵩ φ`. 由 `↑ᵩ` 的定义, 它即是替换 `# 0 ∘ suc`. 由公式的取值与替换的复合性质得证. ∎
 
 ```agda
 ∷ₙ⊨ᵩ↑ᵩ : ⦃ _ : Interpretation D ⦄ →
@@ -160,7 +161,25 @@ open import FOL.Semantics ℒ
 ∷ₙ⊨ᵩ↑ᵩ x 𝓋 φ = ⊨ᵩ-∘ (x ∷ₙ 𝓋) φ (#_ ∘ suc)
 ```
 
+## 有效性的性质
+
+**<u>引理</u>** 有效性的结合:
+有效的 `φ` 与有效的 `Γ` 可以结合成有效的 `φ ∷ Γ`.
+
+**<u>证明</u>** 即证 `𝓋 ⊨ᵩ φ → 𝓋 ⊨ₛ Γ → 𝓋 ⊨ₛ (φ ∷ Γ)`. 其中 `𝓋 ⊨ₛ φ ∷ Γ` 又可以展开为 `∀ ξ → ξ ∈ᴸ φ ∷ Γ → 𝓋 ⊨ᵩ ξ`. 讨论 `ξ ∈ᴸ φ ∷ Γ`.
+
+- 当 `ξ` 等于 `φ` 时, 由前提即证
+- 当 `ξ` 是 `Γ` 中的元素时, 由 `𝓋 ⊨ₛ Γ` 即证 ∎
+
+```agda
+_⊨∷_ : ⦃ _ : Interpretation D ⦄ →
+  ∀ {𝓋 φ Γ} → 𝓋 ⊨ᵩ φ → 𝓋 ⊨ₛ Γ → 𝓋 ⊨ₛ (φ ∷ Γ)
+(𝓋⊨φ ⊨∷ 𝓋⊨Γ) φ (here refl) = 𝓋⊨φ
+(𝓋⊨φ ⊨∷ 𝓋⊨Γ) ξ (there ξ∈Γ) = 𝓋⊨Γ ξ ξ∈Γ
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/Properties.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.Properties.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.properties)  
 > 交流Q群: 893531731
+ 

@@ -5,4 +5,4 @@
     - [1.2.1⁻ 语法性质](fol.syntax.properties)
   - [1.3 语义](fol.semantics)
     - [1.3.1⁻ 语义性质](fol.semantics.properties)
-  - [1.4 可靠性](fol.soundness)
+  - [1.4⁺ 可靠性](fol.soundness)

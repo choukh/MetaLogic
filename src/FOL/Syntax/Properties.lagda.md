@@ -8,9 +8,6 @@ url: fol.syntax.properties
 
 ```agda
 open import Foundation.Essential
-open import Foundation.Data.Vec.SetTheoretic
-  renaming (_∈_ to _∈⃗_)
-
 open import FOL.Language
 module FOL.Syntax.Properties (ℒ : Language) where
 
