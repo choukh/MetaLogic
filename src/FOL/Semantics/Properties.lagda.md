@@ -161,6 +161,22 @@ open import FOL.Semantics ℒ
 ∷ₙ⊨ᵩ↑ᵩ x 𝓋 φ = ⊨ᵩ-∘ (x ∷ₙ 𝓋) φ (#_ ∘ suc)
 ```
 
+**<u>引理</u>** 公式应用的取值:
+如果在头部插入了项 `t` 取值的赋值表 `𝓋 ⊨ₜ t ∷ₙ 𝓋` 下公式 `φ` 的取值成立, 那么在 `𝓋` 下公式应用 `φ [ t ∷]` 的取值也成立.
+
+**<u>证明</u>** 由公式取值的外延性, 前提 `(𝓋 ⊨ₜ t ∷ₙ 𝓋) ⊨ᵩ φ` 可转化为 `(𝓋 ⊨ₜ_ ∘ (t ∷ₙ #_)) ⊨ᵩ φ`, 再用公式的取值与替换的复合性质即得 `𝓋 ⊨ᵩ φ [ t ∷]`. ∎
+
+```agda
+φ[t]-intro : ⦃ _ : Interpretation D ⦄ →
+  ∀ 𝓋 φ t → (𝓋 ⊨ₜ t ∷ₙ 𝓋) ⊨ᵩ φ → 𝓋 ⊨ᵩ φ [ t ∷]
+φ[t]-intro 𝓋 φ t H = ⊨ᵩ-∘ 𝓋 φ (t ∷ₙ #_) .⇒ H2 where
+    H2 : (𝓋 ⊨ₜ_ ∘ (t ∷ₙ #_)) ⊨ᵩ φ
+    H2 = ⊨ᵩ-ext eq φ .⇒ H where
+      eq : ∀ n → (𝓋 ⊨ₜ t ∷ₙ 𝓋) n ≡ 𝓋 ⊨ₜ (t ∷ₙ #_) n
+      eq zero = refl
+      eq (suc n) = refl
+```
+
 ## 有效性的性质
 
 **<u>引理</u>** 有效性的结合:
@@ -182,4 +198,3 @@ _⊨∷_ : ⦃ _ : Interpretation D ⦄ →
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/Properties.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.Properties.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.properties)  
 > 交流Q群: 893531731
- 
