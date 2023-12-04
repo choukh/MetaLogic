@@ -1,15 +1,15 @@
 ---
-url: fol.syntax
+url: fol.syntax.base
 ---
 
-# 一阶逻辑 ▸ 语法
+# 一阶逻辑 ▸ 语法 ▸ 定义
 
 本篇引入一阶逻辑的**项 (term)**, **公式 (formula)**和**证明 (proof)**, 它们共同构成了一阶逻辑的语法部分. 项由变元和函数符号构成; 公式则由关系符号和逻辑符号构成. 粗略类比, 如果说符号相当于字, 那么项和公式则相当于词和句. 注意本篇所有内容都是以语言 `ℒ` 为参数的.
 
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Syntax (ℒ : Language) where
+module FOL.Syntax.Base (ℒ : Language) where
 open Language ℒ
 ```
 
@@ -250,5 +250,5 @@ _⊩_ _⊮_ : Theory → Formula → 𝕋
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.base)  
 > 交流Q群: 893531731

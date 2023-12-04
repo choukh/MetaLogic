@@ -1,18 +1,18 @@
 ---
-url: fol.semantics
+url: fol.semantics.base
 ---
 
-# 一阶逻辑 ▸ 语义
+# 一阶逻辑 ▸ 语义 ▸ 定义
 
 之前我们介绍了一阶逻辑的函数符号, 关系符号和变元等, 它们都是抽象符号, 没有具体所指. 在本篇中, 我们将对它们进行解释, 以赋予一阶逻辑语义. 与前面讲的语法类似, 本篇的所有内容都是以语言 `ℒ` 为参数的. 同时, 我们用 `ℒ` 实例化了前一篇提到的语法, 并将其引入.
 
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Semantics (ℒ : Language) where
+module FOL.Semantics.Base (ℒ : Language) where
 
 open Language ℒ
-open import FOL.Syntax ℒ
+open import FOL.Syntax.Base ℒ
 ```
 
 ## 解释
@@ -265,5 +265,5 @@ _isA_modelOf_ : Structure ℓ → Variant ℓ → Theory → 𝕋 _
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.base)  
 > 交流Q群: 893531731

@@ -2,18 +2,18 @@
 url: fol.semantics.properties
 ---
 
-# 一阶逻辑 ▸ 语义 ▸⁻ 性质
+# 一阶逻辑 ▸ 语义 ▸ᐨ 性质
 
-这是一篇标题中带上标减号 (⁻) 的章节. 这表示这种章节不推荐线性阅读, 读者应该在需要时再回来查看. 因为这种章节只是一些枯燥引理及其证明的简单罗列, 而不包含动机的说明. 读者应该在使用这些引理的章节中寻找动机.
+这是一篇标题中带上标减号 (ᐨ) 的章节. 这表示这种章节不推荐线性阅读, 读者应该在需要时再回来查看. 因为这种章节只是一些枯燥引理及其证明的简单罗列, 而不包含动机的说明. 读者应该在使用这些引理的章节中寻找动机.
 
 ```agda
 open import Foundation.Essential
 open import FOL.Language
 module FOL.Semantics.Properties (ℒ : Language) where
 
-open import FOL.Syntax ℒ
+open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Properties ℒ
-open import FOL.Semantics ℒ
+open import FOL.Semantics.Base ℒ
 ```
 
 ## 项取值的性质
