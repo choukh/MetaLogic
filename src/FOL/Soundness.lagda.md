@@ -13,7 +13,6 @@ open import FOL.Language
 module FOL.Soundness (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
-open import FOL.Syntax.Properties ℒ
 open import FOL.Semantics.Base ℒ
 open import FOL.Semantics.Properties ℒ
 ```

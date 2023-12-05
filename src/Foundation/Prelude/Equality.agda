@@ -4,7 +4,7 @@ open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
 
 open import Relation.Binary.PropositionalEquality public
-  using (_≗_; sym; cong)
+  using (_≢_; _≗_; sym; cong)
 
 open import Cubical.Data.Equality public
   using (
@@ -42,7 +42,10 @@ infixr 30 _∙_
 _∙_ : {x y z : A} → x ≡ y → y ≡ z → x ≡ z
 refl ∙ q = q
 
-infixr 2 _≡⟨_⟩_ _≡˘⟨_⟩_
+infixr 2 _≡⟨⟩_ _≡⟨_⟩_ _≡˘⟨_⟩_
+_≡⟨⟩_ : (x : A) {y : A} → x ≡ y → x ≡ y
+_ ≡⟨⟩ x≡y = x≡y
+
 _≡⟨_⟩_ : (x : A) {y z : A} → x ≡ y → y ≡ z → x ≡ z
 _ ≡⟨ p ⟩ q = p ∙ q
 

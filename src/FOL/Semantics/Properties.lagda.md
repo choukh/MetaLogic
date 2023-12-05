@@ -12,7 +12,6 @@ open import FOL.Language
 module FOL.Semantics.Properties (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
-open import FOL.Syntax.Properties ℒ
 open import FOL.Semantics.Base ℒ
 ```
 
@@ -21,7 +20,7 @@ open import FOL.Semantics.Base ℒ
 **<u>引理</u>** 项的取值与替换的复合性质:
 给变元替换表 `σ` 的值域中的项全部按赋值表 `𝓋` 取值, 得到一个新的赋值表 `𝓋 ⊨ₜ_ ∘ σ`, 用它对某项 `t` 取到的值等于先用 `σ` 替换 `t`, 再按 `𝓋` 取值.
 
-**<u>证明</u>** 即证 `(𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ`. 使用项的归纳法.
+**<u>证明</u>** 即证 `(𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ`. 使用项的结构归纳法.
 
 当项是变元时, 简单化简可知两边相等. 当项是函数应用 `f $̇ t⃗` 时, 有归纳假设
 `∀ t → t ∈⃗ t⃗ → (𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ t ≡ 𝓋 ⊨ₜ t [ σ ]ₜ`,
@@ -64,7 +63,7 @@ open import FOL.Semantics.Base ℒ
 **<u>引理</u>** 项取值的外延性:
 如果赋值表 `𝓋` 和 `𝓊` 逐点相等, 那么 `𝓋 ⊨ₜ_` 和 `𝓊 ⊨ₜ_` 逐点相等.
 
-**<u>证明</u>** 用项的归纳法. 当项是变元时显然成立. 当项是函数应用 `f $̇ t⃗` 时, 有归纳假设
+**<u>证明</u>** 用项的结构归纳法. 当项是变元时显然成立. 当项是函数应用 `f $̇ t⃗` 时, 有归纳假设
 `∀ t → t ∈⃗ t⃗ → 𝓋 ⊨ₜ t ≡ 𝓊 ⊨ₜ t`,
 
 要证 `𝓋 ⊨ₜ (f $̇ t⃗) ≡ 𝓊 ⊨ₜ (f $̇ t⃗)`.
