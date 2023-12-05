@@ -1,11 +1,11 @@
 module Foundation.Data.Nat.Order where
 
 open import Data.Nat public
-  using (_≤_)
+  using (_≤_; z≤n)
 open import Data.Nat.Properties public
   using (
     ≤-trans;
-    1+n≰n;
+    n≤1+n; 1+n≰n;
     m≤m+n; m≤n+m;
     +-monoʳ-≤;
-    ∸-+-assoc; m≤n+m∸n)
+    n∸n≡0; ∸-+-assoc; m≤n+m∸n)
