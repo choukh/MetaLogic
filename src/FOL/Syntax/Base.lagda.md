@@ -2,15 +2,14 @@
 url: fol.syntax.base
 ---
 
-# 一阶逻辑 ▸ 语法 ▸ 定义
+# 一阶逻辑 ▸ 语法 ▸ 语法蕴含
 
 本篇引入一阶逻辑的**项 (term)**, **公式 (formula)**和**证明 (proof)**, 它们共同构成了一阶逻辑的语法部分. 项由变元和函数符号构成; 公式则由关系符号和逻辑符号构成. 粗略类比, 如果说符号相当于字, 那么项和公式则相当于词和句. 注意本篇所有内容都是以语言 `ℒ` 为参数的.
 
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Syntax.Base (ℒ : Language) where
-open Language ℒ
+module FOL.Syntax.Base (ℒ @ (mkLang 𝓕 𝓡 ∣_∣ᶠ ∣_∣ᴿ _ _ _ _) : Language) where
 ```
 
 以下列出了本篇所引入的符号的优先级. 数字越大则优先级越高, 未列出的符号默认具有 20 的优先级. 它们的具体定义会在后文给出.
@@ -32,7 +31,7 @@ infix 30 _[_]ₜ _[_]ₜ⃗ _[_]ᵩ
 
 ```agda
 data Term : 𝕋 where
-  #_ : ℕ → Term
+  # : ℕ → Term
   _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
 ```
 
@@ -107,7 +106,7 @@ _[_]ₜ⃗ : ∀ {n} → 𝕍 Term n → Subst → 𝕍 Term n
 
 ```agda
 ↑ₜ : Term → Term
-↑ₜ = _[ #_ ∘ suc ]ₜ
+↑ₜ = _[ # ∘ suc ]ₜ
 ```
 
 例如, 若 `t` = `g $̇ (f $̇ # 0) ∷ [ # 1 ]`, 那么 `↑ₜ t` = `g $̇ (f $̇ # 1) ∷ [ # 2 ]`.
@@ -178,7 +177,7 @@ _[_]ᵩ : Formula → Subst → Formula
 
 ```agda
 _[_∷] : Formula → Term → Formula
-φ [ t ∷] = φ [ t ∷ₙ #_ ]ᵩ
+φ [ t ∷] = φ [ t ∷ₙ # ]ᵩ
 ```
 
 有了 `φ [ t ∷]` 的概念, 我们就可以说, 如果 `∀̇ φ` 成立, 那么对任意 `t`, `φ [ t ∷]` 也成立. 这就是全称量化的消去规则, 将加入到后文关于证明的定义中.
@@ -203,7 +202,7 @@ Theory = 𝒫 Formula
 
 ```agda
 ↑ᵩ : Formula → Formula
-↑ᵩ = _[ #_ ∘ suc ]ᵩ
+↑ᵩ = _[ # ∘ suc ]ᵩ
 ```
 
 **<u>定义</u>** 语境 `Γ` 的提升 `↑ Γ` 是指提升 `Γ` 中所有的公式所得到的语境.

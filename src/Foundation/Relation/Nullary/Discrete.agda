@@ -25,3 +25,12 @@ discrete→isSet = isSet←🧊 ∘ discrete🧊→isSet🧊 ∘ discrete→🧊
 
 isPropDiscrete : isSet A → isProp (discrete A)
 isPropDiscrete H = isPropΠ2 λ x y → isPropDec (H x y)
+
+𝔻 : ∀ ℓ → 𝕋 (ℓ ⁺)
+𝔻 ℓ = TypeWithStr ℓ discrete
+
+𝔻₀ : 𝕋₁
+𝔻₀ = 𝔻 ℓ0
+
+isSetTyp𝔻 : {𝗔 : 𝔻 ℓ} → isSet (typ 𝗔)
+isSetTyp𝔻 {𝗔} = discrete→isSet (str 𝗔)

@@ -11,9 +11,10 @@ open import Foundation.Data.Nat.Order
 open import FOL.Language
 module FOL.Syntax.FreshVariables (ℒ : Language) where
 
-open Language ℒ
 open import FOL.Syntax.Base ℒ
 ```
+
+**<u>定义</u>** 我们说 `n` 在 `t` 中未使用 (或者说 `n` 对 `t` 是新变元), 当且仅当
 
 ```agda
 data freshₜ (n : ℕ) : Term → 𝕋 where

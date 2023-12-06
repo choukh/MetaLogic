@@ -4,7 +4,7 @@ open import Foundation.Prelude
 open import Foundation.Data.Sigma
 
 open import Data.List public
-  using (map; length; _++_; [_])
+  using (map; _++_; concat; length; [_])
 
 open import Data.List.Properties public
   using (length-map; length-++; ++-assoc; ++-identityʳ)

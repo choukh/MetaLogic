@@ -26,24 +26,27 @@ open import Foundation.Essential
 module FOL.Language where
 ```
 
-**<u>定义</u>** 一阶逻辑的语言 `ℒ` 是一个四元组
+**<u>定义</u>** 一阶逻辑的语言 `ℒ` 是一个六元组
 
-- 离散且可枚举的函数符号集 `𝓕`
-- 离散且可枚举的关系符号集 `𝓡`
+- 离散的函数符号集 `𝓕`
+- 离散的关系符号集 `𝓡`
 - `𝓕` 到元数的映射 `∣_∣ᶠ`
 - `𝓡` 到元数的映射 `∣_∣ᴿ`
+- `𝓕` 的一个枚举
+- `𝓡` 的一个枚举
 
 ```agda
 record Language : 𝕋₁ where
+  constructor mkLang
   field
     𝓕 : 𝕋
     𝓡 : 𝕋
     ∣_∣ᶠ : 𝓕 → ℕ
     ∣_∣ᴿ : 𝓡 → ℕ
-    discr𝓕 : discrete 𝓕
     discr𝓡 : discrete 𝓡
-    enum𝓕 : enumerable 𝓕
-    enum𝓡 : enumerable 𝓡
+    discr𝓕 : discrete 𝓕
+    enum𝓕 : Enum 𝓕
+    enum𝓡 : Enum 𝓡
 ```
 
 注意, 在经典语境下集合一定是离散的, 但在直觉主义 HoTT 中, 离散强于“集合”. 因此当我们要求某 `A` 是“离散集”的时候, 实际上只要求它是离散类型, 然后它自然是一个集合.
@@ -52,10 +55,10 @@ record Language : 𝕋₁ where
 
 ```agda
   count𝓕 : countable 𝓕
-  count𝓕 = discr→enum→count discr𝓕 enum𝓕
+  count𝓕 = discr→enum→count discr𝓕 ∣ enum𝓕 ∣₁
 
   count𝓡 : countable 𝓡
-  count𝓡 = discr→enum→count discr𝓡 enum𝓡
+  count𝓡 = discr→enum→count discr𝓡 ∣ enum𝓡 ∣₁
 
   isSet𝓕 : isSet 𝓕
   isSet𝓕 = discrete→isSet discr𝓕
@@ -112,15 +115,15 @@ private module ExampleLanguagePA where
   discr𝓡 : discrete 𝓡
   discr𝓡 < < = yes refl
 
-  enum𝓕 : enumerable 𝓕
-  enum𝓕 = ∣_∣₁ $ (λ _ → O ∷ S ∷ + ∷ [ * ]) , (λ _ → [] , refl) ,
+  enum𝓕 : Enum 𝓕
+  enum𝓕 = (λ _ → O ∷ S ∷ + ∷ [ * ]) , (λ _ → [] , refl) ,
     λ { O → ex 0 (here refl)
       ; S → ex 0 (there (here refl))
       ; + → ex 0 (there (there (here refl)))
       ; * → ex 0 (there (there (there (here refl)))) }
 
-  enum𝓡 : enumerable 𝓡
-  enum𝓡 = ∣_∣₁ $ (λ _ → < ∷ []) , (λ _ → [] , refl) ,
+  enum𝓡 : Enum 𝓡
+  enum𝓡 = (λ _ → < ∷ []) , (λ _ → [] , refl) ,
     λ { < → ex 0 (here refl) }
 ```
 
