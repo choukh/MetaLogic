@@ -450,7 +450,7 @@ open import Foundation.Relation.Nullary.Discrete public
 
 **<u>定义</u>** `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定.
 
-如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete`).
+如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete`). 离散集合宇宙 `𝔻 ℓ` 定义为 `TypeWithStr ℓ discrete`, 也叫经典集合宇宙.
 
 ### 一元关系
 
