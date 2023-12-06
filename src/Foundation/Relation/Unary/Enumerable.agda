@@ -14,7 +14,7 @@ open import Foundation.Data.Maybe
 open import Foundation.Data.Sigma
 open import Foundation.Data.Sum
 open import Foundation.Data.List
-open import Foundation.Data.List.Cumulative
+open import Foundation.Data.List.Cumulation
 open import Foundation.Data.List.SetTheoretic
 open import Foundation.Data.List.Discrete (discrete× discreteℕ discreteℕ)
 
@@ -74,10 +74,10 @@ module ListView where
   f witness x = ∃ n ， x ∈ f n
 
   Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ， Cumulative f ∧ ∀ (x : A) → f witness x
+  Enum A = Σ f ， Cumulation f ∧ ∀ (x : A) → f witness x
 
   Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ， Cumulative f ∧ ∀ x → P x ↔ f witness x
+  Enumℙ P = Σ f ， Cumulation f ∧ ∀ x → P x ↔ f witness x
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
   Enum↔ℙ = ⇒: (λ (f , cum , H) → f , cum , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
@@ -125,7 +125,7 @@ module ListView where
     h : 𝕃ₙ (A × B)
     h zero = f 0 [×] g 0
     h (suc n) = h n ++ f n [×] g n
-    h-cum : Cumulative h
+    h-cum : Cumulation h
     h-cum n = f n [×] g n , refl
     h-wit : ∀ xy → h witness xy
     h-wit (x , y) = intro1²→1 (f-wit x) (g-wit y) H where
@@ -140,7 +140,7 @@ module ListView where
   e2ℕ : 𝕃ₙ (ℕ × ℕ)
   e2ℕ = Enum2ℕ .fst
 
-  e2ℕ-cum : Cumulative e2ℕ
+  e2ℕ-cum : Cumulation e2ℕ
   e2ℕ-cum = Enum2ℕ .snd .fst
 
   ∈e2ℕ-intro : ∀ m n → (m , n) ∈ e2ℕ (suc (m + n))
@@ -236,7 +236,7 @@ module ListView where
     h : 𝕃ₙ A
     h zero = []
     h (suc n) = h n ++ g n
-    h-cum : Cumulative h
+    h-cum : Cumulation h
     h-cum n = g n , refl
     h-enum : ∀ x → P x ↔ h witness x
     h-enum x =

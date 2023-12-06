@@ -346,11 +346,11 @@ open import Foundation.Data.List.SetTheoretic public
   renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_)
 ```
 
-**<u>定义</u>** 我们说列表的无穷序列 (`f : 𝕃ₙ A`) 是累积的 (`Cumulative`), 当且仅当对任意 `n` 都存在 `xs : 𝕃 A` 使得 `f n ≡ f m ++ xs`, 其中 `_++_` 是列表的拼接操作.
+**<u>定义</u>** 我们说列表的无穷序列 (`f : 𝕃ₙ A`) 是累积的 (`Cumulation`), 当且仅当对任意 `n` 都存在 `xs : 𝕃 A` 使得 `f n ≡ f m ++ xs`, 其中 `_++_` 是列表的拼接操作.
 
 ```agda
-open import Foundation.Data.List.Cumulative public
-  using (𝕃ₙ; Cumulative)
+open import Foundation.Data.List.Cumulation public
+  using (𝕃ₙ; Cumulation)
 ```
 
 #### 向量

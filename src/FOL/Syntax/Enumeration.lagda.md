@@ -16,7 +16,7 @@ open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 ```
 
-## 向量的枚举性
+## 向量的枚举
 
 ```agda
 combine : 𝕃 A → (n : ℕ) → 𝕃 (𝕍 A n)
@@ -32,6 +32,11 @@ termLists zero = []
 termLists (suc n) = termLists n ++ # n ∷ concat (map apps (eᶠ n)) where
   apps : 𝓕 → 𝕃 Term
   apps f = map (f $̇_) (combine (termLists n) ∣ f ∣ᶠ)
+```
+
+```
+termListsCum : Cumulation termLists
+termListsCum _ = _ , refl
 ```
 
 ---

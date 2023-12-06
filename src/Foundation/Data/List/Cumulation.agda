@@ -1,4 +1,4 @@
-module Foundation.Data.List.Cumulative where
+module Foundation.Data.List.Cumulation where
 
 open import Foundation.Prelude
 open import Foundation.Data.Nat
@@ -12,10 +12,10 @@ open import Foundation.Data.List.SetTheoretic public
 𝕃ₙ : 𝕋 ℓ → 𝕋 ℓ
 𝕃ₙ A = ℕ → 𝕃 A
 
-Cumulative : 𝕃ₙ A → 𝕋 _
-Cumulative f = ∀ n → Σ xs ， f (suc n) ≡ f n ++ xs
+Cumulation : 𝕃ₙ A → 𝕋 _
+Cumulation f = ∀ n → Σ xs ， f (suc n) ≡ f n ++ xs
 
-module _ {f : 𝕃ₙ A} (cum : Cumulative f) where
+module _ {f : 𝕃ₙ A} (cum : Cumulation f) where
 
   cum-≤→++ : {m n : ℕ} → m ≤ n → Σ xs ， f n ≡ f m ++ xs
   cum-≤→++ {m = n} {n} ≤-refl = [] , sym (++-identityʳ (f n))
