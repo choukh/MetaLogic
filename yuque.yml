@@ -1,5 +1,5 @@
 # 配置请参考：https://www.yuque.com/waquehq/docs/configuration
 repo: 'ocau/metalogic'
-pattern: 'src/**/*.lagda.md'
+pattern: 'src/**/*.md'
 summary: 'yuque/summary.md'
 promote: false

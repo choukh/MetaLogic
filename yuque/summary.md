@@ -1,4 +1,6 @@
-- [0 元语言](foundation.essential)
+- [0 元语言](foundation)
+  - [0.1 快速导入](foundation.essential)
+  - [0.9 符号速查](foundation.cheatsheet)
 - [1 一阶逻辑](fol)
   - [1.0 语言](fol.language)
   - [1.1 语法](fol.syntax)

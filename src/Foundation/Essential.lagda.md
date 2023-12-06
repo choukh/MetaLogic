@@ -2,7 +2,7 @@
 url: foundation.essential
 ---
 
-# 元语言
+# 元语言 ▸ 快速导入
 
 ## 前言
 
