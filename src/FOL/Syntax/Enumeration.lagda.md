@@ -7,13 +7,11 @@ url: fol.syntax.enumeration
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-
-module FOL.Syntax.Enumeration
-  (ℒ @ (mkLang 𝓕 𝓡 ∣_∣ᶠ ∣_∣ᴿ _ _ (𝓕-enum , 𝓕-cum , 𝓕-wit) (𝓡-enum , 𝓡-cum , 𝓡-wit)) : Language)
-  where
+module FOL.Syntax.Enumeration (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
+instance _ = ℒ
 ```
 
 ## 向量的枚举
@@ -33,32 +31,32 @@ combine-wit = {!   !}
 ## 项的枚举
 
 ```agda
-term-enum : 𝕃ₙ Term
-term-enum zero = []
-term-enum (suc n) = term-enum n ++ # n ∷ concat (map apps (𝓕-enum n)) where
-  apps : 𝓕 → 𝕃 Term
-  apps f = map (f $̇_) (combine (term-enum n) ∣ f ∣ᶠ)
+instance
+  enumTerm : Enum Term
+  enumTerm = mkEnum e c w where
 ```
 
 ```agda
-term-cum : Cumulation term-enum
-term-cum _ = _ , refl
+    e : 𝕃ₙ Term
+    e zero = []
+    e (suc n) = e n ++ # n ∷ concat (map apps (enum n)) where
+      apps : 𝓕 → 𝕃 Term
+      apps f = map (f $̇_) (combine (e n) ∣ f ∣ᶠ)
 ```
 
 ```agda
-term-wit : ∀ t → term-enum witness t
-term-wit = term-elim
-  (λ n → ex (suc n) (∈-++⁺ʳ (term-enum n) (here refl)))
-  (λ f t⃗ IH → {!   !})
+    c : Cumulation e
+    c _ = _ , refl
 ```
 
 ```agda
-enumTerm : Enum Term
-enumTerm = term-enum , term-cum , term-wit
+    w : ∀ t → e witness t
+    w = term-elim
+      (λ n → ex (suc n) (∈-++⁺ʳ (e n) (here refl)))
+      (λ f t⃗ IH → {!   !})
 ```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Enumeration.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Enumeration.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.enumeration)  
 > 交流Q群: 893531731
- 

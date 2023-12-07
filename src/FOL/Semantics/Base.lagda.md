@@ -9,9 +9,10 @@ url: fol.semantics.base
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Semantics.Base (ℒ @ (mkLang 𝓕 𝓡 ∣_∣ᶠ ∣_∣ᴿ _ _ _ _) : Language) where
+module FOL.Semantics.Base (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
+instance _ = ℒ
 ```
 
 ## 解释
@@ -27,9 +28,9 @@ Valuation D = ℕ → D
 
 **<u>定义</u>** 给定论域 `D`, 到其之上的符号解释 (`Interpretation`) 是一个三元组
 
-- 函数符号解释 `fᴵ`, 它将函数符号映射到论域上的函数
-- 关系符号解释 `Rᴵ`, 它将关系符号映射到论域上的命题性关系
-- 公式 `⊥̇` 的解释 `⊥ᴵ`, 它是一个**命题**
+1. 函数符号解释 `fᴵ`, 它将函数符号映射到论域上的函数
+2. 关系符号解释 `Rᴵ`, 它将关系符号映射到论域上的命题性关系
+3. 公式 `⊥̇` 的解释 `⊥ᴵ`, 它是一个**命题**
 
 ```agda
 record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
@@ -122,7 +123,7 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 
 **<u>注意</u>** 以上定义的 `_⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨ₛ_ _⊫ₛ_` 这六个概念都是以解释为参数的.
 
-**<u>约定</u>** 我们一次只会谈论一种解释, 它在上下文中是明确的, 首次出现时会放在括号 `⦃ ⦄` 中来标明, 所以每次提到这些概念时不会一一带上某解释 `ℐ` 作为参数, 从而精简表达. 该约定表达为以下代码.
+**<u>约定</u>** 我们一次只会谈论一种解释, 它在上下文中是明确的, 首次出现时会放在括号 `⦃ ⦄` 中或使用 `instance` 关键字来声明, 所以每次提到这些概念时不会一一带上某解释 `ℐ` 作为参数, 从而精简表达. 该约定表达为以下代码.
 
 ```agda
 open Interpretation ⦃...⦄ public
@@ -242,9 +243,9 @@ isProp⊫ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPro
 
 **<u>定义</u>** 一个结构 (`Structure`) 是一个三元组
 
-- 论域 `Domain`
-- 到论域的变元赋值表 `𝓋`
-- 到论域的符号解释 `ℐ`
+1. 论域 `Domain`
+2. 到论域的变元赋值表 `𝓋`
+3. 到论域的符号解释 `ℐ`
 
 ```agda
 record Structure ℓ : 𝕋 (ℓ ⁺) where

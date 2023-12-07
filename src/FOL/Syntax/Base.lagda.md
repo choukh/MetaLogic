@@ -9,7 +9,8 @@ url: fol.syntax.base
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Syntax.Base (ℒ @ (mkLang 𝓕 𝓡 ∣_∣ᶠ ∣_∣ᴿ _ _ _ _) : Language) where
+module FOL.Syntax.Base (ℒ : Language) where
+instance _ = ℒ
 ```
 
 以下列出了本篇所引入的符号的优先级. 数字越大则优先级越高, 未列出的符号默认具有 20 的优先级. 它们的具体定义会在后文给出.
@@ -258,8 +259,8 @@ _⊬_ : Context → Formula → 𝕋
 
 **<u>定义</u>** 理论 `𝒯` 下对公式 `φ` 的证明树, 记作 `𝒯 ⊩ φ` (“不能构造 `𝒯 ⊩ φ`” 记作 `𝒯 ⊮ φ`), 是一个二元组
 
-- 包含于 `𝒯` 的语境 `Γ`
-- `Γ` 下对 `φ` 的证明树 `Γ ⊢ φ`
+1. 包含于 `𝒯` 的语境 `Γ`
+2. `Γ` 下对 `φ` 的证明树 `Γ ⊢ φ`
 
 其中语境 `Γ` 包含于理论 `𝒯` 是指 `Γ` 中的公理都属于 `𝒯`.
 

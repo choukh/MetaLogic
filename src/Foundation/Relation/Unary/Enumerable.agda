@@ -73,15 +73,26 @@ module ListView where
   _witness_ : 𝕃ₙ A → A → 𝕋 _
   f witness x = ∃ n ， x ∈ f n
 
-  Enum : 𝕋 ℓ → 𝕋 _
-  Enum A = Σ f ， Cumulation f ∧ ∀ (x : A) → f witness x
+  record Enum (A : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
+    constructor mkEnum
+    field
+      enum : 𝕃ₙ A
+      cum : Cumulation enum
+      wit : ∀ x → enum witness x
 
-  Enumℙ : (A → 𝕋 ℓ) → 𝕋 _
-  Enumℙ P = Σ f ， Cumulation f ∧ ∀ x → P x ↔ f witness x
+  record Enumℙ {A : 𝕋 ℓ} (P : A → 𝕋 ℓ′) : 𝕋 (ℓ ⊔ ℓ′) where
+    constructor mkEnumℙ
+    field
+      enumℙ : 𝕃ₙ A
+      cumℙ : Cumulation enumℙ
+      witℙ : ∀ x → P x ↔ enumℙ witness x
+
+  open Enum ⦃...⦄ public
+  open Enumℙ ⦃...⦄ public
 
   Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
-  Enum↔ℙ = ⇒: (λ (f , cum , H) → f , cum , λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
-           ⇐: (λ (f , cum , H) → f , cum , λ x → H x .⇒ tt)
+  Enum↔ℙ = ⇒: (λ (mkEnum f cum H) → mkEnumℙ f cum λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
+           ⇐: (λ (mkEnumℙ f cum H) → mkEnum f cum λ x → H x .⇒ tt)
 
   enumerable : 𝕋 ℓ → 𝕋 _
   enumerable A = ∥ Enum A ∥₁
@@ -93,7 +104,7 @@ module ListView where
   enumerable↔ℙ = ↔-map1 Enum↔ℙ
 
   Enum𝔹 : Enum 𝔹
-  Enum𝔹 = (λ _ → true ∷ [ false ]) , (λ n → [] , refl) ,
+  Enum𝔹 = mkEnum (λ _ → true ∷ [ false ]) (λ n → [] , refl)
     λ { true →  ex 0 (here refl)
       ; false → ex 0 (there $ here refl) }
 
@@ -102,7 +113,7 @@ module ListView where
   eℕ (suc n) = eℕ n ++ [ suc n ]
 
   Enumℕ : Enum ℕ
-  Enumℕ = eℕ , (λ n → [ suc n ] , refl) , λ n → ex n (H n) where
+  Enumℕ = mkEnum eℕ (λ n → [ suc n ] , refl) λ n → ex n (H n) where
     H : ∀ n → n ∈ eℕ n
     H zero = here refl
     H (suc n) = ∈-++⁺ʳ _ (here refl)
@@ -121,7 +132,7 @@ module ListView where
     suc (suc n)                       ∎
 
   Enum× : Enum A → Enum B → Enum (A × B)
-  Enum× {A} {B} (f , f-cum , f-wit) (g , g-cum , g-wit) = h , h-cum , h-wit where
+  Enum× {A} {B} (mkEnum f f-cum f-wit) (mkEnum g g-cum g-wit) = mkEnum h h-cum h-wit where
     h : 𝕃ₙ (A × B)
     h zero = f 0 [×] g 0
     h (suc n) = h n ++ f n [×] g n
@@ -134,73 +145,68 @@ module ListView where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
 
-  Enum2ℕ : Enum (ℕ × ℕ)
-  Enum2ℕ = Enum× Enumℕ Enumℕ
+  instance
+    Enum2ℕ : Enum (ℕ × ℕ)
+    Enum2ℕ = Enum× Enumℕ Enumℕ
 
-  e2ℕ : 𝕃ₙ (ℕ × ℕ)
-  e2ℕ = Enum2ℕ .fst
-
-  e2ℕ-cum : Cumulation e2ℕ
-  e2ℕ-cum = Enum2ℕ .snd .fst
-
-  ∈e2ℕ-intro : ∀ m n → (m , n) ∈ e2ℕ (suc (m + n))
+  ∈e2ℕ-intro : ∀ m n → (m , n) ∈ enum (suc (m + n))
   ∈e2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
     m∈eℕm+n : m ∈ eℕ (m + n)
     m∈eℕm+n = ∈eℕ-intro m (m + n) m≤m+n
     n∈eℕm+n : n ∈ eℕ (m + n)
     n∈eℕm+n = ∈eℕ-intro n (m + n) m≤n+m
 
-  e2ℕ-length-zero : length (e2ℕ zero) ≡ suc zero
+  e2ℕ-length-zero : length (enum zero) ≡ suc zero
   e2ℕ-length-zero = refl
 
-  e2ℕ-length-suc : ∀ n → length (e2ℕ (suc n)) ≡ length (e2ℕ n) + suc n * suc n
+  e2ℕ-length-suc : ∀ n → length (enum (suc n)) ≡ length (enum n) + suc n * suc n
   e2ℕ-length-suc n =
-    length (e2ℕ (suc n))                           ≡⟨ length-++ (e2ℕ n) ⟩
-    length (e2ℕ n) + length (eℕ n [×] eℕ n)        ≡⟨ cong (length (e2ℕ n) +_) $ [×]-length (eℕ n) (eℕ n) ⟩
-    length (e2ℕ n) + length (eℕ n) * length (eℕ n) ≡⟨ cong (length (e2ℕ n) +_) $ cong2 _*_ (eℕ-length n) (eℕ-length n) ⟩
-    length (e2ℕ n) + suc n * suc n                 ∎
+    length (enum (suc n))                           ≡⟨ length-++ (enum n) ⟩
+    length (enum n) + length (eℕ n [×] eℕ n)        ≡⟨ cong (length (enum n) +_) $ [×]-length (eℕ n) (eℕ n) ⟩
+    length (enum n) + length (eℕ n) * length (eℕ n) ≡⟨ cong (length (enum n) +_) $ cong2 _*_ (eℕ-length n) (eℕ-length n) ⟩
+    length (enum n) + suc n * suc n                 ∎
 
-  e2ℕ-length->n : ∀ n → length (e2ℕ n) > n
+  e2ℕ-length->n : ∀ n → length (enum n) > n
   e2ℕ-length->n zero = ≤-refl
   e2ℕ-length->n (suc n) = subst (_> suc n) (e2ℕ-length-suc n) H where
-    H : length (e2ℕ n) + suc n * suc n > suc n
+    H : length (enum n) + suc n * suc n > suc n
     H = +-mono-≤ H2 (m≤m*n _ _) where
-      H2 : 1 ≤ length (e2ℕ n)
+      H2 : 1 ≤ length (enum n)
       H2 = ≤-trans (s≤s z≤n) (e2ℕ-length->n n)
 
   e2ℕⓂ : ℕ → (ℕ × ℕ) ？
-  e2ℕⓂ n = e2ℕ n [ n ]?
+  e2ℕⓂ n = enum n [ n ]?
 
   e2ℕⓂ-enum : ∀ p → Σ k ， e2ℕⓂ k ≡ some p
-  e2ℕⓂ-enum (m , n) with e2ℕ (suc (m + n)) [ m , n ]⁻¹? in eq1
+  e2ℕⓂ-enum (m , n) with enum (suc (m + n)) [ m , n ]⁻¹? in eq1
   ... | none rewrite x∈→Σ[x]⁻¹? (∈e2ℕ-intro m n) .snd with eq1
   ... | ()
   e2ℕⓂ-enum (m , n) | some k with e2ℕⓂ k in eq2
-  ... | none rewrite Σ[<length]? (e2ℕ k) (e2ℕ-length->n k) .snd with eq2
+  ... | none rewrite Σ[<length]? (Enum2ℕ .enum k) (e2ℕ-length->n k) .snd with eq2
   ... | ()
   e2ℕⓂ-enum (m , n) | some k | some q = k , H where
     --eq1 : e2ℕ (suc (m + n)) [ m , n ]⁻¹? ≡ some k
     --eq2 : e2ℕⓂ k ≡ e2ℕ k [ k ]? ≡ some q
     H : e2ℕⓂ k ≡ some (m , n)
     H with ≤-total k (suc (m + n))
-    ... | inj₁ ≤ with cum-≤→++ e2ℕ-cum ≤
+    ... | inj₁ ≤ with cum-≤→++ cum ≤
     ... | xs , eq3 =
       e2ℕⓂ k                            ≡⟨ eq2 ⟩
-      some q                            ≡˘⟨ ++[]? (e2ℕ k) eq2 ⟩
-      (e2ℕ k ++ xs) [ k ]?              ≡˘⟨ cong (_[ k ]?) eq3 ⟩
-      e2ℕ (suc (m + n)) [ k ]?          ≡⟨ index-inv (e2ℕ (suc (m + n))) eq1 ⟩
+      some q                            ≡˘⟨ ++[]? (enum k) eq2 ⟩
+      (enum k ++ xs) [ k ]?             ≡˘⟨ cong (_[ k ]?) eq3 ⟩
+      enum (suc (m + n)) [ k ]?         ≡⟨ index-inv (enum (suc (m + n))) eq1 ⟩
       some (m , n)                      ∎
-    H | inj₂ ≥ with cum-≤→++ e2ℕ-cum ≥
+    H | inj₂ ≥ with cum-≤→++ cum ≥
     ... | xs , eq3 =
       e2ℕⓂ k                            ≡⟨ cong (_[ k ]?) eq3 ⟩
-      (e2ℕ (suc (m + n)) ++ xs) [ k ]?  ≡⟨ ++[]? (e2ℕ (suc (m + n))) (index-inv (e2ℕ (suc (m + n))) eq1) ⟩
+      (enum (suc (m + n)) ++ xs) [ k ]? ≡⟨ ++[]? (enum (suc (m + n))) (index-inv (enum (suc (m + n))) eq1) ⟩
       some (m , n)                      ∎
 
   EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
   EnumⓂ2ℕ = e2ℕⓂ , ∣_∣₁ ∘ e2ℕⓂ-enum
 
   Enumℙ→Ⓜ : {P : A → 𝕋 ℓ} → Enumℙ P → Ⓜ.Enumℙ P
-  Enumℙ→Ⓜ {A} {P} (f , f-cum , f-wit) = g , g-wit where
+  Enumℙ→Ⓜ {A} {P} (mkEnumℙ f f-cum f-wit) = g , g-wit where
     g : ℕ → A ？
     g n with e2ℕⓂ n
     ... | some (m , n) = f m [ n ]?
@@ -219,7 +225,7 @@ module ListView where
       ... | x∈fm = m , x∈fm
 
   Enumℙ←Ⓜ : {P : A → 𝕋 ℓ} → Ⓜ.Enumℙ P → Enumℙ P
-  Enumℙ←Ⓜ {A} {P} (f , f-enum) = h , h-cum , h-enum where
+  Enumℙ←Ⓜ {A} {P} (f , f-enum) = mkEnumℙ h h-cum h-enum where
     g : 𝕃ₙ A
     g n with f n
     ... | some x = [ x ]
