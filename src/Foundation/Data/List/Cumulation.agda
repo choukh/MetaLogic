@@ -5,9 +5,8 @@ open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
+open import Foundation.Data.List.SetTheoretic
 open import Foundation.Data.Sigma
-
-open import Foundation.Data.List.SetTheoretic public
 
 𝕃ₙ : 𝕋 ℓ → 𝕋 ℓ
 𝕃ₙ A = ℕ → 𝕃 A

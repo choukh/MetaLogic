@@ -6,11 +6,12 @@ open import Foundation.Function.Isomorphism
 open import Foundation.Data.Maybe
 open import Foundation.Data.List
 open import Foundation.Data.Sigma
+open import Foundation.Data.Sum
 
 open import Data.List.Membership.Propositional public
   using (_∈_; _∉_)
 open import Data.List.Membership.Propositional.Properties public
-  using (map-∈↔; ∈-++⁺ˡ; ∈-++⁺ʳ; ∈-++⁻)
+  using (map-∈↔; ∈-++⁺ˡ; ∈-++⁺ʳ; ∈-++⁻; ∈-concat⁺′)
 open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_)
 open import Data.List.Relation.Unary.Any public
@@ -25,8 +26,8 @@ open import Data.List.Relation.Unary.Any public
 []?→∈ (x ∷ xs) {n = zero} refl = here refl
 []?→∈ (y ∷ xs) {n = suc n} eq = there $ []?→∈ xs eq
 
-∈map-intro : ∀ {f : A → B} {xs y} → (Σ x ， x ∈ xs × y ≡ f x) → y ∈ map f xs
-∈map-intro {f} = Iso←ⓢ (map-∈↔ f) .fun
+∈map-intro : ∀ {f : A → B} {x xs y} → x ∈ xs → y ≡ f x → y ∈ map f xs
+∈map-intro {f} H1 H2 = Iso←ⓢ (map-∈↔ f) .fun $ _ , H1 , H2
 
 ∈map-elim : ∀ {f : A → B} {xs y} → y ∈ map f xs → Σ x ， x ∈ xs × y ≡ f x
 ∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
@@ -42,8 +43,15 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 (x ∷ xs) [×] ys = map (x ,_) ys ++ xs [×] ys
 
 ∈[×]-intro : ∀ {xs : 𝕃 A} {ys : 𝕃 B} {x y} → x ∈ xs → y ∈ ys → (x , y) ∈ xs [×] ys
-∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro $ _ , y∈ , refl
+∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro y∈ refl
 ∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ _ $ ∈[×]-intro x∈ y∈
+
+∈[×]-elim : ∀ {xs : 𝕃 A} {ys : 𝕃 B} {p@(x , y) : A × B} → p ∈ xs [×] ys → x ∈ xs × y ∈ ys
+∈[×]-elim {xs = x ∷ xs} {ys} p∈ with ∈-++⁻ (map (x ,_) ys) p∈
+∈[×]-elim _ | inj₁ H with ∈map-elim H
+... | y , y∈ , refl = here refl , y∈
+∈[×]-elim _ | inj₂ H with ∈[×]-elim H
+... | H1 , H2 = there H1 , H2
 
 [×]-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs [×] ys) ≡ length xs * length ys
 [×]-length [] _ = refl
@@ -52,3 +60,4 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
   length (map (x ,_) ys) + length (xs [×] ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
   length ys + length (xs [×] ys)              ≡⟨ cong (_ +_) ([×]-length xs ys) ⟩
   length ys + length xs * length ys           ∎
+  

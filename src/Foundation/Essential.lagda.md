@@ -353,19 +353,18 @@ open import Foundation.Data.List public
 
 列表 `𝕃 A` 是不定长可数有限类型. 不定长是指列表的类型签名中不储存长度信息, 可数是指列表的项有一个典范线序, 有限是指列表的长度是个自然数. 当 `A` 是集合时, `𝕃 A` 也是集合 (`isSet𝕃`).
 
-我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈ᴸ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈ᴸ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
-
 ```agda
 open import Foundation.Data.List.SetTheoretic public
   renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_)
 ```
 
-**<u>定义</u>** 列表的无穷序列 (`f : 𝕃ₙ A`) 的一个累积 (`Cumulation f`) 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
+我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈ᴸ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈ᴸ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
 
 ```agda
 open import Foundation.Data.List.Cumulation public
-  using (𝕃ₙ; Cumulation)
 ```
+
+**<u>定义</u>** 列表的无穷序列 (`f : 𝕃ₙ A`) 的一个累积 (`Cumulation f`) 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
 
 #### 向量
 

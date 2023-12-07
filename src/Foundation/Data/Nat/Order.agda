@@ -1,7 +1,9 @@
 module Foundation.Data.Nat.Order where
 
 open import Data.Nat public
-  using (_≤_; z≤n)
+  using (
+    _≤_; z≤n
+    )
 open import Data.Nat.Properties public
   using (
     ≤-trans;
