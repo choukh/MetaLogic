@@ -25,7 +25,8 @@ combine xs (suc n) = map (λ (x , x⃗) → x ∷ x⃗) (xs [×] combine xs n)
 ```agda
 combine-wit : {f : 𝕃ₙ A} → Cumulation f → {n : ℕ} (x⃗ : 𝕍 A n) →
   (∀ x → x ∈⃗ x⃗ → f witness x) → (λ m → combine (f m) n) witness x⃗
-combine-wit = {!   !}
+combine-wit cum [] _ = ex 0 (here refl)
+combine-wit cum (x ∷ x⃗) H = {! 𝟙.rec  !}
 ```
 
 ## 项的枚举

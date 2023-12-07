@@ -6,7 +6,7 @@ open import Foundation.Prop.Truncation
 
 open import Foundation.Prop.Logic
 open import Foundation.Prop.Iff
-open import Foundation.Prop.ConstructiveEpsilon
+open import Foundation.Data.Nat.ConstructiveEpsilon
 
 open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
@@ -44,10 +44,10 @@ module MaybeView where
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
-  enumerable↔ℙ = ↔-map1 Enum↔ℙ
+  enumerable↔ℙ = ↔-map Enum↔ℙ
 
   discr→enum→count : discrete A → enumerable A → countable A
-  discr→enum→count {A} disA = map1 H where
+  discr→enum→count {A} disA = 𝟙.map H where
     H : Enum A → A ↣ ℕ
     H (f , H) = g₁ , g₁-inj where
       g : ∀ x → Σ n ， f n ≡ some x
@@ -101,7 +101,7 @@ module ListView where
   enumerableℙ P = ∥ Enumℙ P ∥₁
 
   enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
-  enumerable↔ℙ = ↔-map1 Enum↔ℙ
+  enumerable↔ℙ = ↔-map Enum↔ℙ
 
   Enum𝔹 : Enum 𝔹
   Enum𝔹 = mkEnum (λ _ → true ∷ [ false ]) (λ n → [] , refl)
@@ -139,7 +139,7 @@ module ListView where
     h-cum : Cumulation h
     h-cum n = f n [×] g n , refl
     h-wit : ∀ xy → h witness xy
-    h-wit (x , y) = intro1²→1 (f-wit x) (g-wit y) H where
+    h-wit (x , y) = 𝟙.intro2 (f-wit x) (g-wit y) H where
       H : Σ n ， x ∈ f n → Σ n ， y ∈ g n → ∃ n ， (x , y) ∈ h n
       H (m , x∈fm) (n , x∈gn) = ex (suc (m + n)) (∈-++⁺ʳ _ H2) where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
@@ -214,7 +214,7 @@ module ListView where
     g-cal : ∀ k {m n} → e2ℕⓂ k ≡ some (m , n) → g k ≡ f m [ n ]?
     g-cal _ eq rewrite eq = refl
     g-wit : ∀ x → P x ↔ g Ⓜ.witness x
-    g-wit x = ↔-trans (f-wit x) $ ⇒: map1 (uncurry H1) ⇐: map1 (uncurry H2) where
+    g-wit x = ↔-trans (f-wit x) $ ⇒: 𝟙.map (uncurry H1) ⇐: 𝟙.map (uncurry H2) where
       H1 : ∀ n → x ∈ f n → Σ n ， g n ≡ some x
       H1 m x∈fn with ∈→Σ[]? x∈fn
       ... | n , fm[n] with e2ℕⓂ-enum (m , n)
@@ -247,8 +247,8 @@ module ListView where
     h-enum : ∀ x → P x ↔ h witness x
     h-enum x =
       P x           ↔⟨ f-enum x ⟩
-      f Ⓜ.witness x ↔⟨ ↔-map1 $ wit↔ x ⟩
-      g witness x   ↔⟨ ↔-map1 $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
+      f Ⓜ.witness x ↔⟨ ↔-map $ wit↔ x ⟩
+      g witness x   ↔⟨ ↔-map $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
       h witness x   ↔∎ where
         H1 : ∀ n → x ∈ g n → Σ n ， x ∈ h n
         H1 n x∈gn = suc n , ∈-++⁺ʳ _ x∈gn
@@ -261,7 +261,7 @@ module ListView where
   Enumℙ↔Ⓜ = ⇒: Enumℙ→Ⓜ ⇐: Enumℙ←Ⓜ
 
   enumerableℙ↔Ⓜ : enumerableℙ P ↔ Ⓜ.enumerableℙ P
-  enumerableℙ↔Ⓜ = ↔-map1 Enumℙ↔Ⓜ
+  enumerableℙ↔Ⓜ = ↔-map Enumℙ↔Ⓜ
 
   enumerable↔Ⓜ : enumerable A ↔ Ⓜ.enumerable A
   enumerable↔Ⓜ {A} =

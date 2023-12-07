@@ -34,7 +34,7 @@ isPropInjective : {f : A → B} → isSet A → isProp (injective f)
 isPropInjective sA = isPropΠ̅2 λ _ _ → isProp→ (sA _ _)
 
 isPropSurjective : {f : A → B} → isProp (surjective f)
-isPropSurjective = isPropΠ λ _ → trunct1
+isPropSurjective = isPropΠ λ _ → 𝟙.squash
 
 isPropBijective : {f : A → B} → isSet A → isProp (bijective f)
 isPropBijective sA = isProp× (isPropInjective sA) isPropSurjective
@@ -58,10 +58,10 @@ injective←🧊 : injective🧊 f → injective f
 injective←🧊 inj = Eq←🧊 ∘ inj _ _ ∘ Eq→🧊 
 
 surjective→🧊 : surjective f → surjective🧊 f
-surjective→🧊 surj y = map1 (λ (x , eq) → x , Eq→🧊 eq) (surj y)
+surjective→🧊 surj y = 𝟙.map (λ (x , eq) → x , Eq→🧊 eq) (surj y)
 
 surjective←🧊 : surjective🧊 f → surjective f
-surjective←🧊 surj y = map1 (λ (x , eq) → x , Eq←🧊 eq) (surj y)
+surjective←🧊 surj y = 𝟙.map (λ (x , eq) → x , Eq←🧊 eq) (surj y)
 
 isEquiv≡bijective : {f : A → B} → isSet A → isSet B → isEquiv f ≡ bijective f
 isEquiv≡bijective sA sB = propExt (isProp←🧊 $ isPropIsEquiv _) (isPropBijective sA) $

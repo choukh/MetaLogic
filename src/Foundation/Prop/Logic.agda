@@ -14,7 +14,7 @@ open import Foundation.Data.Sum
   using (_⊎_; inj₁; inj₂)
 
 exfalso₁ : ∥ A ∥₁ → ¬ A → B
-exfalso₁ a ¬a = exfalso $ rec1→p isProp⊥ ¬a a
+exfalso₁ a ¬a = exfalso $ 𝟙.rec isProp⊥ ¬a a
 
 infixr 3 _∧_
 _∧_ = _×_
