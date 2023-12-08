@@ -60,4 +60,3 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
   length (map (x ,_) ys) + length (xs [×] ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
   length ys + length (xs [×] ys)              ≡⟨ cong (_ +_) ([×]-length xs ys) ⟩
   length ys + length xs * length ys           ∎
-  

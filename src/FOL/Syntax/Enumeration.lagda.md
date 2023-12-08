@@ -99,10 +99,10 @@ instance
 ```agda
     e : 𝕃ₙ Term
     apps : ℕ → 𝓕 → 𝕃 Term
+    apps n f = map (f $̇_) (combine (e n) ∣ f ∣ᶠ)
 
     e zero = []
     e (suc n) = e n ++ # n ∷ concat (map (apps n) (enum n))
-    apps n f = map (f $̇_) (combine (e n) ∣ f ∣ᶠ)
 ```
 
 ```agda
@@ -127,10 +127,39 @@ instance
 
 ## 公式的枚举
 
-TODO
+```agda
+instance
+  enumFormula : Enum Formula
+  enumFormula = mkEnum e c (∣_∣₁ ∘ w) where
+```
+
+```agda
+    apps : ℕ → 𝓡 → 𝕃 Formula
+    apps n R = map (R $̇_) (enum n)
+
+    e : 𝕃ₙ Formula
+    e zero = [ ⊥̇ ]
+    e (suc n) = e n
+      ++ map (uncurry _→̇_) (e n [×] e n)
+      ++ map ∀̇_ (e n)
+      ++ concat (map (apps n) (enum n))
+```
+
+```agda
+    c : Cumulation e
+    c _ = _ , refl
+```
+
+```agda
+    w : ∀ φ → Witness e φ
+    w ⊥̇ = 0 , here refl
+    w (φ →̇ ψ) with w φ | w ψ
+    ... | n , Hn | m , Hm = {!   !}
+    w (∀̇ φ) = {!   !}
+    w (R $̇ t⃗) = {!   !}
+```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Enumeration.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Enumeration.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.enumeration)  
 > 交流Q群: 893531731
- 
