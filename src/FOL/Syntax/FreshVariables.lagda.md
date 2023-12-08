@@ -56,7 +56,7 @@ Freshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Freshₜ⃗ t⃗ (λ t t∈⃗
 Freshₜ : ∀ t → Σ n ， freshₜFrom n t
 Freshₜ = term-elim
   (λ n → suc n , λ le → fresh# λ { refl → 1+n≰n le })
-  (λ f t⃗ IH → let (n , Hn) = Freshₜ⃗ t⃗ IH in
+  (λ f t⃗ IH → let n , Hn = Freshₜ⃗ t⃗ IH in
     n , λ n≤m → fresh$̇ λ t t∈⃗ → Hn t t∈⃗ n≤m)
 ```
 

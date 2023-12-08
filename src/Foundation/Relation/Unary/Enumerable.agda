@@ -24,8 +24,11 @@ open import Foundation.Relation.Unary.Countable
 
 module MaybeView where
 
+  Witness : (ℕ → A ？) → A → 𝕋 _
+  Witness f x = Σ n ， f n ≡ some x
+
   _witness_ : (ℕ → A ？) → A → 𝕋 _
-  f witness x = ∃ n ， f n ≡ some x
+  f witness x = ∥ Witness f x ∥₁
 
   Enum : 𝕋 ℓ → 𝕋 _
   Enum A = Σ f ， ∀ (x : A) → f witness x
@@ -50,7 +53,7 @@ module MaybeView where
   discr→enum→count {A} disA = 𝟙.map H where
     H : Enum A → A ↣ ℕ
     H (f , H) = g₁ , g₁-inj where
-      g : ∀ x → Σ n ， f n ≡ some x
+      g : ∀ x → Witness f x
       g x = ε sets dis (H x) where
         sets : isSets (λ n → f n ≡ some x)
         sets n = isProp→isSet $ (isSetMaybe $ discrete→isSet disA) _ _
@@ -70,8 +73,11 @@ module MaybeView where
 module ListView where
   module Ⓜ = MaybeView
 
+  Witness : 𝕃ₙ A → A → 𝕋 _
+  Witness f x = Σ n ， x ∈ f n
+
   _witness_ : 𝕃ₙ A → A → 𝕋 _
-  f witness x = ∃ n ， x ∈ f n
+  f witness x = ∥ Witness f x ∥₁
 
   record Enum (A : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
     constructor mkEnum
@@ -139,9 +145,9 @@ module ListView where
     h-cum : Cumulation h
     h-cum n = f n [×] g n , refl
     h-wit : ∀ xy → h witness xy
-    h-wit (x , y) = 𝟙.intro2 (f-wit x) (g-wit y) H where
-      H : Σ n ， x ∈ f n → Σ n ， y ∈ g n → ∃ n ， (x , y) ∈ h n
-      H (m , x∈fm) (n , x∈gn) = ex (suc (m + n)) (∈-++⁺ʳ _ H2) where
+    h-wit (x , y) = 𝟙.map2 H (f-wit x) (g-wit y) where
+      H : Witness f x → Witness g y → Witness h (x , y)
+      H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈-++⁺ʳ _ H2 where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
 
@@ -215,11 +221,11 @@ module ListView where
     g-cal _ eq rewrite eq = refl
     g-wit : ∀ x → P x ↔ g Ⓜ.witness x
     g-wit x = ↔-trans (f-wit x) $ ⇒: 𝟙.map (uncurry H1) ⇐: 𝟙.map (uncurry H2) where
-      H1 : ∀ n → x ∈ f n → Σ n ， g n ≡ some x
+      H1 : ∀ n → x ∈ f n → Ⓜ.Witness g x
       H1 m x∈fn with ∈→Σ[]? x∈fn
       ... | n , fm[n] with e2ℕⓂ-enum (m , n)
       ... | k , eq = k , g-cal k eq ∙ fm[n]
-      H2 : ∀ n → g n ≡ some x → Σ n ， x ∈ f n
+      H2 : ∀ n → g n ≡ some x → Witness f x
       H2 k fm[n] with e2ℕⓂ k
       ... | some (m , n) with []?→∈ (f m) fm[n]
       ... | x∈fm = m , x∈fm
@@ -232,11 +238,11 @@ module ListView where
     ... | none = []
     g-cal : ∀ {k x} → f k ≡ some x → g k ≡ [ x ]
     g-cal eq rewrite eq = refl
-    wit↔ : ∀ x → (Σ n ， f n ≡ some x) ↔ (Σ n ， x ∈ g n)
+    wit↔ : ∀ x → Ⓜ.Witness f x ↔ Witness g x
     wit↔ x = ⇒: uncurry H1 ⇐: uncurry H2 where
-      H1 : ∀ n → f n ≡ some x → Σ n ， x ∈ g n
+      H1 : ∀ n → f n ≡ some x → Witness g x
       H1 n fn = n , subst (x ∈_) (g-cal fn) (here refl)
-      H2 : ∀ n → x ∈ g n → Σ n ， f n ≡ some x
+      H2 : ∀ n → x ∈ g n → Ⓜ.Witness f x
       H2 n x∈gn with f n in eq
       H2 n (here refl) | some x = n , eq
     h : 𝕃ₙ A
@@ -250,9 +256,9 @@ module ListView where
       f Ⓜ.witness x ↔⟨ ↔-map $ wit↔ x ⟩
       g witness x   ↔⟨ ↔-map $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
       h witness x   ↔∎ where
-        H1 : ∀ n → x ∈ g n → Σ n ， x ∈ h n
+        H1 : ∀ n → x ∈ g n → Witness h x
         H1 n x∈gn = suc n , ∈-++⁺ʳ _ x∈gn
-        H2 : ∀ n → x ∈ h n → Σ n ， x ∈ g n
+        H2 : ∀ n → x ∈ h n → Witness g x
         H2 (suc n) x∈hn++gn with ∈-++⁻ (h n) x∈hn++gn
         ... | inj₁ x∈hn = H2 n x∈hn
         ... | inj₂ x∈gn = n , x∈gn

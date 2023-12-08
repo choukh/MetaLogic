@@ -5,7 +5,6 @@ url: fol.syntax.enumeration
 # 一阶逻辑 ▸ 语法 ▸ᐞ 公式的枚举
 
 ```agda
-{-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 
@@ -43,16 +42,50 @@ combine-≤→⊆ {n = suc n} cum m≤o H with ∈map-elim H
 combine-wit : Cumulation f → (x⃗ : 𝕍 A n) →
   (∀ x → x ∈⃗ x⃗ → f witness x) → (λ k → combine (f k) n) witness x⃗
 combine-wit _ [] _ = ex 0 (here refl)
-combine-wit {f} cum (x ∷ x⃗) H = 𝟙.intro2
-  (H x (here refl))
-  (combine-wit cum x⃗ λ y y∈⃗ → H y (there y∈⃗))
-  λ { (m , x∈fm) (o , x⃗∈comb) →
-    let H1 : x ∈ᴸ f (m + o)
-        H1 = cum-≤→⊆ cum m≤m+n x∈fm
-        H2 : x⃗ ∈ᴸ combine (f (m + o)) _
-        H2 = combine-≤→⊆ cum m≤n+m x⃗∈comb
-    in ex (m + o) $ ∈map-intro (∈[×]-intro H1 H2) refl
-  }
+combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
+    IH = combine-wit cum x⃗ λ y y∈⃗ → H0 y (there y∈⃗)
+    H : Witness f x → Witness _ x⃗ → Witness _ (x ∷ x⃗)
+    H (m , Hm) (o , Ho) = m + o , ∈map-intro (∈[×]-intro H1 H2) refl where
+      H1 : x ∈ᴸ f (m + o)
+      H1 = cum-≤→⊆ cum m≤m+n Hm
+      H2 : x⃗ ∈ᴸ combine (f (m + o)) _
+      H2 = combine-≤→⊆ cum m≤n+m Ho
+```
+
+```agda
+instance
+  enumVec : ⦃ Enum A ⦄ → Enum (𝕍 A n)
+  enumVec {A} = mkEnum e c w where
+```
+
+```agda
+    e : 𝕃ₙ (𝕍 A n)
+    e zero = []
+    e {n} (suc m) = e m ++ combine (enum m) n
+```
+
+```agda
+    c : Cumulation e
+    c _ = _ , refl
+```
+
+```agda
+    c′ : {x⃗ : 𝕍 A n} → m ≤ o → x⃗ ∈ᴸ e m → x⃗ ∈ᴸ combine (enum o) n
+    c′ {m = suc m} sm≤o H with ∈-++⁻ (e m) H
+    ... | inj₁ x⃗∈en   = c′ (m+n≤o⇒n≤o 1 sm≤o) x⃗∈en
+    ... | inj₂ x⃗∈comb = combine-≤→⊆ cum (m+n≤o⇒n≤o 1 sm≤o) x⃗∈comb
+```
+
+```agda
+    w : (x⃗ : 𝕍 A n) → e witness x⃗
+    w [] = ex 1 (here refl)
+    w (x ∷ x⃗) = 𝟙.map2 H (wit x) (w x⃗) where
+      H : Witness enum x → Witness e x⃗ → Witness e (x ∷ x⃗)
+      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈-++⁺ʳ _ (∈map-intro (∈[×]-intro H1 H2) refl) where
+        H1 : x ∈ᴸ enum (m + suc n)
+        H1 = cum-≤→⊆ cum m≤m+n Hm
+        H2 : x⃗ ∈ᴸ combine (enum (m + suc n)) _
+        H2 = c′ m≤n+m Hn
 ```
 
 ## 项的枚举
@@ -79,21 +112,25 @@ instance
 
 ```agda
     w : ∀ t → e witness t
-    w = term-elim
-      (λ n → ex (suc n) $ ∈-++⁺ʳ (e n) (here refl))
-      λ f t⃗ IH → 𝟙.intro2
-        (combine-wit c t⃗ IH)
-        (wit f)
-        λ { (n , Hn) (m , Hm) →
-          let H1 : f $̇ t⃗ ∈ᴸ apps (n + m) f
-              H1 = ∈map-intro (combine-≤→⊆ c m≤m+n Hn) refl
-              H2 : apps (n + m) f ∈ᴸ map (apps (n + m)) (enum (n + m))
-              H2 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hm) refl
-          in ex (suc n + m) $ ∈-++⁺ʳ (e (n + m)) $ there (∈-concat⁺′ H1 H2)
-        }
+    w = term-elim H# H$̇ where
+      H# : ∀ n → e witness # n
+      H# n = ex (suc n) $ ∈-++⁺ʳ (e n) (here refl)
+      H$̇ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → e witness t) → e witness (f $̇ t⃗)
+      H$̇ f t⃗ IH = 𝟙.map2 H (combine-wit c t⃗ IH) (wit f) where
+        H : Witness _ t⃗ → Witness enum f → Witness e (f $̇ t⃗)
+        H (m , Hm) (n , Hn) = suc m + n , ∈-++⁺ʳ (e (m + n)) (there $ ∈-concat⁺′ H1 H2) where
+          H1 : f $̇ t⃗ ∈ᴸ apps (m + n) f
+          H1 = ∈map-intro (combine-≤→⊆ {m = m} c m≤m+n Hm) refl
+          H2 : apps (m + n) f ∈ᴸ map (apps (m + n)) (enum (m + n))
+          H2 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
 ```
+
+## 公式的枚举
+
+TODO
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Enumeration.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Enumeration.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.enumeration)  
 > 交流Q群: 893531731
+ 
