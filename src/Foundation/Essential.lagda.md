@@ -364,7 +364,7 @@ open import Foundation.Data.List.SetTheoretic public
 open import Foundation.Data.List.Cumulation public
 ```
 
-**<u>定义</u>** 列表的无穷序列 (`f : 𝕃ₙ A`) 的一个累积 (`Cumulation f`) 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
+**<u>定义</u>** 列表的无穷序列 `f : 𝕃ₙ A` 的一个累积, 记作 `Cumulation f`, 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
 
 #### 向量
 
@@ -492,8 +492,14 @@ open E.ListView public
 
 我们通常使用可枚举的另一种定义:
 
+**<u>定义</u>** 见证集和见证条件
+
+- 见证集: 给定无穷序列 `f : 𝕃ₙ A` 和 `x : A`, 满足 `x ∈ᴸ enum n` 的所有 `n` 组成的集合叫做 `x` 在 `f` 中的见证集, 记作 `Witness f x`.  
+- 见证条件: 我们说无穷序列 `f : 𝕃ₙ A` 见证了 `x : A`, 记作 `f witness x`, 当且仅当存在 `n` 满足 `x ∈ᴸ enum n`, 也即 `∥ Witness f x ∥₁` 成立.
+
 **<u>定义</u>** `A` 可枚举, 当且仅当存在 `A` 的一个枚举 `Enum A`, 它是一个二元组
-1. 使得条件 `wit` 成立的列表无穷序列 `enum : 𝕃ₙ A`. 其中 `wit` 是说对任意 `x : A`, 存在 `n` 满足 `x ∈ᴸ enum n`
+
+1. “见证了所有 `x : A`” (该条件记作 `wit`) 的列表无穷序列 `enum : 𝕃ₙ A`
 2. `f` 的一个累积 `cum : Cumulation f`
 
 可枚举的这两种定义是逻辑等价的 (`enumerable↔Ⓜ`).

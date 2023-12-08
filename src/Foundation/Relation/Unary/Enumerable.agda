@@ -122,11 +122,11 @@ module ListView where
   Enumℕ = mkEnum eℕ (λ n → [ suc n ] , refl) λ n → ex n (H n) where
     H : ∀ n → n ∈ eℕ n
     H zero = here refl
-    H (suc n) = ∈-++⁺ʳ _ (here refl)
+    H (suc n) = ∈-++⁺ʳ (here refl)
 
   ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ eℕ n
   ∈eℕ-intro zero zero ≤-refl = here refl
-  ∈eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ _ (here refl)
+  ∈eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ (here refl)
   ∈eℕ-intro m (suc n) (≤-step m≤n) = ∈-++⁺ˡ (∈eℕ-intro m n m≤n)
 
   eℕ-length : ∀ n → length (eℕ n) ≡ suc n
@@ -147,7 +147,7 @@ module ListView where
     h-wit : ∀ xy → h witness xy
     h-wit (x , y) = 𝟙.map2 H (f-wit x) (g-wit y) where
       H : Witness f x → Witness g y → Witness h (x , y)
-      H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈-++⁺ʳ _ H2 where
+      H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈-++⁺ʳ H2 where
         H2 : (x , y) ∈ f (m + n) [×] g (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ f-cum m≤m+n x∈fm) (cum-≤→⊆ g-cum m≤n+m x∈gn)
 
@@ -156,7 +156,7 @@ module ListView where
     Enum2ℕ = Enum× Enumℕ Enumℕ
 
   ∈e2ℕ-intro : ∀ m n → (m , n) ∈ enum (suc (m + n))
-  ∈e2ℕ-intro m n = ∈-++⁺ʳ _ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
+  ∈e2ℕ-intro m n = ∈-++⁺ʳ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
     m∈eℕm+n : m ∈ eℕ (m + n)
     m∈eℕm+n = ∈eℕ-intro m (m + n) m≤m+n
     n∈eℕm+n : n ∈ eℕ (m + n)
@@ -257,7 +257,7 @@ module ListView where
       g witness x   ↔⟨ ↔-map $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
       h witness x   ↔∎ where
         H1 : ∀ n → x ∈ g n → Witness h x
-        H1 n x∈gn = suc n , ∈-++⁺ʳ _ x∈gn
+        H1 n x∈gn = suc n , ∈-++⁺ʳ x∈gn
         H2 : ∀ n → x ∈ h n → Witness g x
         H2 (suc n) x∈hn++gn with ∈-++⁻ (h n) x∈hn++gn
         ... | inj₁ x∈hn = H2 n x∈hn

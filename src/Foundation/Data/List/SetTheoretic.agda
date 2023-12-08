@@ -10,12 +10,15 @@ open import Foundation.Data.Sum
 
 open import Data.List.Membership.Propositional public
   using (_∈_; _∉_)
-open import Data.List.Membership.Propositional.Properties public
-  using (map-∈↔; ∈-++⁺ˡ; ∈-++⁺ʳ; ∈-++⁻; ∈-concat⁺′)
+open import Data.List.Membership.Propositional.Properties as Ⓜ public
+  using (map-∈↔; ∈-++⁺ˡ; ∈-++⁻; ∈-concat⁺′)
 open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_)
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
+
+∈-++⁺ʳ : ∀ {x : A} {xs ys} → x ∈ ys → x ∈ xs ++ ys
+∈-++⁺ʳ = Ⓜ.∈-++⁺ʳ _
 
 ∈→Σ[]? : ∀ {xs : 𝕃 A} {x} → x ∈ xs → Σ n ， xs [ n ]? ≡ some x
 ∈→Σ[]? {xs = x ∷ xs} (here refl) = 0 , refl
@@ -44,7 +47,7 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 
 ∈[×]-intro : ∀ {xs : 𝕃 A} {ys : 𝕃 B} {x y} → x ∈ xs → y ∈ ys → (x , y) ∈ xs [×] ys
 ∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro y∈ refl
-∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ _ $ ∈[×]-intro x∈ y∈
+∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ $ ∈[×]-intro x∈ y∈
 
 ∈[×]-elim : ∀ {xs : 𝕃 A} {ys : 𝕃 B} {p@(x , y) : A × B} → p ∈ xs [×] ys → x ∈ xs × y ∈ ys
 ∈[×]-elim {xs = x ∷ xs} {ys} p∈ with ∈-++⁻ (map (x ,_) ys) p∈
@@ -60,3 +63,11 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
   length (map (x ,_) ys) + length (xs [×] ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
   length ys + length (xs [×] ys)              ≡⟨ cong (_ +_) ([×]-length xs ys) ⟩
   length ys + length xs * length ys           ∎
+
+∈map[×]-intro : ∀ {f : A × B → C} {x xs y ys} → x ∈ xs → y ∈ ys → f (x , y) ∈ map f (xs [×] ys)
+∈map[×]-intro H1 H2 = ∈map-intro (∈[×]-intro H1 H2) refl
+
+∈map[×]-elim : ∀ {f : A × B → C} {xs ys z} → z ∈ map f (xs [×] ys) → Σ x ， Σ y ， x ∈ xs × y ∈ ys × z ≡ f (x , y)
+∈map[×]-elim z∈ with ∈map-elim z∈
+... | (x , y) , xy∈ , refl with ∈[×]-elim xy∈
+... | x∈ , y∈ = x , y , x∈ , y∈ , refl

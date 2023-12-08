@@ -5,6 +5,7 @@ url: fol.syntax.enumeration
 # 一阶逻辑 ▸ 语法 ▸ᐞ 公式的枚举
 
 ```agda
+{-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 
@@ -15,6 +16,20 @@ open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 instance _ = ℒ
 ```
+
+## 枚举 (复习)
+
+**<u>定义</u>** 列表的无穷序列 `f : 𝕃ₙ A` 的一个累积, 记作 `Cumulation f`, 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
+
+**<u>定义</u>** 见证集和见证条件
+
+- 见证集: 给定无穷序列 `f : 𝕃ₙ A` 和 `x : A`, 满足 `x ∈ᴸ enum n` 的所有 `n` 组成的集合叫做 `x` 在 `f` 中的见证集, 记作 `Witness f x`.  
+- 见证条件: 我们说无穷序列 `f : 𝕃ₙ A` 见证了 `x : A`, 记作 `f witness x`, 当且仅当存在 `n` 满足 `x ∈ᴸ enum n`, 也即 `∥ Witness f x ∥₁` 成立.
+
+**<u>定义</u>** `A` 的枚举 `Enum A` 是一个二元组
+
+1. “见证了所有 `x : A`” (该条件记作 `wit`) 的列表无穷序列 `enum : 𝕃ₙ A`
+2. `f` 的一个累积 `cum : Cumulation f`
 
 ## 向量的枚举
 
@@ -27,15 +42,14 @@ private variable
 ```agda
 combine : 𝕃 A → (n : ℕ) → 𝕃 (𝕍 A n)
 combine xs zero = [ [] ]
-combine xs (suc n) = map (λ (x , x⃗) → x ∷ x⃗) (xs [×] combine xs n)
+combine xs (suc n) = map (uncurry _∷_) (xs [×] combine xs n)
 ```
 
 ```agda
 combine-≤→⊆ : Cumulation f → m ≤ o → combine (f m) n ⊆ combine (f o) n
 combine-≤→⊆ {n = zero} _ _ H = H
-combine-≤→⊆ {n = suc n} cum m≤o H with ∈map-elim H
-... | (x , x⃗) , ∈[×] , eq with ∈[×]-elim ∈[×]
-... | H1 , H2 = ∈map-intro (∈[×]-intro (cum-≤→⊆ cum m≤o H1) (combine-≤→⊆ cum m≤o H2)) eq
+combine-≤→⊆ {n = suc n} cum m≤o H with ∈map[×]-elim H
+... | x , y , x∈ , y∈ , refl = ∈map[×]-intro (cum-≤→⊆ cum m≤o x∈) (combine-≤→⊆ cum m≤o y∈)
 ```
 
 ```agda
@@ -45,7 +59,7 @@ combine-wit _ [] _ = ex 0 (here refl)
 combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
     IH = combine-wit cum x⃗ λ y y∈⃗ → H0 y (there y∈⃗)
     H : Witness f x → Witness _ x⃗ → Witness _ (x ∷ x⃗)
-    H (m , Hm) (o , Ho) = m + o , ∈map-intro (∈[×]-intro H1 H2) refl where
+    H (m , Hm) (o , Ho) = m + o , ∈map[×]-intro H1 H2 where
       H1 : x ∈ᴸ f (m + o)
       H1 = cum-≤→⊆ cum m≤m+n Hm
       H2 : x⃗ ∈ᴸ combine (f (m + o)) _
@@ -81,7 +95,7 @@ instance
     w [] = ex 1 (here refl)
     w (x ∷ x⃗) = 𝟙.map2 H (wit x) (w x⃗) where
       H : Witness enum x → Witness e x⃗ → Witness e (x ∷ x⃗)
-      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈-++⁺ʳ _ (∈map-intro (∈[×]-intro H1 H2) refl) where
+      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈-++⁺ʳ (∈map[×]-intro H1 H2) where
         H1 : x ∈ᴸ enum (m + suc n)
         H1 = cum-≤→⊆ cum m≤m+n Hm
         H2 : x⃗ ∈ᴸ combine (enum (m + suc n)) _
@@ -114,15 +128,15 @@ instance
     w : ∀ t → e witness t
     w = term-elim H# H$̇ where
       H# : ∀ n → e witness # n
-      H# n = ex (suc n) $ ∈-++⁺ʳ (e n) (here refl)
+      H# n = ex (suc n) $ ∈-++⁺ʳ (here refl)
       H$̇ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → e witness t) → e witness (f $̇ t⃗)
-      H$̇ f t⃗ IH = 𝟙.map2 H (combine-wit c t⃗ IH) (wit f) where
-        H : Witness _ t⃗ → Witness enum f → Witness e (f $̇ t⃗)
-        H (m , Hm) (n , Hn) = suc m + n , ∈-++⁺ʳ (e (m + n)) (there $ ∈-concat⁺′ H1 H2) where
+      H$̇ f t⃗ IH = 𝟙.map2 H (wit f) (combine-wit c t⃗ IH) where
+        H : Witness enum f → Witness _ t⃗ → Witness e (f $̇ t⃗)
+        H (m , Hm) (n , Hn) = suc m + n , ∈-++⁺ʳ (there $ ∈-concat⁺′ H1 H2) where
           H1 : f $̇ t⃗ ∈ᴸ apps (m + n) f
-          H1 = ∈map-intro (combine-≤→⊆ {m = m} c m≤m+n Hm) refl
+          H1 = ∈map-intro (combine-≤→⊆ c m≤n+m Hn) refl
           H2 : apps (m + n) f ∈ᴸ map (apps (m + n)) (enum (m + n))
-          H2 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
+          H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
 ```
 
 ## 公式的枚举
@@ -130,7 +144,7 @@ instance
 ```agda
 instance
   enumFormula : Enum Formula
-  enumFormula = mkEnum e c (∣_∣₁ ∘ w) where
+  enumFormula = mkEnum e c w where
 ```
 
 ```agda
@@ -151,12 +165,22 @@ instance
 ```
 
 ```agda
-    w : ∀ φ → Witness e φ
-    w ⊥̇ = 0 , here refl
-    w (φ →̇ ψ) with w φ | w ψ
-    ... | n , Hn | m , Hm = {!   !}
-    w (∀̇ φ) = {!   !}
-    w (R $̇ t⃗) = {!   !}
+    w : ∀ φ → e witness φ
+    w ⊥̇ = ex 0 (here refl)
+    w (φ →̇ ψ) = 𝟙.map2 H (w φ) (w ψ) where
+      H : Witness e φ → Witness e ψ → Witness e (φ →̇ ψ)
+      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map[×]-intro
+        (cum-≤→⊆ c m≤m+n Hm) (cum-≤→⊆ c m≤n+m Hn))
+    w (∀̇ φ) = 𝟙.map H (w φ) where
+      H : Witness e φ → Witness e (∀̇ φ)
+      H (n , Hn) = suc n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map-intro Hn refl)
+    w (R $̇ t⃗) = 𝟙.map2 H (wit R) (wit t⃗) where
+      H : Witness enum R → Witness enum t⃗ → Witness e (R $̇ t⃗)
+      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-concat⁺′ H1 H2) where
+          H1 : R $̇ t⃗ ∈ᴸ apps (m + n) R
+          H1 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
+          H2 : apps (m + n) R ∈ᴸ map (apps (m + n)) (enum (m + n))
+          H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
 ```
 
 ---
