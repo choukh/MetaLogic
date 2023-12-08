@@ -70,9 +70,9 @@ instance
 ```
 
 ```agda
-    c′ : {x⃗ : 𝕍 A n} → m ≤ o → x⃗ ∈ᴸ e m → x⃗ ∈ᴸ combine (enum o) n
-    c′ {m = suc m} sm≤o H with ∈-++⁻ (e m) H
-    ... | inj₁ x⃗∈en   = c′ (m+n≤o⇒n≤o 1 sm≤o) x⃗∈en
+    e-≤→⊆ : {x⃗ : 𝕍 A n} → m ≤ o → x⃗ ∈ᴸ e m → x⃗ ∈ᴸ combine (enum o) n
+    e-≤→⊆ {m = suc m} sm≤o H with ∈-++⁻ (e m) H
+    ... | inj₁ x⃗∈en   = e-≤→⊆ (m+n≤o⇒n≤o 1 sm≤o) x⃗∈en
     ... | inj₂ x⃗∈comb = combine-≤→⊆ cum (m+n≤o⇒n≤o 1 sm≤o) x⃗∈comb
 ```
 
@@ -85,7 +85,7 @@ instance
         H1 : x ∈ᴸ enum (m + suc n)
         H1 = cum-≤→⊆ cum m≤m+n Hm
         H2 : x⃗ ∈ᴸ combine (enum (m + suc n)) _
-        H2 = c′ m≤n+m Hn
+        H2 = e-≤→⊆ m≤n+m Hn
 ```
 
 ## 项的枚举
