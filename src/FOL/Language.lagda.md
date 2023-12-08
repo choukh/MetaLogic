@@ -21,7 +21,10 @@ $$R^n_0,\ R^n_1,\ R^n_2,\ R^n_3,\ ...$$
 较现代的方式是根据最终要实现的一阶逻辑语言来指定该理论所需的非逻辑符号. 这些特定的符号以及它们的元数所组成的资料叫做理论的**签名 (signature)**. 在这种处理下, 每种签名都对应一种一阶逻辑语言, 因此签名又叫做**语言 (language)**, 语言的实例按惯例记作 ℒ. 由于一阶逻辑的其他部分都是参数化到语言的, 我们把它单独作为一个模块.
 
 ```agda
+-- 元语言的基本概念
 open import Foundation.Essential
+-- 可枚举性的相关概念
+open import Enumerability.View.Lists
 
 module FOL.Language where
 ```

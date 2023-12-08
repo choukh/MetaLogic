@@ -1,5 +1,7 @@
 - [0 元语言](foundation)
   - [0.1 快速导入](foundation.essential)
+  - [0.2 特定主题](foundation.selective)
+    - [0.2.1ᐞ 可枚举性](foundation.selective.enumerability)
   - [0.9 符号速查](foundation.cheatsheet)
 - [1 一阶逻辑](fol)
   - [1.0 语言](fol.language)

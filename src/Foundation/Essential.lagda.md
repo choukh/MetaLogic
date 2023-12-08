@@ -353,18 +353,12 @@ open import Foundation.Data.List public
 
 列表 `𝕃 A` 是不定长可数有限类型. 不定长是指列表的类型签名中不储存长度信息, 可数是指列表的项有一个典范线序, 有限是指列表的长度是个自然数. 当 `A` 是集合时, `𝕃 A` 也是集合 (`isSet𝕃`).
 
+我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈ᴸ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈ᴸ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
+
 ```agda
 open import Foundation.Data.List.SetTheoretic public
   renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_)
 ```
-
-我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈ᴸ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈ᴸ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
-
-```agda
-open import Foundation.Data.List.Cumulation public
-```
-
-**<u>定义</u>** 列表的无穷序列 `f : 𝕃ₙ A` 的一个累积, 记作 `Cumulation f`, 是一个以 `n : ℕ` 为索引的集族, 对每个 `n` 都给出了一个 `xs : 𝕃 A`, 使得 `f n ≡ f m ++ xs` 成立. 其中 `_++_` 是列表的拼接操作.
 
 #### 向量
 
@@ -478,31 +472,6 @@ open import Foundation.Relation.Unary.Countable public
 - `A` 可数 (`countable`), 当且仅当存在 `A` 到 `ℕ` 的单射 `A ↣ ℕ`
 - `A` 可数无限 (`countablyInfinite`), 当且仅当存在 `A` 到 `ℕ` 的同构 `A ≅ ℕ`
 - `A` 无限 (`infinite`), 当且仅当存在 `ℕ` 到 `A` 的单射 `ℕ ↣ A`
-
-#### 可枚举
-
-```agda
-open import Foundation.Relation.Unary.Enumerable as E public
-open E.ListView public
-```
-
-**<u>定义</u>** `A` 可枚举, 当且仅当存在函数 `f : ℕ → A ⊎ ⊤`, 使得对任意 `x : A`, 存在 `n` 满足 `f n ≡ x`.
-
-**<u>定理</u> `discr→enum→count`** 如果 `A` 离散 (这意味着 `A` 是集合), 并且 `A` 可枚举, 那么 `A` 可数.
-
-我们通常使用可枚举的另一种定义:
-
-**<u>定义</u>** 见证集和见证条件
-
-- 见证集: 给定无穷序列 `f : 𝕃ₙ A` 和 `x : A`, 满足 `x ∈ᴸ enum n` 的所有 `n` 组成的集合叫做 `x` 在 `f` 中的见证集, 记作 `Witness f x`.  
-- 见证条件: 我们说无穷序列 `f : 𝕃ₙ A` 见证了 `x : A`, 记作 `f witness x`, 当且仅当存在 `n` 满足 `x ∈ᴸ enum n`, 也即 `∥ Witness f x ∥₁` 成立.
-
-**<u>定义</u>** `A` 可枚举, 当且仅当存在 `A` 的一个枚举 `Enum A`, 它是一个二元组
-
-1. “见证了所有 `x : A`” (该条件记作 `wit`) 的列表无穷序列 `enum : 𝕃ₙ A`
-2. `f` 的一个累积 `cum : Cumulation f`
-
-可枚举的这两种定义是逻辑等价的 (`enumerable↔Ⓜ`).
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
