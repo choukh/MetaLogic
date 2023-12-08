@@ -1,12 +1,10 @@
 {-# OPTIONS --lossy-unification #-}
+module Enumerability.ListView.Instance where
+open import Enumerability.ListView.Base
 
 open import Foundation.Essential
   hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
 open import Foundation.Data.Nat.AlternativeOrder
-
-module Enumerability.ListView.Instance where
-open import Enumerability.ListView.Base
-open import Enumerability.ListView.Combine
 
 private variable
   m n o : ℕ

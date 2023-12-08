@@ -1,8 +1,8 @@
+module Enumerability.MaybeView where
+
 open import Foundation.Essential
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.ConstructiveEpsilon
-
-module Enumerability.MaybeView where
 
 Witness : (ℕ → A ？) → A → 𝕋 _
 Witness f x = Σ n ， f n ≡ some x

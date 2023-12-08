@@ -1,15 +1,14 @@
 {-# OPTIONS --lossy-unification #-}
+module Enumerability.ListView.Properties where
+open import Enumerability.ListView.Base
+open import Enumerability.ListView.Instance
+import Enumerability.MaybeView as Ⓜ
 
 open import Foundation.Essential
   hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.List.Discrete (discrete× discreteℕ discreteℕ)
-
-module Enumerability.ListView.Properties where
-open import Enumerability.ListView.Base
-open import Enumerability.ListView.Instance
-import Enumerability.MaybeView as Ⓜ
 
 ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ enum n
 ∈eℕ-intro zero zero ≤-refl = here refl
