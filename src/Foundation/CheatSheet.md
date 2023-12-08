@@ -83,9 +83,9 @@ url: foundation.cheatsheet
 
 | **类型** | **定义** | **中文名** |
 | --- | --- | --- |
-| `_↣_` | λ A B → Σ (A → B) injective | 单射 |
-| `_↠_` | λ A B → Σ (A → B) surjective | 满射 |
-| `_⤖_` | λ A B → Σ (A → B) bijective | 双射 |
+| `_↣_` | `λ A B → Σ (A → B) injective` | 单射 |
+| `_↠_` | `λ A B → Σ (A → B) surjective` | 满射 |
+| `_⤖_` | `λ A B → Σ (A → B) bijective` | 双射 |
 
 ## 其他
 | **类型** | **定义** | **中文名** |
