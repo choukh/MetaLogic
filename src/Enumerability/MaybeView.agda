@@ -1,18 +1,8 @@
-module Enumerability.View.Maybe where
-
-open import Foundation.Prelude
-open import Foundation.Function.Bijection
-open import Foundation.Prop.Truncation
-open import Foundation.Prop.Iff
-
-open import Foundation.Data.Nat
-open import Foundation.Data.Nat.ConstructiveEpsilon
+open import Foundation.Essential
 open import Foundation.Data.Maybe
-open import Foundation.Data.Sigma
+open import Foundation.Data.Nat.ConstructiveEpsilon
 
-open import Foundation.Relation.Nullary.Decidable
-open import Foundation.Relation.Nullary.Discrete
-open import Foundation.Relation.Unary.Countable
+module Enumerability.MaybeView where
 
 Witness : (ℕ → A ？) → A → 𝕋 _
 Witness f x = Σ n ， f n ≡ some x

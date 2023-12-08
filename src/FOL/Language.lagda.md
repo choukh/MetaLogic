@@ -24,7 +24,7 @@ $$R^n_0,\ R^n_1,\ R^n_2,\ R^n_3,\ ...$$
 -- 元语言的基本概念
 open import Foundation.Essential
 -- 可枚举性的相关概念
-open import Enumerability.View.Lists
+open import Enumerability.ListView
 
 module FOL.Language where
 ```

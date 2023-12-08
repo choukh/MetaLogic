@@ -2,9 +2,9 @@
 
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
-open import Enumerability.View.Lists
 
-module Enumerability.Combine where
+module Enumerability.ListView.Combine where
+open import Enumerability.ListView.Base
 
 private variable
   f : 𝕃ₙ A
