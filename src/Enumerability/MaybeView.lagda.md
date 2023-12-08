@@ -1,3 +1,10 @@
+---
+url: foundation.enumerability.maybeview
+---
+
+# 可枚举性 ▸ 可选值序列视角
+
+```agda
 module Enumerability.MaybeView where
 
 open import Foundation.Essential
@@ -49,3 +56,9 @@ discr→enum→count {A} disA = 𝟙.map H where
       f (g₁ x) ≡⟨ cong f eq ⟩
       f (g₁ y) ≡⟨ g₂ y ⟩
       some y   ∎
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.maybeview)  
+> 交流Q群: 893531731

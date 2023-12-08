@@ -1,3 +1,10 @@
+---
+url: foundation.enumerability.listview.base
+---
+
+# 可枚举性 ▸ 累积列表视角 ▸ 定义
+
+```agda
 {-# OPTIONS --lossy-unification #-}
 module Enumerability.ListView.Base where
 
@@ -86,3 +93,9 @@ combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
       H1 = cum-≤→⊆ cum m≤m+n Hm
       H2 : x⃗ ∈ combine (f (m + o)) _
       H2 = combine-≤→⊆ cum m≤n+m Ho
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.listview.base)  
+> 交流Q群: 893531731

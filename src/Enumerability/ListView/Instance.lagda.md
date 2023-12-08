@@ -1,3 +1,10 @@
+---
+url: foundation.enumerability.listview.instance
+---
+
+# 可枚举性 ▸ 累积列表视角 ▸ 实例
+
+```agda
 {-# OPTIONS --lossy-unification #-}
 module Enumerability.ListView.Instance where
 open import Enumerability.ListView.Base
@@ -66,3 +73,9 @@ instance
         H1 = cum-≤→⊆ cum m≤m+n Hm
         H2 : x⃗ ∈ combine (enum (m + suc n)) _
         H2 = e-≤→⊆ m≤n+m Hn
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/ListView/Instance.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.ListView.Instance.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.listview.instance)  
+> 交流Q群: 893531731
