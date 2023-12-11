@@ -1,6 +1,13 @@
+---
+url: foundation.discrete.list
+---
+
+# 元语言 ▸ 离散性 ▸ 列表
+
+```agda
 open import Foundation.Prelude
-open import Foundation.Relation.Nullary.Discrete
-module Foundation.Data.List.Discrete ⦃ dA : discrete A ⦄ where
+open import Foundation.Relation.Nullary.Discrete.Base
+module Foundation.Relation.Nullary.Discrete.List ⦃ dA : discrete A ⦄ where
 
 open import Foundation.Data.Empty
 open import Foundation.Data.Bool
@@ -29,3 +36,9 @@ index-inv (y ∷ xs) {x} H with x ≟ y
 index-inv _        refl | yes refl = refl
 ...                     | no ¬p with xs [ x ]⁻¹? in eq
 index-inv (y ∷ xs) refl | no ¬p | some k = index-inv xs eq
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Relation/Nullary/Discrete/List.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Relation.Nullary.Discrete.List.html) | [语雀](https://www.yuque.com/ocau/metalogic/discrete.list)  
+> 交流Q群: 893531731

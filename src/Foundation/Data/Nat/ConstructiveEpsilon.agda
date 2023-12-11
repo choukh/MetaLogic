@@ -7,8 +7,9 @@ open import Foundation.Prop.Logic
 open import Foundation.Prop.Truncation
 
 open import Foundation.Data.Empty
-open import Foundation.Data.Nat
 open import Foundation.Relation.Nullary.Decidable
+open import Foundation.Relation.Nullary.Discrete.Base
+open import Foundation.Relation.Nullary.Discrete.Instance
 
 module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (A n)) where
 
@@ -41,6 +42,6 @@ module Epsilon {A : ℕ → 𝕋 ℓ} (setsA : isSets A) (decA : ∀ n → Dec (
   constMinWit (_ , pₙ) (_ , qₘ) = constSearch (initial $ witness pₙ) (initial $ witness qₘ)
 
   ε : ∃ ℕ A → Σ ℕ A
-  ε = 𝟙.rec→Set (isSetΣ isSetℕ setsA) minWit constMinWit
+  ε = 𝟙.rec→Set (isSetΣ discrete→isSet setsA) minWit constMinWit
 
 open Epsilon public using (ε)

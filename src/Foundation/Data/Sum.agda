@@ -2,7 +2,6 @@ module Foundation.Data.Sum where
 
 open import Foundation.Prelude
 open import Foundation.Data.Empty
-open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Sum public
   using (inj₁; inj₂)
@@ -40,7 +39,3 @@ isProp⊎ pA pB disj = subst isProp Sum≡🧊 $
 isSet⊎ : isSet A → isSet B → isSet (A ⊎ B)
 isSet⊎ sA sB = subst isSet Sum≡🧊 $
   isSet←🧊 $ 🧊.isSet⊎ (isSet→🧊 sA) (isSet→🧊 sB)
-
-discrete⊎ : discrete A → discrete B → discrete (A ⊎ B)
-discrete⊎ dA dB = subst discrete Sum≡🧊 $
-  discrete←🧊 $ 🧊.discrete⊎ (discrete→🧊 dA) (discrete→🧊 dB)

@@ -1,5 +1,5 @@
 ---
-url: fol.syntax.discreteness
+url: fol.syntax.discrete
 ---
 
 # 一阶逻辑 ▸ 语法 ▸ 公式的离散性
@@ -7,7 +7,7 @@ url: fol.syntax.discreteness
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Syntax.Discreteness (ℒ : Language) where
+module FOL.Syntax.Discrete (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 instance _ = ℒ

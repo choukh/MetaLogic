@@ -2,15 +2,28 @@
 url: foundation.enumeration.listview.base
 ---
 
-# 可枚举性 ▸ 累积列表视角 ▸ 定义
+# 元语言 ▸ 可枚举性 ▸ 累积列表视角 ▸ 定义
 
 ```agda
 {-# OPTIONS --lossy-unification #-}
-module Enumeration.ListView.Base where
+module Foundation.Function.Enumeration.ListView.Base where
 
-open import Foundation.Essential
-  hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
+open import Foundation.Prelude
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
+
 open import Foundation.Data.Nat.AlternativeOrder
+open import Foundation.Data.Sum
+open import Foundation.Data.Sigma
+open import Foundation.Data.List
+open import Foundation.Data.List.SetTheoretic
+  renaming (_∈_ to _∈ᴸ_)
+open import Foundation.Data.Vec
+open import Foundation.Data.Vec.SetTheoretic
+  renaming (_∈_ to _∈⃗_)
+
+open import Foundation.Relation.Nullary.Discrete.Base
 
 𝕃ₙ : 𝕋 ℓ → 𝕋 ℓ
 𝕃ₙ A = ℕ → 𝕃 A
@@ -35,7 +48,7 @@ module _ (cum : Cumulation f) where
 
   cum-≤→⊆ : m ≤ n → f m ⊆ f n
   cum-≤→⊆ m≤n x∈fm with cum-≤→++ m≤n
-  ... | xs , eq = subst (_ ∈_) eq (∈-++⁺ˡ x∈fm)
+  ... | xs , eq = subst (_ ∈ᴸ_) eq (∈-++⁺ˡ x∈fm)
 
   cum-length : m ≤ n → length (f m) ≤ length (f n)
   cum-length {m} {n} m≤n with cum-≤→++ m≤n
@@ -55,7 +68,7 @@ module _ (cum : Cumulation f) where
   ... | inj₂ n≤m = inj₂ (cum-≤→Σ n≤m)
 
 Witness : 𝕃ₙ A → A → 𝕋 _
-Witness f x = Σ n ， x ∈ f n
+Witness f x = Σ n ， x ∈ᴸ f n
 
 _witness_ : 𝕃ₙ A → A → 𝕋 _
 f witness x = ∥ Witness f x ∥₁
@@ -106,13 +119,13 @@ combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
     IH = combine-wit cum x⃗ λ y y∈⃗ → H0 y (there y∈⃗)
     H : Witness f x → Witness _ x⃗ → Witness _ (x ∷ x⃗)
     H (m , Hm) (o , Ho) = m + o , ∈map[×]-intro H1 H2 where
-      H1 : x ∈ f (m + o)
+      H1 : x ∈ᴸ f (m + o)
       H1 = cum-≤→⊆ cum m≤m+n Hm
-      H2 : x⃗ ∈ combine (f (m + o)) _
+      H2 : x⃗ ∈ᴸ combine (f (m + o)) _
       H2 = combine-≤→⊆ cum m≤n+m Ho
 ```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.base)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.base)  
 > 交流Q群: 893531731

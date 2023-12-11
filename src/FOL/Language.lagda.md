@@ -21,10 +21,7 @@ $$R^n_0,\ R^n_1,\ R^n_2,\ R^n_3,\ ...$$
 较现代的方式是根据最终要实现的一阶逻辑语言来指定该理论所需的非逻辑符号. 这些特定的符号以及它们的元数所组成的资料叫做理论的**签名 (signature)**. 在这种处理下, 每种签名都对应一种一阶逻辑语言, 因此签名又叫做**语言 (language)**, 语言的实例按惯例记作 ℒ. 由于一阶逻辑的其他部分都是参数化到语言的, 我们把它单独作为一个模块.
 
 ```agda
--- 元语言的基本概念
 open import Foundation.Essential
--- 可枚举性的相关概念
-open import Enumeration.ListView
 
 module FOL.Language where
 ```
@@ -46,8 +43,8 @@ record Language : 𝕋₁ where
     𝓡 : 𝕋
     ∣_∣ᶠ : 𝓕 → ℕ
     ∣_∣ᴿ : 𝓡 → ℕ
-    discr𝓕 : discrete 𝓕
-    discr𝓡 : discrete 𝓡
+    ⦃ discr𝓕 ⦄ : discrete 𝓕
+    ⦃ discr𝓡 ⦄ : discrete 𝓡
     ⦃ enum𝓕 ⦄ : Enum 𝓕
     ⦃ enum𝓡 ⦄ : Enum 𝓡
 ```
@@ -64,16 +61,16 @@ record Language : 𝕋₁ where
 
 ```agda
   count𝓕 : countable 𝓕
-  count𝓕 = discr→enum→count discr𝓕 ∣ enum𝓕 ∣₁
+  count𝓕 = discr→enum→count ∣ enum𝓕 ∣₁
 
   count𝓡 : countable 𝓡
-  count𝓡 = discr→enum→count discr𝓡 ∣ enum𝓡 ∣₁
+  count𝓡 = discr→enum→count ∣ enum𝓡 ∣₁
 
   isSet𝓕 : isSet 𝓕
-  isSet𝓕 = discrete→isSet discr𝓕
+  isSet𝓕 = discrete→isSet
 
   isSet𝓡 : isSet 𝓡
-  isSet𝓡 = discrete→isSet discr𝓡
+  isSet𝓡 = discrete→isSet
 ```
 
 **<u>例</u>** 下面给出了语言的一个实例 `ℒ`, 它可以作为皮亚诺算术的语言.

@@ -3,7 +3,6 @@ module Foundation.Data.Maybe where
 open import Foundation.Prelude
 open import Foundation.Data.Sum
 open import Foundation.Data.Unit
-open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Maybe public
   using ()
@@ -42,10 +41,6 @@ Maybe≅🧊 = mk≅ Maybe→🧊 Maybe←🧊 Maybe→←🧊 Maybe←→🧊
 
 Maybe≡🧊 : A ？ ≡ A ？🧊
 Maybe≡🧊 = ua Maybe≅🧊
-
-discreteMaybe : discrete A → discrete (A ？)
-discreteMaybe disA = subst discrete Maybe≡🧊 $
-  discrete←🧊 $ 🧊.discreteMaybe $ discrete→🧊 disA
 
 Maybe≡SumUnit : A ？ ≡ ⊤ ⊎ A
 Maybe≡SumUnit {A} =

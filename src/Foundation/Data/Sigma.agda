@@ -1,15 +1,10 @@
 module Foundation.Data.Sigma where
 
 open import Foundation.Prelude
-open import Foundation.Relation.Nullary.Discrete
 
 open import Data.Product public
   using (curry; uncurry)
   renaming (_×_ to infixr 3 _×_)
-
-open import Data.Product.Properties public
-  using ()
-  renaming (≡-dec to discreteΣ)
 
 open import Cubical.Data.Sigma
   using (Σ≡Prop; Σ-cong-snd)
@@ -23,10 +18,6 @@ open import Cubical.Data.Sigma
 
 Σcong₂ : ((x : A) → P x ≡ Q x) → Σ A P ≡ Σ A Q
 Σcong₂ eq = Eq←🧊 $ Σ-cong-snd $ Eq→🧊 ∘ eq
-
-instance
-  discrete× : ⦃ discrete A ⦄ → ⦃ discrete B ⦄ → discrete (A × B)
-  discrete× = discreteΣ (λ _ _ → it) (λ _ _ → it) _ _
 
 isProp× : isProp A → isProp B → isProp (A × B)
 isProp× pA pB = isPropΣ pA (λ _ → pB)

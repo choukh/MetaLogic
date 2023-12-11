@@ -1,4 +1,11 @@
-module Foundation.Relation.Nullary.Discrete where
+---
+url: foundation.discreteness.base
+---
+
+# 元语言 ▸ 离散性 ▸ 定义
+
+```agda
+module Foundation.Relation.Nullary.Discrete.Base where
 
 open import Foundation.Prelude
 open import Foundation.Relation.Nullary.Decidable
@@ -26,8 +33,8 @@ discrete→🧊 H _ _ = Dec→🧊 $ subst Dec (sym Eq≡🧊) H
 discrete←🧊 : discrete🧊 A → discrete A
 discrete←🧊 H {x} {y} = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
 
-discrete→isSet : discrete A → isSet A
-discrete→isSet = isSet←🧊 ∘ discrete🧊→isSet🧊 ∘ discrete→🧊
+discrete→isSet : ⦃ discrete A ⦄ → isSet A
+discrete→isSet = isSet←🧊 $ discrete🧊→isSet🧊 $ discrete→🧊 it
 
 isPropDiscrete : isSet A → isProp (discrete A)
 isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
@@ -39,4 +46,10 @@ isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
 𝔻₀ = 𝔻 ℓ0
 
 isSetTyp𝔻 : {𝗔 : 𝔻 ℓ} → isSet (typ 𝗔)
-isSetTyp𝔻 {𝗔} = discrete→isSet (str 𝗔)
+isSetTyp𝔻 {𝗔} = discrete→isSet ⦃ str 𝗔 ⦄
+```
+
+---
+> 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Relation/Nullary/Discrete/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Relation.Nullary.Discrete.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/discrete.base)  
+> 交流Q群: 893531731

@@ -2,14 +2,23 @@
 url: foundation.enumeration.maybeview
 ---
 
-# 可枚举性 ▸ 可选值序列视角
+# 元语言 ▸ 可枚举性 ▸ 可选值序列视角
 
 ```agda
-module Enumeration.MaybeView where
+module Foundation.Function.Enumeration.MaybeView where
 
-open import Foundation.Essential
+open import Foundation.Prelude
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
+open import Foundation.Function.Bijection
+
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.ConstructiveEpsilon
+open import Foundation.Relation.Nullary.Decidable
+open import Foundation.Relation.Nullary.Discrete.Base
+open import Foundation.Relation.Nullary.Discrete.Instance
+open import Foundation.Relation.Unary.Countable
 
 Witness : (ℕ → A ？) → A → 𝕋 _
 Witness f x = Σ n ， f n ≡ some x
@@ -36,16 +45,16 @@ enumerableℙ P = ∥ Enumℙ P ∥₁
 enumerable↔ℙ : enumerable A ↔ enumerableℙ λ (_ : A) → ⊤
 enumerable↔ℙ = ↔-map Enum↔ℙ
 
-discr→enum→count : discrete A → enumerable A → countable A
-discr→enum→count {A} disA = 𝟙.map H where
+discr→enum→count : ⦃ discrete A ⦄ → enumerable A → countable A
+discr→enum→count {A} = 𝟙.map H where
   H : Enum A → A ↣ ℕ
   H (f , H) = g₁ , g₁-inj where
     g : ∀ x → Witness f x
     g x = ε sets dis (H x) where
       sets : isSets (λ n → f n ≡ some x)
-      sets n = isProp→isSet $ (isSetMaybe $ discrete→isSet disA) _ _
+      sets n = isProp→isSet $ (isSetMaybe discrete→isSet) _ _
       dis : ∀ n → Dec (f n ≡ some x)
-      dis n = discreteMaybe disA
+      dis n = it
     g₁ : A → ℕ
     g₁ = fst ∘ g
     g₂ : ∀ x → f (g₁ x) ≡ some x
@@ -76,5 +85,5 @@ count∞→enum {A} = 𝟙.map H where
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.maybeview)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.maybeview)  
 > 交流Q群: 893531731

@@ -387,6 +387,15 @@ open import Foundation.Function.Sequance public
 
 我们把函数 `ℕ → A` 称为无穷序列 `InfSeq`, 它有 “希尔伯特旅馆”操作 `_∷ₙ_`, 第一个参数是安排到0号房间的新客人, 第二个参数是原来的客房安排.
 
+### 枚举
+
+```agda
+open import Foundation.Function.Enumeration.ListView.Base public
+open import Foundation.Function.Enumeration.ListView.Properties public
+```
+
+枚举是满足一定性质的特殊函数, 是关乎我们对象语言的重要构造, 其变体甚多, 我们单独设为一章: [0.2.1.1 枚举](https://www.yuque.com/ocau/metalogic/foundation.enumeration.maybeview).
+
 ### 同构
 
 ```agda
@@ -449,15 +458,14 @@ open import Foundation.Relation.Nullary.Decidable public
 
 如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPropDec`).
 
-#### 离散
+#### 离散性
 
 ```agda
-open import Foundation.Relation.Nullary.Discrete public
+open import Foundation.Relation.Nullary.Discrete.Base public
+open import Foundation.Relation.Nullary.Discrete.Instance public
 ```
 
-**<u>定义</u>** `A` 离散, 当且仅当 `A` 上的 `_≡_` 可判定.
-
-如果一个类型是离散的, 那么它是一个集合 (`discrete→isSet`). 如果一个类型是集合, 那么它的离散性是一个命题 (`isPropDiscrete`). 离散集合宇宙 `𝔻 ℓ` 定义为 `TypeWithStr ℓ discrete`, 也叫经典集合宇宙.
+离散性与枚举函数的性质密切相关, 与之一样, 我们单独设为一章: [0.1.0 离散性](https://www.yuque.com/ocau/metalogic/foundation.discrete.base).
 
 ### 一元关系
 

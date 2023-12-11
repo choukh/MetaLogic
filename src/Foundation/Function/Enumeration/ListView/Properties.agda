@@ -1,14 +1,25 @@
 {-# OPTIONS --lossy-unification #-}
-module Enumeration.ListView.Properties where
-open import Enumeration.ListView.Base
-open import Enumeration.ListView.Instance
-import Enumeration.MaybeView as Ⓜ
+module Foundation.Function.Enumeration.ListView.Properties where
+open import Foundation.Function.Enumeration.ListView.Base
+open import Foundation.Function.Enumeration.ListView.Instance
+import Foundation.Function.Enumeration.MaybeView as Ⓜ
 
-open import Foundation.Essential
-  hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
+open import Foundation.Prelude
+open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
+
 open import Foundation.Data.Maybe
+open import Foundation.Data.Nat
 open import Foundation.Data.Nat.AlternativeOrder
-open import Foundation.Data.List.Discrete
+open import Foundation.Data.Sigma
+open import Foundation.Data.Sum
+open import Foundation.Data.List
+open import Foundation.Data.List.SetTheoretic
+
+open import Foundation.Relation.Nullary.Discrete.Base
+open import Foundation.Relation.Nullary.Discrete.Instance
+open import Foundation.Relation.Nullary.Discrete.List
+open import Foundation.Relation.Unary.Countable
 
 ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ enum n
 ∈eℕ-intro zero zero ≤-refl = here refl
@@ -144,6 +155,5 @@ enumerableℙ↔Ⓜ = ↔-map Enumℙ↔Ⓜ
 enumerable↔Ⓜ : enumerable A ↔ Ⓜ.enumerable A
 enumerable↔Ⓜ {A} = ↔-map Enum↔Ⓜ
 
-discr→enum→count : discrete A → enumerable A → countable A
-discr→enum→count disA enumA =
-  Ⓜ.discr→enum→count disA (enumerable↔Ⓜ .⇒ enumA)
+discr→enum→count : ⦃ discrete A ⦄ → enumerable A → countable A
+discr→enum→count enumA = Ⓜ.discr→enum→count (enumerable↔Ⓜ .⇒ enumA)

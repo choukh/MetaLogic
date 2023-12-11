@@ -2,16 +2,23 @@
 url: foundation.enumeration.listview.instance
 ---
 
-# 可枚举性 ▸ 累积列表视角 ▸ 实例
+# 元语言 ▸ 可枚举性 ▸ 累积列表视角 ▸ 实例
 
 ```agda
 {-# OPTIONS --lossy-unification #-}
-module Enumeration.ListView.Instance where
-open import Enumeration.ListView.Base
+module Foundation.Function.Enumeration.ListView.Instance where
+open import Foundation.Function.Enumeration.ListView.Base
 
-open import Foundation.Essential
-  hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
+open import Foundation.Prelude
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Truncation
+
 open import Foundation.Data.Nat.AlternativeOrder
+open import Foundation.Data.Sigma
+open import Foundation.Data.Sum
+open import Foundation.Data.List
+open import Foundation.Data.List.SetTheoretic
+open import Foundation.Data.Vec
 
 private variable
   m n o : ℕ
@@ -77,5 +84,5 @@ instance
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/ListView/Instance.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.ListView.Instance.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.instance)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/ListView/Instance.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.ListView.Instance.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.instance)  
 > 交流Q群: 893531731

@@ -2,17 +2,24 @@
 url: foundation.enumeration.plainview
 ---
 
-# 可枚举性 ▸ 普通视角
+# 元语言 ▸ 可枚举性 ▸ 普通视角
 
 ```agda
-module Enumeration.PlainView where
-open import Enumeration.ListView.Base as Ⓛ
+module Foundation.Function.Enumeration.PlainView where
+open import Foundation.Function.Enumeration.ListView.Base as Ⓛ
   using (𝕃ₙ; cum; cum-total)
 
-open import Foundation.Essential
+open import Foundation.Prelude
+open import Foundation.Prop.Logic
+open import Foundation.Prop.Truncation
+
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
-open import Foundation.Data.List.Discrete
+open import Foundation.Data.Sum
+open import Foundation.Data.List
+
+open import Foundation.Relation.Nullary.Discrete.Base
+open import Foundation.Relation.Nullary.Discrete.List
 
 proper : 𝕃ₙ A → 𝕋 _
 proper f = ∀ n → length (f n) > n
@@ -43,5 +50,5 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (p : proper Ⓛ.enum) whe
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/PlainView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.PlainView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.plainview)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/PlainView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.PlainView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.plainview)  
 > 交流Q群: 893531731
