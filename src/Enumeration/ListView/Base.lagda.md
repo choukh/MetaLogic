@@ -1,12 +1,12 @@
 ---
-url: foundation.enumerability.listview.base
+url: foundation.enumeration.listview.base
 ---
 
 # 可枚举性 ▸ 累积列表视角 ▸ 定义
 
 ```agda
 {-# OPTIONS --lossy-unification #-}
-module Enumerability.ListView.Base where
+module Enumeration.ListView.Base where
 
 open import Foundation.Essential
   hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
@@ -36,6 +36,13 @@ module _ (cum : Cumulation f) where
   cum-≤→⊆ : m ≤ n → f m ⊆ f n
   cum-≤→⊆ m≤n x∈fm with cum-≤→++ m≤n
   ... | xs , eq = subst (_ ∈_) eq (∈-++⁺ˡ x∈fm)
+
+  cum-length : m ≤ n → length (f m) ≤ length (f n)
+  cum-length {m} {n} m≤n with cum-≤→++ m≤n
+  ... | xs , eq = subst (_ ≤_) H m≤m+n where
+    H = length (f n)              ≡⟨ cong length eq ⟩
+        length (f m ++ xs)        ≡⟨ length-++ _ ⟩
+        length (f m) + length xs  ∎
 
   cum-≤→Σ : m ≤ n → Σ xs ， f n ≡ f m ++ xs
   cum-≤→Σ ≤-refl = [] , (sym $ ++-identityʳ _)
@@ -107,6 +114,5 @@ combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.listview.base)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.base)  
 > 交流Q群: 893531731
- 

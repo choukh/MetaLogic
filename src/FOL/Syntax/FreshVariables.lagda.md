@@ -2,7 +2,7 @@
 url: fol.syntax.fresh
 ---
 
-# 一阶逻辑 ▸ 语法 ▸ᐞ 新变元与闭公式
+# 一阶逻辑 ▸ 语法 ▸ 新变元与闭公式
 
 ```agda
 open import Foundation.Essential

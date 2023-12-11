@@ -13,6 +13,8 @@ open import Cubical.Data.List
   using (isOfHLevelList)
 
 open import Foundation.Data.Maybe
+open import Data.Nat.Properties
+  using (+-assoc)
 open import Foundation.Data.Nat.AlternativeOrder
 
 isSet𝕃 : isSet A → isSet (𝕃 A)
@@ -28,6 +30,14 @@ _ [ _ ]? = none
 Σ[<length]? (x ∷ xs) {suc n} lt = Σ[<length]? xs (+-cancelˡ-≤ _ _ _ lt)
 
 ++[]? : (xs : 𝕃 A) {ys : 𝕃 A} {x : A} {n : ℕ} →
-        xs [ n ]? ≡ some x → (xs ++ ys) [ n ]? ≡ some x
+             xs [ n ]? ≡ some x → (xs ++ ys) [ n ]? ≡ some x
 ++[]? (x ∷ xs) {n = zero} = id
 ++[]? (x ∷ xs) {n = suc n} = ++[]? xs
+
+length-++-++ : ∀ (xs ys : 𝕃 A) {zs} →
+  length (xs ++ ys ++ zs) ≡ length xs + length ys + length zs
+length-++-++ xs ys {zs} =
+  length (xs ++ ys ++ zs)             ≡⟨ length-++ xs ⟩
+  length xs + length (ys ++ zs)       ≡⟨ cong (length xs +_) (length-++ ys) ⟩
+  length xs + (length ys + length zs) ≡˘⟨ +-assoc (length xs) _ _ ⟩
+  length xs + length ys + length zs   ∎

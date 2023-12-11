@@ -2,19 +2,19 @@
 url: fol.syntax.enumeration
 ---
 
-# 一阶逻辑 ▸ 语法 ▸ᐞ 公式的枚举
+# 一阶逻辑 ▸ 语法 ▸ 公式的枚举
 
 ```agda
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
-open import Enumerability.ListView
+open import Enumeration.ListView
+import Enumeration.PlainView as Plain
 
 open import FOL.Language
 module FOL.Syntax.Enumeration (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
-open import FOL.Syntax.FreshVariables ℒ
 instance _ = ℒ
 ```
 
@@ -70,8 +70,8 @@ instance
     e : 𝕃ₙ Formula
     e zero = [ ⊥̇ ]
     e (suc n) = e n
-      ++ map (uncurry _→̇_) (e n [×] e n)
       ++ map ∀̇_ (e n)
+      ++ map (uncurry _→̇_) (e n [×] e n)
       ++ concat (map (apps n) (enum n))
 ```
 
@@ -83,13 +83,13 @@ instance
 ```agda
     w : ∀ φ → e witness φ
     w ⊥̇ = ex 0 (here refl)
-    w (φ →̇ ψ) = 𝟙.map2 H (w φ) (w ψ) where
-      H : Witness e φ → Witness e ψ → Witness e (φ →̇ ψ)
-      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map[×]-intro
-        (cum-≤→⊆ c m≤m+n Hm) (cum-≤→⊆ c m≤n+m Hn))
     w (∀̇ φ) = 𝟙.map H (w φ) where
       H : Witness e φ → Witness e (∀̇ φ)
-      H (n , Hn) = suc n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map-intro Hn refl)
+      H (n , Hn) = suc n , (∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map-intro Hn refl)
+    w (φ →̇ ψ) = 𝟙.map2 H (w φ) (w ψ) where
+      H : Witness e φ → Witness e ψ → Witness e (φ →̇ ψ)
+      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map[×]-intro
+        (cum-≤→⊆ c m≤m+n Hm) (cum-≤→⊆ c m≤n+m Hn))
     w (R $̇ t⃗) = 𝟙.map2 H (wit R) (wit t⃗) where
       H : Witness enum R → Witness enum t⃗ → Witness e (R $̇ t⃗)
       H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-concat⁺′ H1 H2) where
@@ -97,6 +97,28 @@ instance
           H1 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
           H2 : apps (m + n) R ∈ᴸ map (apps (m + n)) (enum (m + n))
           H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
+```
+
+```agda
+instance
+  discrFormula : discrete Formula
+  discrFormula = {!   !}
+```
+
+```agda
+enumFormula-proper : ∀ n → length (enum ⦃ enumFormula ⦄ n) > n
+enumFormula-proper zero = ≤-refl
+enumFormula-proper (suc n) = subst (_> _) (length-++-++ _ _) (<-≤-trans H m≤m+n) where
+  H : length (enum n) + length (map ∀̇_ _) > 1 + n
+  H = +-mono-≤-< (cum-length cum z≤n) (subst (_ <_) (length-map _ _) (enumFormula-proper n))
+```
+
+```agda
+formulaₙ : ℕ → Formula
+formulaₙ = Plain.enum enumFormula-proper
+
+formulaₙ-wit : ∀ φ → ∃ n ， formulaₙ n ≡ φ
+formulaₙ-wit = Plain.wit enumFormula-proper
 ```
 
 ---

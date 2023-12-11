@@ -41,7 +41,19 @@ private
 ... | inj₂ y = inj₂ (≤⇒≤′ y)
 
 ------------------------------------------------------------------------
+-- Relational properties of _<_
+
+<-trans : m < n → n < o → m < o
+<-trans = map2 ℕ.<-trans
+
+------------------------------------------------------------------------
 -- Relationships between _≤_ nad _<_
+
+≤-<-trans : m ≤ n → n < o → m < o
+≤-<-trans = map2 ℕ.≤-<-trans
+
+<-≤-trans : m < n → n ≤ o → m < o
+<-≤-trans = map2 ℕ.<-≤-trans
 
 ≤-<-connex : ∀ m n → m ≤ n ⊎ m > n
 ≤-<-connex m n with ℕ.≤-<-connex m n
@@ -49,7 +61,7 @@ private
 ... | inj₂ y = inj₂ (≤⇒≤′ y)
 
 ------------------------------------------------------------------------
--- Properties of _+_ and _≤_/_<_
+-- Properties of _+_ and _≤_
 
 m≤m+n : m ≤ m + n
 m≤m+n = ≤⇒≤′ $ ℕ.m≤m+n _ _
@@ -60,14 +72,17 @@ m≤n+m = ≤⇒≤′ $ ℕ.m≤n+m _ _
 m≤n⇒m≤o+n : ∀ o → m ≤ n → m ≤ o + n
 m≤n⇒m≤o+n _ = map $ ℕ.m≤n⇒m≤o+n _
 
+m≤n⇒m≤n+o : ∀ o → m ≤ n → m ≤ n + o
+m≤n⇒m≤n+o _ = map $ ℕ.m≤n⇒m≤n+o _
+
 m+n≤o⇒n≤o : ∀ m → m + n ≤ o → n ≤ o
-m+n≤o⇒n≤o m = map $ ℕ.m+n≤o⇒n≤o m
+m+n≤o⇒n≤o _ = map $ ℕ.m+n≤o⇒n≤o _
 
 +-monoˡ-≤ : ∀ o → m ≤ n → m + o ≤ n + o
-+-monoˡ-≤ o = map $ ℕ.+-monoˡ-≤ o
++-monoˡ-≤ _ = map $ ℕ.+-monoˡ-≤ _
 
 +-monoʳ-≤ : ∀ o → m ≤ n → o + m ≤ o + n
-+-monoʳ-≤ o = map $ ℕ.+-monoʳ-≤ o
++-monoʳ-≤ _ = map $ ℕ.+-monoʳ-≤ _
 
 +-mono-≤ : m ≤ n → o ≤ p → m + o ≤ n + p
 +-mono-≤ = map2 ℕ.+-mono-≤
@@ -77,6 +92,21 @@ m+n≤o⇒n≤o m = map $ ℕ.m+n≤o⇒n≤o m
 
 +-cancelʳ-≤ : ∀ m n o → n + m ≤ o + m → n ≤ o
 +-cancelʳ-≤ m n o = map (ℕ.+-cancelʳ-≤ m n o)
+
+------------------------------------------------------------------------
+-- Properties of _+_ and _<_
+
+m<m+n : ∀ m {n} → n > 0 → m < m + n
+m<m+n _ = map $ ℕ.m<m+n _
+
+m<n+m : ∀ m {n} → n > 0 → m < n + m
+m<n+m _ = map $ ℕ.m<n+m _
+
++-mono-<-≤ : m < n → o ≤ p → m + o < n + p
++-mono-<-≤ = map2 ℕ.+-mono-<-≤
+
++-mono-≤-< : m ≤ n → o < p → m + o < n + p
++-mono-≤-< = map2 ℕ.+-mono-≤-<
 
 ------------------------------------------------------------------------
 -- Properties of _*_ and _≤_/_<_

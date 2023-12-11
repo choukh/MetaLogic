@@ -1,8 +1,8 @@
 {-# OPTIONS --lossy-unification #-}
-module Enumerability.ListView.Properties where
-open import Enumerability.ListView.Base
-open import Enumerability.ListView.Instance
-import Enumerability.MaybeView as Ⓜ
+module Enumeration.ListView.Properties where
+open import Enumeration.ListView.Base
+open import Enumeration.ListView.Instance
+import Enumeration.MaybeView as Ⓜ
 
 open import Foundation.Essential
   hiding (_∈_) renaming (_∈ᴸ_ to _∈_)

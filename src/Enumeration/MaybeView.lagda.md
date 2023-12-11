@@ -1,11 +1,11 @@
 ---
-url: foundation.enumerability.maybeview
+url: foundation.enumeration.maybeview
 ---
 
 # 可枚举性 ▸ 可选值序列视角
 
 ```agda
-module Enumerability.MaybeView where
+module Enumeration.MaybeView where
 
 open import Foundation.Essential
 open import Foundation.Data.Maybe
@@ -76,5 +76,5 @@ count∞→enum {A} = 𝟙.map H where
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.maybeview)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumeration/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumeration.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.maybeview)  
 > 交流Q群: 893531731
