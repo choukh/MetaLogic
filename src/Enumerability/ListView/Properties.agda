@@ -8,7 +8,7 @@ open import Foundation.Essential
   hiding (_∈_) renaming (_∈ᴸ_ to _∈_)
 open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
-open import Foundation.Data.List.Discrete (discrete× discreteℕ discreteℕ)
+open import Foundation.Data.List.Discrete
 
 ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ enum n
 ∈eℕ-intro zero zero ≤-refl = here refl
@@ -50,7 +50,7 @@ e2ℕⓂ n = enum n [ n ]?
 
 e2ℕⓂ-enum : ∀ p → Σ k ， e2ℕⓂ k ≡ some p
 e2ℕⓂ-enum (m , n) with enum (suc (m + n)) [ m , n ]⁻¹? in eq1
-... | none rewrite x∈→Σ[x]⁻¹? (∈e2ℕ-intro m n) .snd with eq1
+... | none rewrite ∈→Σ[]⁻¹? (∈e2ℕ-intro m n) .snd with eq1
 ... | ()
 e2ℕⓂ-enum (m , n) | some k with e2ℕⓂ k in eq2
 ... | none rewrite Σ[<length]? (enum k) (e2ℕ-length->n k) .snd with eq2

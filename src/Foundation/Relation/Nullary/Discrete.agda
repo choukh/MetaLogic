@@ -5,7 +5,7 @@ open import Foundation.Relation.Nullary.Decidable
 
 open import Relation.Binary public
   using ()
-  renaming (DecidableEquality to discrete)
+  renaming (DecidableEquality to discreteⓂ)
 
 open import Cubical.Relation.Nullary as 🧊
   using ()
@@ -14,17 +14,23 @@ open import Cubical.Relation.Nullary as 🧊
     Discrete→isSet to discrete🧊→isSet🧊
   )
 
+discrete : 𝕋 ℓ → 𝕋 ℓ
+discrete A = {x y : A} → Dec (x ≡ y)
+
+_≟_ : ⦃ discrete A ⦄ → discreteⓂ A
+_≟_ _ _ = it
+
 discrete→🧊 : discrete A → discrete🧊 A
-discrete→🧊 H x y = Dec→🧊 $ subst Dec (sym Eq≡🧊) (H x y)
+discrete→🧊 H _ _ = Dec→🧊 $ subst Dec (sym Eq≡🧊) H
 
 discrete←🧊 : discrete🧊 A → discrete A
-discrete←🧊 H x y = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
+discrete←🧊 H {x} {y} = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
 
 discrete→isSet : discrete A → isSet A
 discrete→isSet = isSet←🧊 ∘ discrete🧊→isSet🧊 ∘ discrete→🧊
 
 isPropDiscrete : isSet A → isProp (discrete A)
-isPropDiscrete H = isPropΠ2 λ x y → isPropDec (H x y)
+isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
 
 𝔻 : ∀ ℓ → 𝕋 (ℓ ⁺)
 𝔻 ℓ = TypeWithStr ℓ discrete

@@ -24,7 +24,7 @@ Cumulation f = ∀ n → Σ xs ， f (suc n) ≡ f n ++ xs
 
 module _ (cum : Cumulation f) where
 
-  cum-≤→++ : {m n : ℕ} → m ≤ n → Σ xs ， f n ≡ f m ++ xs
+  cum-≤→++ : m ≤ n → Σ xs ， f n ≡ f m ++ xs
   cum-≤→++ {m = n} {n} ≤-refl = [] , sym (++-identityʳ (f n))
   cum-≤→++ {m} {suc n} (≤-step m≤n) with cum n | cum-≤→++ m≤n
   ... | xs , H₁ | ys , H₂ = (ys ++ xs) ,
@@ -33,9 +33,19 @@ module _ (cum : Cumulation f) where
     (f m ++ ys) ++ xs ≡⟨ ++-assoc (f m) ys xs ⟩
     f m ++ ys ++ xs   ∎
 
-  cum-≤→⊆ : {m n : ℕ} → m ≤ n → f m ⊆ f n
+  cum-≤→⊆ : m ≤ n → f m ⊆ f n
   cum-≤→⊆ m≤n x∈fm with cum-≤→++ m≤n
   ... | xs , eq = subst (_ ∈_) eq (∈-++⁺ˡ x∈fm)
+
+  cum-≤→Σ : m ≤ n → Σ xs ， f n ≡ f m ++ xs
+  cum-≤→Σ ≤-refl = [] , (sym $ ++-identityʳ _)
+  cum-≤→Σ (≤-step {n} m≤n) with cum-≤→Σ m≤n | cum n
+  ... | xs , Hx | ys , Hy rewrite Hy | Hx = xs ++ ys , ++-assoc _ _ _
+
+  cum-total : ∀ m n → (Σ xs ， f n ≡ f m ++ xs) ⊎ (Σ xs ， f m ≡ f n ++ xs) 
+  cum-total m n with ≤-total m n
+  ... | inj₁ m≤n = inj₁ (cum-≤→Σ m≤n)
+  ... | inj₂ n≤m = inj₂ (cum-≤→Σ n≤m)
 
 Witness : 𝕃ₙ A → A → 𝕋 _
 Witness f x = Σ n ， x ∈ f n
@@ -99,3 +109,4 @@ combine-wit {f} cum (x ∷ x⃗) H0 = 𝟙.map2 H (H0 x (here refl)) IH where
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Enumerability/ListView/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Enumerability.ListView.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumerability.listview.base)  
 > 交流Q群: 893531731
+ 

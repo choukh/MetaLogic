@@ -9,16 +9,26 @@ module Enumerability.PlainView where
 import Enumerability.ListView.Base as Ⓛ
 
 open import Foundation.Essential
+open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
+open import Foundation.Data.List.Discrete
 
-record Enum (A : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
+record Enum (A : 𝕋 ℓ) ⦃ discrA : discrete A ⦄ : 𝕋 (ℓ ⁺) where
   field
     ⦃ enumⓁ ⦄ : Ⓛ.Enum A
-    discr : discrete A
     Hₗ : ∀ n → length (Ⓛ.enum n) > n
 
   enum : ℕ → A
   enum n = Σ[<length]? (Ⓛ.enum n) (Hₗ n) .fst
+
+  enum-correct : ∀ n → Ⓛ.enum n [ n ]? ≡ some (enum n)
+  enum-correct n = Σ[<length]? (Ⓛ.enum n) (Hₗ n) .snd
+
+  wit : ∀ x → ∃ n ， enum n ≡ x
+  wit x = 𝟙.map H (Ⓛ.wit x) where
+    H : Ⓛ.Witness Ⓛ.enum x → Σ n ， enum n ≡ x
+    H (m , Hm) with ∈→Σ[]⁻¹? Hm
+    ... | n , Hn = n , {! enum-correct n !}
 ```
 
 ---

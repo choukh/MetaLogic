@@ -1,6 +1,6 @@
 open import Foundation.Prelude
 open import Foundation.Relation.Nullary.Discrete
-module Foundation.Data.List.Discrete (_≟_ : discrete A) where
+module Foundation.Data.List.Discrete ⦃ dA : discrete A ⦄ where
 
 open import Foundation.Data.Empty
 open import Foundation.Data.Bool
@@ -17,11 +17,11 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
   ... | some n = some (suc n)
   ... | none = none
 
-x∈→Σ[x]⁻¹? : {xs : 𝕃 A} {x : A} → x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
-x∈→Σ[x]⁻¹? {y ∷ xs} {x} _ with x ≟ y
+∈→Σ[]⁻¹? : {xs : 𝕃 A} {x : A} → x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
+∈→Σ[]⁻¹? {y ∷ xs} {x} _ with x ≟ y
 ...                    | yes p = 0 , refl
-x∈→Σ[x]⁻¹? (here p)     | no ¬p = exfalso (¬p p)
-x∈→Σ[x]⁻¹? (there x∈xs) | no ¬p with x∈→Σ[x]⁻¹? x∈xs
+∈→Σ[]⁻¹? (here p)     | no ¬p = exfalso (¬p p)
+∈→Σ[]⁻¹? (there x∈xs) | no ¬p with ∈→Σ[]⁻¹? x∈xs
 ... | n , H rewrite H = suc n , refl
 
 index-inv : (xs : 𝕃 A) {x : A} {n : ℕ} → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x

@@ -45,7 +45,7 @@ discr→enum→count {A} disA = 𝟙.map H where
       sets : isSets (λ n → f n ≡ some x)
       sets n = isProp→isSet $ (isSetMaybe $ discrete→isSet disA) _ _
       dis : ∀ n → Dec (f n ≡ some x)
-      dis n = (discreteMaybe disA) _ _
+      dis n = discreteMaybe disA
     g₁ : A → ℕ
     g₁ = fst ∘ g
     g₂ : ∀ x → f (g₁ x) ≡ some x
@@ -56,6 +56,22 @@ discr→enum→count {A} disA = 𝟙.map H where
       f (g₁ x) ≡⟨ cong f eq ⟩
       f (g₁ y) ≡⟨ g₂ y ⟩
       some y   ∎
+
+count∞→discr : isSet A → countablyInfinite A → discrete A
+count∞→discr sA = 𝟙.rec (isPropDiscrete sA) H where
+  H : A ≅ ℕ → discrete A
+  H (mk≅ f f⁻¹ f∘f⁻¹ f⁻¹∘f) {x} {y} with f x ≟ f y
+  ... | yes p = yes $ subst2 _≡_ (f⁻¹∘f _) (f⁻¹∘f _) (cong f⁻¹ p)
+  ... | no ¬p = no λ { refl → ¬p refl }
+
+count∞→enum : countablyInfinite A → enumerable A
+count∞→enum {A} = 𝟙.map H where
+  H : A ≅ ℕ → Enum A
+  H (mk≅ f f⁻¹ f∘f⁻¹ f⁻¹∘f) = g , wit where
+    g : ℕ → A ？
+    g n = some (f⁻¹ n)
+    wit : ∀ x → g witness x
+    wit x = ex (f x) (cong some (f⁻¹∘f x))
 ```
 
 ---

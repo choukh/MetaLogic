@@ -11,8 +11,9 @@ open import Data.Nat.Properties as ℕ public
     +-suc; +-comm
   )
 
-discreteℕ : discrete ℕ
-discreteℕ = ℕ._≟_
+instance
+  discreteℕ : discrete ℕ
+  discreteℕ = ℕ._≟_ _ _
 
 isSetℕ : isSet ℕ
 isSetℕ = discrete→isSet discreteℕ
