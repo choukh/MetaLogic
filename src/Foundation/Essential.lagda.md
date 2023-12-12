@@ -391,10 +391,11 @@ open import Foundation.Function.Sequance public
 
 ```agda
 open import Foundation.Function.Enumeration.ListView.Base public
+open import Foundation.Function.Enumeration.ListView.Instance public
 open import Foundation.Function.Enumeration.ListView.Properties public
 ```
 
-枚举是满足一定性质的特殊函数, 是关乎我们对象语言的重要构造, 其变体甚多, 我们单独设为一章: [0.2.1.1 枚举](https://www.yuque.com/ocau/metalogic/foundation.enumeration.maybeview).
+枚举是满足一定性质的特殊函数, 是关乎我们对象语言的重要构造, 其变体甚多, 我们单独设为一章: [0.2 枚举](https://www.yuque.com/ocau/metalogic/foundation.enumeration.maybeview).
 
 ### 同构
 
@@ -465,7 +466,7 @@ open import Foundation.Relation.Nullary.Discrete.Base public
 open import Foundation.Relation.Nullary.Discrete.Instance public
 ```
 
-离散性与枚举函数的性质密切相关, 与之一样, 我们单独设为一章: [0.1.0 离散性](https://www.yuque.com/ocau/metalogic/foundation.discrete.base).
+离散性与枚举函数的性质密切相关, 与之一样, 我们单独设为一章: [0.1 离散性](https://www.yuque.com/ocau/metalogic/foundation.discrete.base).
 
 ### 一元关系
 

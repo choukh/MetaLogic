@@ -36,6 +36,8 @@ data Term : 𝕋 where
   _$̇_ : (f : 𝓕) → 𝕍 Term ∣ f ∣ᶠ → Term
 ```
 
+由于项的定义内部涉及到项的向量, 它们相互影响, 直接对它们进行模式匹配是相对复杂的. 为此我们证明了一个辅助引理 `term-elim`, 用来对项进行结构归纳.
+
 **<u>引理</u>** 项的结构归纳法: 任意给定项的性质 `P`, 可以证明任意项都满足 `P`, 只要证明以下两点
 
 1. `P` 对所有变元成立
@@ -274,3 +276,4 @@ _⊩_ _⊮_ : Theory → Formula → 𝕋
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.base)  
 > 交流Q群: 893531731
+  

@@ -85,5 +85,5 @@ count∞→enum {A} = 𝟙.map H where
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.maybeview)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/MaybeView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.MaybeView.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.enumeration.maybeview)  
 > 交流Q群: 893531731

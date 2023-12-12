@@ -8,13 +8,12 @@ url: fol.syntax.enumeration
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
-open import Enumeration.ListView
 import Enumeration.PlainView as Plain
 
 open import FOL.Language
 module FOL.Syntax.Enumeration (ℒ : Language) where
-
 open import FOL.Syntax.Base ℒ
+open import FOL.Syntax.Discrete ℒ
 instance _ = ℒ
 ```
 
@@ -97,12 +96,6 @@ instance
           H1 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
           H2 : apps (m + n) R ∈ᴸ map (apps (m + n)) (enum (m + n))
           H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
-```
-
-```agda
-instance
-  discrFormula : discrete Formula
-  discrFormula = {!   !}
 ```
 
 ```agda

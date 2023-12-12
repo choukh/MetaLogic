@@ -10,7 +10,6 @@ open import Foundation.Data.Nat.Order
 
 open import FOL.Language
 module FOL.Syntax.FreshVariables (ℒ : Language) where
-
 open import FOL.Syntax.Base ℒ
 ```
 

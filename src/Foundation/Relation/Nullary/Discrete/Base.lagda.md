@@ -51,5 +51,5 @@ isSetTyp𝔻 {𝗔} = discrete→isSet ⦃ str 𝗔 ⦄
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Relation/Nullary/Discrete/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Relation.Nullary.Discrete.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/discrete.base)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Relation/Nullary/Discrete/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Relation.Nullary.Discrete.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.discrete.base)  
 > 交流Q群: 893531731

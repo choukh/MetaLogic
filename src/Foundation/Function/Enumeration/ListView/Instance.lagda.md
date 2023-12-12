@@ -56,8 +56,8 @@ instance
         H2 : (x , y) ∈ enum (m + n) [×] enum (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ cum m≤m+n x∈fm) (cum-≤→⊆ cum m≤n+m x∈gn)
 
-  enumVec : ⦃ Enum A ⦄ → Enum (𝕍 A n)
-  enumVec {A} = mkEnum e c w where
+  enum𝕍 : ⦃ Enum A ⦄ → Enum (𝕍 A n)
+  enum𝕍 {A} = mkEnum e c w where
 
     e : 𝕃ₙ (𝕍 A n)
     e zero = []
@@ -84,5 +84,5 @@ instance
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/ListView/Instance.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.ListView.Instance.html) | [语雀](https://www.yuque.com/ocau/metalogic/enumeration.listview.instance)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/ListView/Instance.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.ListView.Instance.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.enumeration.listview.instance)  
 > 交流Q群: 893531731
