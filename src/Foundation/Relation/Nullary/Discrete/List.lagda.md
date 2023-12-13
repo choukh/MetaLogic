@@ -64,8 +64,8 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
 ```agda
 index-inv : (xs : 𝕃 A) {x : A} {n : ℕ} → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x
 index-inv (y ∷ xs) {x} H with x ≟ y | xs [ x ]⁻¹? in eq
-index-inv _        refl | yes refl | _      = refl
-index-inv (y ∷ xs) refl | no _     | some _ = index-inv xs eq
+index-inv _        refl  | yes refl | _      = refl
+index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
 ```
 
 ---
