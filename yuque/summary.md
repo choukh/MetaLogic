@@ -1,6 +1,6 @@
 - [0 元语言](foundation)
   - [0.0✩ 导论](foundation.essential)
-  - [0.1ᐞ 离散性](foundation.discrete)
+  - [0.1 离散性](foundation.discrete)
     - [0.1.0 定义](foundation.discrete.base)
     - [0.1.1 实例](foundation.discrete.instance)
     - [0.1.2 列表](foundation.discrete.list)

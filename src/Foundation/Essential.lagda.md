@@ -347,7 +347,7 @@ open import Foundation.Data.Sum public
 open import Foundation.Data.Maybe public
 ```
 
-可选类型 `A ？` 的项具有 `just a` 或 `nothing` 的形式, 其中 `a : A`. 如果 `A` 是集合, 那么 `A ？` 也是集合. 此时, 可以认为 `A ？` 具有基数 $|A| + 1$. 实际上, `A ？` 等于 `A ⊎ ⊤` (`Maybe≡SumUnit`).
+可选类型 `A ？` 的项具有 `some a` 或 `none` 的形式, 其中 `a : A`. 如果 `A` 是集合, 那么 `A ？` 也是集合. 此时, 可以认为 `A ？` 具有基数 $|A| + 1$. 实际上, `A ？` 等于 `A ⊎ ⊤` (`Maybe≡SumUnit`).
 
 ### 容器
 
