@@ -1,5 +1,5 @@
 ---
-url: foundation.discreteness.base
+url: foundation.discrete.base
 ---
 
 # 元语言 ▸ 离散性 ▸ 定义

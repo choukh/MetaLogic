@@ -49,15 +49,17 @@ record Language : 𝕋₁ where
     ⦃ enum𝓡 ⦄ : Enum 𝓡
 ```
 
-**<u>注意</u>** 在经典语境下集合一定是离散的, 但在直觉主义 HoTT 中, 离散强于“集合”. 因此当我们要求某 `A` 是“离散集”的时候, 实际上只要求它是离散类型, 然后它自然是一个集合.
+在经典语境下集合一定是离散的, 但在直觉主义 HoTT 中, 离散强于“集合”. 因此当我们要求某 `A` 是“离散集”的时候, 实际上只要求它是离散类型, 然后它自然是一个集合.
 
-**<u>注意</u>** 回顾[枚举的定义](https://www.yuque.com/ocau/metalogic/foundation.essential#c1933822), 某类型 `A` 的枚举 `Enum A`是一个二元组:
+**<u>约定</u>** 对于已经确立了离散性的类型, 我们直接把它当作集合来看待. 代码上是把离散性的证据放到括号 `⦃ ⦄` 中来声明, 并且统一使用 `discreteSet` 来说明这些被声明的离散类型是集合.
+
+回顾[枚举的定义](https://www.yuque.com/ocau/metalogic/foundation.enumeration.listview.base), 某类型 `A` 的枚举 `Enum A`是一个二元组:
 1. 满足 `wit` 的一个函数 `enum`
 2. `enum` 的一个 `cum`
 
 **<u>约定</u>** 对于一个类型, 我们自始至终只会谈论它的一个枚举. 所以对任意类型的枚举, 我们都会用 `enum`, `wit` 和 `cum` 来指代该类型的那个我们唯一谈论的枚举的 `enum`, `wit` 和 `cum`. 我们通过把 `enum𝓕` 放到括号 `⦃ ⦄` 中来声明它是我们唯一谈论的那个 `Enum 𝓕`. 对于 `enum𝓡` 也一样.
 
-**<u>定理</u>** `𝓕` 和 `𝓡` 都是可数集.
+**<u>事实</u>** `𝓕` 和 `𝓡` 都是可数集.
 
 ```agda
   count𝓕 : countable 𝓕
@@ -65,12 +67,6 @@ record Language : 𝕋₁ where
 
   count𝓡 : countable 𝓡
   count𝓡 = discr→enum→count ∣ enum𝓡 ∣₁
-
-  isSet𝓕 : isSet 𝓕
-  isSet𝓕 = discreteSet
-
-  isSet𝓡 : isSet 𝓡
-  isSet𝓡 = discreteSet
 ```
 
 **<u>例</u>** 下面给出了语言的一个实例 `ℒ`, 它可以作为皮亚诺算术的语言.
