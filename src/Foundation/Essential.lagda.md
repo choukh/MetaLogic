@@ -101,7 +101,7 @@ open import Foundation.Prelude.Function public
 open import Foundation.Prelude.Equality public
 ```
 
-**<u>定理</u>** 相等的基本性质
+**<u>引理</u>** 相等的基本性质
 
 - 对称性 `sym`, 传递性 `_∙_`
   - 注意自反性 `refl` 不需要专门给出, 它是相等类型的唯一构造子
@@ -164,7 +164,7 @@ open import Foundation.Prop.Truncation public
 
 命题截断 `∥_∥₁` 用于把一个可能不是命题的类型转化为命题. 命题截断是一个高阶归纳类型, 其构造子 `∣_∣₁` 用于构造命题截断的项, `𝟙.squash` 用于证明命题截断后的类型的项确实都是相等的.
 
-**<u>定理</u>** 命题截断的性质
+**<u>引理</u>** 命题截断的性质
 
 - `𝟙.rec` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → P` 来证明 `∥ A ∥₁ → P`
 - `𝟙.rec2` : 如果目标 `P` 是命题, 那么我们可以通过证明 `A → B → P` 来证明 `∥ A ∥₁ → ∥ B ∥₁ → P`
@@ -189,7 +189,7 @@ open import Foundation.Prop.Logic public
 - 合取 `_×_`, 要求两边都是命题
 - 全称量化 `∀ x →`, 只要右边是命题就是命题
 
-**<u>定理</u>** 命题截断上的归谬法 `exfalso₁ : ∥ A ∥₁ → ¬ A → B`.
+**<u>引理</u>** 命题截断上的归谬法 `exfalso₁ : ∥ A ∥₁ → ¬ A → B`.
 
 #### 析取
 
@@ -226,7 +226,7 @@ open import Foundation.Prop.Universe public
 - 恒假**命题** `⊥ₚ`, 定义为 `⊥ , isProp⊥`, 因为 `⊥` 是一个命题
 - 恒真**命题** `⊤ₚ`, 定义为 `⊤ , isProp⊤`, 因为 `⊤` 是一个命题
 
-**<u>定理</u>** **命题**的性质
+**<u>引理</u>** **命题**的性质
 
 - 任意层级的命题宇宙 `ℙ ℓ` 本身是一个集合, 该性质记作 `isSetℙ`
 - 命题外延性 `propExt : isProp A → isProp B → A ↔ B → A ≡ B`
@@ -258,7 +258,7 @@ open import Foundation.Set.Truncation public
 
 与命题截断类似地, 我们有集合截断 `∥_∥₂`, 它将高阶群胚截断为集合.
 
-**<u>定理</u>** 集合截断的性质
+**<u>引理</u>** 集合截断的性质
 
 - `𝟚.rec` : 如果目标 `B` 是命题, 那么我们可以通过证明 `A → B` 来证明 `∥ A ∥₂ → B`
 - `𝟚.rec2` : 如果目标 `C` 是命题, 那么我们可以通过证明 `A → B → C` 来证明 `∥ A ∥₂ → ∥ B ∥₂ → C`
@@ -321,7 +321,7 @@ open import Foundation.Data.Nat public
 
 ### 组合
 
-组合数据类型用于对任意给定的两个类型做某种形式的组合.
+组合数据类型用于对任意给定的一些类型做某种形式的组合.
 
 #### Σ类型
 
@@ -331,7 +331,7 @@ open import Foundation.Data.Sigma public
 
 Σ类型 `Σ A P` 的项具有 `(x , p)` 的形式, 其中 `x : A` 而 `p : P x`. Σ类型具有基数 $\sum_{x \in A} |P(x)|$. 如果 `A` 和 `P x` 都是命题 (或集合), 那么这个 `Σ A P` 也是命题 (或集合).
 
-当 `P` 不依值于 `A` 的时候就成了普通的积类型 `A × B`, 它的项具有 `(a , b)` 的形式, 其中 `a : A` 而 `b : B`. 积类型具有基数 $|A| \times |B|$. 如果 `A` 和 `B` 都是命题 (或集合), 那么这个 `A × B` 也是命题 (或集合).
+当 `P` 不依值于 `A` 的时候就成了普通的积类型 `A × B`, 它的项具有 `(a , b)` 的形式, 其中 `a : A` 而 `b : B`. 如果 `A` 和 `B` 都是命题 (或集合), 那么这个 `A × B` 也是命题 (或集合). 此时, 可以认为 `A × B` 具有基数 $|A| \times |B|$.
 
 #### 和类型
 
@@ -339,7 +339,15 @@ open import Foundation.Data.Sigma public
 open import Foundation.Data.Sum public
 ```
 
-和类型 `A ⊎ B` 就是对类型 `A` 和 `B` 做不交并, 它的项具有 `inl a` 或 `inr b` 的形式, 其中 `a : A` 而 `b : B`. 和类型具有基数 $|A| + |B|$. 如果 `A` 和 `B` 都是命题且它们互斥, 那么这个 `A ⊎ B` 是命题; 如果 `A` 和 `B` 都是集合, 那么这个 `A ⊎ B` 是集合.
+和类型 `A ⊎ B` 就是对类型 `A` 和 `B` 做不交并, 它的项具有 `inl a` 或 `inr b` 的形式, 其中 `a : A` 而 `b : B`. 如果 `A` 和 `B` 都是命题且它们互斥, 那么这个 `A ⊎ B` 是命题; 如果 `A` 和 `B` 都是集合, 那么这个 `A ⊎ B` 是集合. 此时, 可以认为 `A ⊎ B` 具有基数 $|A| + |B|$.
+
+#### 可选类型
+
+```agda
+open import Foundation.Data.Maybe public
+```
+
+可选类型 `A ？` 的项具有 `just a` 或 `nothing` 的形式, 其中 `a : A`. 如果 `A` 是集合, 那么 `A ？` 也是集合. 此时, 可以认为 `A ？` 具有基数 $|A| + 1$. 实际上, `A ？` 等于 `A ⊎ ⊤` (`Maybe≡SumUnit`).
 
 ### 容器
 
