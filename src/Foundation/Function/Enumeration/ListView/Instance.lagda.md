@@ -19,16 +19,22 @@ open import Foundation.Data.Sum
 open import Foundation.Data.List
 open import Foundation.Data.List.SetTheoretic
 open import Foundation.Data.Vec
+```
 
+```agda
 private variable
   m n o : ℕ
+```
 
+```agda
 instance
   enum𝔹 : Enum 𝔹
   enum𝔹 = mkEnum (λ _ → true ∷ [ false ]) (λ n → [] , refl)
     λ { true →  ex 0 $ here refl
       ; false → ex 0 $ there (here refl) }
+```
 
+```agda
   enumℕ : Enum ℕ
   enumℕ = mkEnum e c w where
     e : 𝕃ₙ ℕ
@@ -41,7 +47,9 @@ instance
       H : ∀ n → n ∈ e n
       H zero = here refl
       H (suc n) = ∈-++⁺ʳ (here refl)
+```
 
+```agda
   enum× : ⦃ Enum A ⦄ → ⦃ Enum B ⦄ → Enum (A × B)
   enum× {A} {B} = mkEnum e c w where
     e : 𝕃ₙ (A × B)
@@ -55,10 +63,11 @@ instance
       H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈-++⁺ʳ H2 where
         H2 : (x , y) ∈ enum (m + n) [×] enum (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ cum m≤m+n x∈fm) (cum-≤→⊆ cum m≤n+m x∈gn)
+```
 
+```agda
   enum𝕍 : ⦃ Enum A ⦄ → Enum (𝕍 A n)
   enum𝕍 {A} = mkEnum e c w where
-
     e : 𝕃ₙ (𝕍 A n)
     e zero = []
     e {n} (suc m) = e m ++ combine (enum m) n
