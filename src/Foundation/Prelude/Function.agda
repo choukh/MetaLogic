@@ -3,7 +3,7 @@ module Foundation.Prelude.Function where
 open import Foundation.Prelude.Builtin
 
 open import Function public
-  using (id; _∘_; _∘₂_; flip; _$_; it)
+  using (id; _∘_; _∘₂_; flip; _$_; _∋_; it)
 
 -- tribute to copilot
 _∘₃_ : ∀ {A₁ : 𝕋 ℓ} {A₂ : A₁ → 𝕋 ℓ′} {A₃ : (x : A₁) → A₂ x → 𝕋 ℓ″}

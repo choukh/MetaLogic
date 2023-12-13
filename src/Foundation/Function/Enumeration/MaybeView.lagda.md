@@ -52,7 +52,7 @@ discr→enum→count {A} = 𝟙.map H where
     g : ∀ x → Witness f x
     g x = ε sets dis (H x) where
       sets : isSets (λ n → f n ≡ some x)
-      sets n = isProp→isSet $ (isSetMaybe discrete→isSet) _ _
+      sets n = isProp→isSet $ (isSetMaybe discreteSet) _ _
       dis : ∀ n → Dec (f n ≡ some x)
       dis n = it
     g₁ : A → ℕ

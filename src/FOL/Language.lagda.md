@@ -67,10 +67,10 @@ record Language : 𝕋₁ where
   count𝓡 = discr→enum→count ∣ enum𝓡 ∣₁
 
   isSet𝓕 : isSet 𝓕
-  isSet𝓕 = discrete→isSet
+  isSet𝓕 = discreteSet
 
   isSet𝓡 : isSet 𝓡
-  isSet𝓡 = discrete→isSet
+  isSet𝓡 = discreteSet
 ```
 
 **<u>例</u>** 下面给出了语言的一个实例 `ℒ`, 它可以作为皮亚诺算术的语言.

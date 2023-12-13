@@ -33,8 +33,8 @@ discrete→🧊 H _ _ = Dec→🧊 $ subst Dec (sym Eq≡🧊) H
 discrete←🧊 : discrete🧊 A → discrete A
 discrete←🧊 H {x} {y} = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
 
-discrete→isSet : ⦃ discrete A ⦄ → isSet A
-discrete→isSet = isSet←🧊 $ discrete🧊→isSet🧊 $ discrete→🧊 it
+discreteSet : ⦃ discrete A ⦄ → isSet A
+discreteSet = isSet←🧊 $ discrete🧊→isSet🧊 $ discrete→🧊 it
 
 isPropDiscrete : isSet A → isProp (discrete A)
 isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
@@ -46,7 +46,7 @@ isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
 𝔻₀ = 𝔻 ℓ0
 
 isSetTyp𝔻 : {𝗔 : 𝔻 ℓ} → isSet (typ 𝗔)
-isSetTyp𝔻 {𝗔} = discrete→isSet ⦃ str 𝗔 ⦄
+isSetTyp𝔻 {𝗔} = discreteSet ⦃ str 𝗔 ⦄
 ```
 
 ---
