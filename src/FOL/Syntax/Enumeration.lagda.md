@@ -8,7 +8,7 @@ url: fol.syntax.enumeration
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
-import Enumeration.PlainView as Plain
+import Foundation.Function.Enumeration.PlainView as Plain
 
 open import FOL.Language
 module FOL.Syntax.Enumeration (ℒ : Language) where
