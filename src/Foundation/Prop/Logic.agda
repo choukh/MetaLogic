@@ -2,6 +2,7 @@ module Foundation.Prop.Logic where
 
 open import Foundation.Prelude.Builtin
 open import Foundation.Prelude.Function
+open import Foundation.Prelude.HLevel
 open import Foundation.Prop.Truncation
 
 open import Foundation.Data.Empty
@@ -44,3 +45,9 @@ syntax ∃̅-syntax (λ x → P) = ∃ x ， P
 
 ex : (a : A) (H : P a) → ∃ A P
 ex a H = ∣ a , H ∣₁
+
+inhabited : 𝕋 ℓ → 𝕋 ℓ
+inhabited A = ∥ A ∥₁
+
+inhabited→nonEmpty : inhabited A → nonEmpty A
+inhabited→nonEmpty = 𝟙.rec (isProp→ isProp⊥) λ a ¬a → ¬a a

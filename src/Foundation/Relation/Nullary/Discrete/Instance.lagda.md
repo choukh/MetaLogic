@@ -4,7 +4,7 @@ url: foundation.discrete.instance
 
 # 元语言 ▸ 离散性 ▸ 实例
 
-本章建立了一些基本类型的离散性. 我们从 `Foundation`, 标准库中导入了相关定义和引理.
+本章建立了一些基本类型的离散性. 我们从 `Foundation` 和标准库中导入了相关定义和引理.
 
 ```agda
 module Foundation.Relation.Nullary.Discrete.Instance where

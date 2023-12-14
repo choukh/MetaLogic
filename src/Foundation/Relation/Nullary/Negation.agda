@@ -7,9 +7,7 @@ open import Relation.Nullary public
   using ()
   renaming (¬_ to infix 30 ¬_)
 
-open import Cubical.Relation.Nullary as 🧊
-  using (Stable)
-  renaming (NonEmpty to nonEmpty)
+import Cubical.Relation.Nullary as 🧊
 
 ¬→🧊 : ¬ A → 🧊.¬ A
 ¬→🧊 ¬x x with ¬x x
@@ -30,3 +28,9 @@ open import Cubical.Relation.Nullary as 🧊
 
 ¬≡🧊 : ¬ A ≡ (🧊.¬ A)
 ¬≡🧊 = ua ¬≅🧊
+
+nonEmpty : 𝕋 ℓ → 𝕋 ℓ
+nonEmpty A = ¬ ¬ A
+
+stable : 𝕋 ℓ → 𝕋 ℓ
+stable A = nonEmpty A → A

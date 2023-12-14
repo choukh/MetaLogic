@@ -455,7 +455,7 @@ open import Foundation.Relation.Nullary.Negation public
 
 - 否定 `¬_ = λ A → A → ⊥`
 - 非空 `nonEmpty = λ A → ¬ ¬ A`
-- 稳定 `Stable = λ A → nonEmpty A → A`
+- 稳定 `stable = λ A → nonEmpty A → A`
 
 #### 可判定
 
