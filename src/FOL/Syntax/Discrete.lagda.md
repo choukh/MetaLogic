@@ -4,7 +4,7 @@ url: fol.syntax.discrete
 
 # 一阶逻辑 ▸ 语法 ▸ 公式的离散性
 
-我们希望说明 `Formula` 是一个集合, 并且可以被枚举. 这些都需要先建立其离散性.
+我们希望说明公式类型 `Formula` 是一个集合, 并且可以被枚举. 这些都要求首先建立公式的离散性.
 
 ```agda
 open import Foundation.Essential
@@ -17,17 +17,29 @@ instance _ = ℒ
 
 ## 构造子的单射性
 
-**<u>引理</u>** 
+为了证明公式离散, 需要证明项和公式的每一个构造子是单射的. 因为我们需要从某 `x ≢ y` 说明 `f x ≢ f y`, 其中 `f` 是某个构造子. 大部分构造子的单射性都是显然的, 如以下所示.
 
 ```agda
 #-inj : {m n : ℕ} → # m ≡ # n → m ≡ n
 #-inj refl = refl
-```
 
-```agda
 f$̇-injˡ : ∀ {f g t⃗ s⃗} → f Term.$̇ t⃗ ≡ g $̇ s⃗ → f ≡ g
 f$̇-injˡ refl = refl
+
+→̇-injˡ : ∀ {φ₁ ψ₁ φ₂ ψ₂} → φ₁ →̇ ψ₁ ≡ φ₂ →̇ ψ₂ → φ₁ ≡ φ₂
+→̇-injˡ refl = refl
+
+→̇-injʳ : ∀ {φ₁ ψ₁ φ₂ ψ₂} → φ₁ →̇ ψ₁ ≡ φ₂ →̇ ψ₂ → ψ₁ ≡ ψ₂
+→̇-injʳ refl = refl
+
+∀̇-inj : ∀ {φ₁ φ₂} → ∀̇ φ₁ ≡ ∀̇ φ₂ → φ₁ ≡ φ₂
+∀̇-inj refl = refl
+
+R$̇-injˡ : ∀ {R S t⃗ s⃗} → R Formula.$̇ t⃗ ≡ S $̇ s⃗ → R ≡ S
+R$̇-injˡ refl = refl
 ```
+
+但是 `f $̇_` 和 `R $̇_` 的单射性需要特殊处理. TODO
 
 ```agda
 f$̇-injʳ : ∀ {f t⃗ s⃗} → f $̇ t⃗ ≡ f $̇ s⃗ → t⃗ ≡ s⃗
@@ -37,26 +49,6 @@ f$̇-injʳ {f} {t⃗} {s⃗} eq = ,-injʳ discreteSet eqΣ where
   toΣ (f $̇ t⃗) = ∣ f ∣ᶠ , t⃗
   eqΣ : (∣ f ∣ᶠ , t⃗) ≡ (∣ f ∣ᶠ , s⃗)
   eqΣ = cong toΣ eq
-```
-
-```agda
-→̇-injˡ : ∀ {φ₁ ψ₁ φ₂ ψ₂} → φ₁ →̇ ψ₁ ≡ φ₂ →̇ ψ₂ → φ₁ ≡ φ₂
-→̇-injˡ refl = refl
-```
-
-```agda
-→̇-injʳ : ∀ {φ₁ ψ₁ φ₂ ψ₂} → φ₁ →̇ ψ₁ ≡ φ₂ →̇ ψ₂ → ψ₁ ≡ ψ₂
-→̇-injʳ refl = refl
-```
-
-```agda
-∀̇-inj : ∀ {φ₁ φ₂} → ∀̇ φ₁ ≡ ∀̇ φ₂ → φ₁ ≡ φ₂
-∀̇-inj refl = refl
-```
-
-```agda
-R$̇-injˡ : ∀ {R S t⃗ s⃗} → R Formula.$̇ t⃗ ≡ S $̇ s⃗ → R ≡ S
-R$̇-injˡ refl = refl
 ```
 
 ```agda
