@@ -96,7 +96,7 @@ private module ExampleLanguagePA where
 通过模式匹配不难证明归纳定义的 `𝓕` 和 `𝓡` 是离散且可枚举的.
 
 ```agda
-  discr𝓕 : discreteⓂ 𝓕
+  discr𝓕 : discreteⓢ 𝓕
   discr𝓕 O O = yes refl
   discr𝓕 S S = yes refl
   discr𝓕 + + = yes refl
@@ -114,7 +114,7 @@ private module ExampleLanguagePA where
   discr𝓕 * S = no λ ()
   discr𝓕 * + = no λ ()
 
-  discr𝓡 : discreteⓂ 𝓡
+  discr𝓡 : discreteⓢ 𝓡
   discr𝓡 < < = yes refl
 
   enum𝓕 : Enum 𝓕
