@@ -40,7 +40,7 @@ proper f = ∀ n → length (f n) > n
 module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) where
 ```
 
-**<u>构造</u>** 我们构造 `A` 的普通视角枚举函数 `enum : ℕ → A`. 由于 `Ⓛ.enum n` 的长度大于 `n`, 它必然在索引 `n` 处有值, 我们就取这个值, 作为 `enum n` 的值.
+**<u>定义</u>** 由于 `Ⓛ.enum n` 的长度大于 `n`, 它必然在索引 `n` 处有值, 我们就取这个值, 作为 `A` 的普通视角枚举函数 `enum : ℕ → A` 在 `n` 处的值.
 
 ```agda
   enum : ℕ → A

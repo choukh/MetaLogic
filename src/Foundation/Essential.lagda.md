@@ -28,19 +28,15 @@ module Foundation.Essential where
 
 ### 定义
 
-定义的自然语言表述 叫做 定义名 (`definition_name`).
-
-**<u>定义</u>** 定义名 (`definition_name = definition_term`).
-
-**<u>定义</u>** 定义名 (`definition_name`), 当且仅当 定义的自然语言表述.
+- 定义的自然语言表述 *叫做* 定义名 (`definition_name`).
+- **<u>定义</u>** 定义名 (`definition_name = definition_term`).
+- **<u>定义</u>** *我们说* 定义名 (`definition_name`), *当且仅当* 定义的自然语言表述.
 
 ### 不带证明的定理
 
-定理的自然语言表述 (`theorem_name`).
-
-**<u>定理</u>** 定理名 (`theorem_name : Theorem_Type`).
-
-**<u>定理</u> `theorem_name`** 定理的自然语言表述.
+- 定理的自然语言表述 (`theorem_name`).
+- **<u>定理</u>** 定理名 (`theorem_name : Theorem_Type`).
+- **<u>定理</u> `theorem_name`** 定理的自然语言表述.
 
 ### 带证明的定理
 
@@ -51,6 +47,12 @@ module Foundation.Essential where
 theorem_name : Theorem_Type
 theorem_name = proof_term
 ```
+
+### 其他
+
+- **<u>实例</u>** 类型类 (typeclass) 的实例.
+- **<u>构造</u>** record类型的项的构造.
+- **<u>算法</u>** 递归函数的定义.
 
 ## 前奏
 
