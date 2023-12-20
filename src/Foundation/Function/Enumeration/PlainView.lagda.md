@@ -57,9 +57,9 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) w
 由累积列表的性质, 有以下两种情况:
 
 - 若 `Ⓛ.enum n ≡ Ⓛ.enum m ++ xs`, 那么
-  `some (enum n) ≡ Ⓛ.enum n [ n ]? ≡ (Ⓛ.enum m ++ xs) [ n ]? ≡ some x`
+  `some (enum n) ≡ Ⓛ.enum n [ n ]? ≡ (Ⓛ.enum m ++ xs) [ n ]? ≡ some x`.
 - 若 `Ⓛ.enum m ≡ Ⓛ.enum n ++ xs`, 那么
-  `some (enum n) ≡ (Ⓛ.enum n ++ xs) [ n ]? ≡ Ⓛ.enum m [ n ]? ≡ some x`
+  `some (enum n) ≡ (Ⓛ.enum n ++ xs) [ n ]? ≡ Ⓛ.enum m [ n ]? ≡ some x`.
 
 不管怎样, 都有 `some (enum n) ≡ some x`. 由 `some` 的单射性即得 `enum n ≡ x`. ∎
 
