@@ -40,8 +40,8 @@ instance
 ```
 
 我们递归定义 `e` 如下:
-- 第零项是空列表.
-- 项是上一项并上 `[ # n ]` 以及一些 `f : 𝓕` 的所有 `e n` 应用. 其中一些 `f : 𝓕` 是指函数符号的枚举函数 `enum` (由语言的定义, 函数符号集 `𝓕` 可枚举) 应用于 `n` 所输出的那些 `f : 𝓕`.
+- 输入 `zero` 时, 输出空列表.
+- 输入 `suc n` 时, 输出 `e n` 并上 `[ # n ]` 以及*一些* `f : 𝓕` 的所有 `e n` 应用. 其中*一些* `f : 𝓕` 是指函数符号的枚举函数 `enum` (由语言的定义, 函数符号集 `𝓕` 可枚举) 应用于 `n` 所输出的那些 `f : 𝓕`.
 
 ```agda
     e zero = []
@@ -63,7 +63,9 @@ instance
 
 - 要证 `e` 见证了任意变元. 观察 `e` 的定义, 显然成立.
 - 要证 `e` 见证了任意函数应用 `f $̇ t⃗`, 已知 `t⃗` 中的项都被 `e` 见证 (归纳假设).
-  由语言的定义, 函数符号集 `𝓕` 可枚举. 由元语言的知识, 项的 `∣ f ∣ᶠ` 维向量 `t⃗` 可枚举. 分别取它们的见证 `m` 和 `n`, 那么 `suc m + n` 就是 `f $̇ t⃗` 的见证.
+  - 由语言的定义, 函数符号集 `𝓕` 可枚举; 由元语言的知识, 项的 `∣ f ∣ᶠ` 维向量可枚举.
+    由归纳假设和涉及列表组合的引理 `combine-wit`, 只要构造一个从 `f` 的见证和 `t⃗` 的见证到 `f $̇ t⃗` 的见证的转换函数, 就证明了 `e` 见证 `f $̇ t⃗`.
+    - 分别取 `f` 和 `t⃗` 的见证 `m` 和 `n`. 由枚举函数的累积性, `m + n` 也是 `f` 和 `t⃗` 的见证. 所以由 `e` 的定义, `suc m + n` 见证了 `f $̇ t⃗`. ∎
 
 ```agda
     w : ∀ t → e witness t
@@ -72,7 +74,7 @@ instance
       H# n = ex (suc n) $ ∈-++⁺ʳ (here refl)
       H$̇ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → e witness t) → e witness (f $̇ t⃗)
       H$̇ f t⃗ IH = 𝟙.map2 H (wit f) (combine-wit c t⃗ IH) where
-        H : Witness _ f → Witness _ t⃗ → Witness e (f $̇ t⃗)
+        H : Witness _ f → Witness _ t⃗ → Witness _ (f $̇ t⃗)
         H (m , Hm) (n , Hn) = suc m + n , ∈-++⁺ʳ (there $ ∈-concat⁺′ H1 H2) where
           H1 : f $̇ t⃗ ∈ᴸ apps (m + n) f
           H1 = ∈map-intro (combine-≤→⊆ c m≤n+m Hn) refl
@@ -82,16 +84,29 @@ instance
 
 ## 公式的枚举
 
+**<u>实例/构造</u>** 公式的枚举由以下 `e`, `c`, `w` 三部分构成:
+
 ```agda
 instance
   enumFormula : Enum Formula
   enumFormula = mkEnum e c w where
 ```
 
+### 1. 公式的列表的无穷序列 `e`
+
+我们先定义某关系 `R : 𝓡` 的所有 `n`-阶应用, 记作 `apps n R`. 它是 `R` 应用于项的*一些* `∣ R ∣ᴿ` 维向量所得到的公式所组成的列表. 其中项的*一些* `∣ R ∣ᴿ` 维向量是指项的`∣ R ∣ᴿ` 维向量枚举函数 `enum` (由于项可枚举, 所以项的固定维向量也可枚举) 应用于 `n` 所输出的那些向量.
+
 ```agda
     apps : ℕ → 𝓡 → 𝕃 Formula
     apps n R = map (R $̇_) (enum n)
+```
 
+接着递归定义 `e` 如下:
+
+- 输入 `zero` 时, 输出 `[ ⊥̇ ]`.
+- 输入 `suc n` 时, 输出 `e n` 并上由 `e n` 中公式产生的所有全称量化式和所有蕴含式, 以及*一些* `R : 𝓡` 的所有 `n`-阶应用. 其中*一些* `R : 𝓡` 是指关系符号的枚举函数 `enum` (由语言的定义, 关系符号集 `𝓡` 可枚举) 应用于 `n` 所输出的那些 `R : 𝓡`.
+
+```agda
     e : 𝕃ₙ Formula
     e zero = [ ⊥̇ ]
     e (suc n) = e n
@@ -100,10 +115,18 @@ instance
       ++ concat (map (apps n) (enum n))
 ```
 
+### 2. `e` 的累积 `c`
+
+由 `e` 的定义立即可得其累积.
+
 ```agda
     c : Cumulation e
     c _ = _ , refl
 ```
+
+### 3. 命题 `w` : `e` 见证了任意公式 `φ`
+
+由 `e` 的定义, 显然, `e` 见证了 `⊥̇`, 以及任意全称量化式和蕴含式. 而对于关系应用, 使用与项的枚举函数见证所有函数应用类似的方法可证. ∎
 
 ```agda
     w : ∀ φ → e witness φ
@@ -124,6 +147,9 @@ instance
           H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
 ```
 
+**<u>引理</u>** 公式的累积列表是真累积.  
+**<u>证明</u>** 观察定义不难看出列表的长度是严格递增的. ∎
+
 ```agda
 enumFormula-proper : ∀ n → length (enum ⦃ enumFormula ⦄ n) > n
 enumFormula-proper zero = ≤-refl
@@ -131,6 +157,9 @@ enumFormula-proper (suc n) = subst (_> _) (length-++-++ _ _) (<-≤-trans H m≤
   H : length (enum n) + length (map ∀̇_ _) > 1 + n
   H = +-mono-≤-< (cum-length cum z≤n) (subst (_ <_) (length-map _ _) (enumFormula-proper n))
 ```
+
+**<u>定理</u>** 存在公式的枚举函数 `formulaₙ : ℕ → Formula`, 满足对任意 `φ : Formula` 都存在 `n : ℕ` 使得 `formulaₙ n ≡ φ`.  
+**<u>证明</u>** 由于公式类型 `Formula` 是离散集且可枚举, 且其中的累积列表是真累积, 符合普通视角枚举函数 `Plain.enum` 的要求, 按其定义构造即得符合要求的 `formulaₙ : ℕ → Formula`. ∎
 
 ```agda
 formulaₙ : ℕ → Formula

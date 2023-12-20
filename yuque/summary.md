@@ -16,7 +16,7 @@
   - [1.1 语法](fol.syntax)
     - [1.1.0 语法蕴含](fol.syntax.base)
     - [1.1.1 公式的离散性](fol.syntax.discrete)
-    - [1.1.2ᐞ 公式的枚举](fol.syntax.enumeration)
+    - [1.1.2 公式的枚举](fol.syntax.enumeration)
     - [1.1.3ᐞ 新变元与闭公式](fol.syntax.fresh)
   - [1.2 语义](fol.semantics)
     - [1.2.0 语义蕴含](fol.semantics.base)
