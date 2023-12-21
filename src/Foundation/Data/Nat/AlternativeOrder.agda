@@ -2,6 +2,8 @@ module Foundation.Data.Nat.AlternativeOrder where
 
 open import Foundation.Prelude
 open import Foundation.Data.Sum
+open import Foundation.Relation.Nullary.Negation
+open import Foundation.Relation.Binary.Core using (Rel)
 
 open import Data.Nat public
   using (NonZero; nonZero)
@@ -19,6 +21,11 @@ open import Data.Nat.Properties public
 import Data.Nat as ℕ
 open import Data.Nat.Properties as ℕ
   using (≤⇒≤′; ≤′⇒≤)
+
+infix 5 _≰_
+
+_≰_ : Rel ℕ
+a ≰ b = ¬ (a ≤ b)
 
 private
   variable m n o p q r : ℕ
@@ -39,6 +46,9 @@ private
 ≤-total m n with ℕ.≤-total m n
 ... | inj₁ x = inj₁ (≤⇒≤′ x)
 ... | inj₂ y = inj₂ (≤⇒≤′ y)
+
+1+n≰n : 1 + n ≰ n
+1+n≰n = ℕ.1+n≰n ∘ ≤′⇒≤
 
 ------------------------------------------------------------------------
 -- Relational properties of _<_

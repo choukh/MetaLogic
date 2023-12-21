@@ -180,14 +180,26 @@ combine xs zero = [ [] ]
 combine xs (suc n) = map (uncurry _∷_) (xs [×] combine xs n)
 ```
 
+**<u>引理</u>** 向量 `x⃗ : 𝕍 A n` 属于列表 `xs` 的 `n` 维组合, 当且仅当任意 `x⃗` 包含于 `xs`.  
+**<u>证明</u>** 依定义即得. ∎
+
+```agda
+∈combine-intro : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → (∀ {x} → x ∈⃗ x⃗ → x ∈ᴸ xs) → x⃗ ∈ᴸ combine xs n
+∈combine-intro {x⃗ = []} _ = here refl
+∈combine-intro {x⃗ = x ∷ x⃗} H = ∈map[×]-intro (H $ here refl) (∈combine-intro $ H ∘ there)
+
+∈combine-elim : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → x⃗ ∈ᴸ combine xs n → ∀ {x} → x ∈⃗ x⃗ → x ∈ᴸ xs
+∈combine-elim {x⃗ = x ∷ x⃗} x⃗∈ᴸ y∈⃗ with ∈map[×]-elim x⃗∈ᴸ
+∈combine-elim {x⃗ = x ∷ x⃗} _ (here refl) | _ , _ , x∈ᴸ , _ , refl = x∈ᴸ
+∈combine-elim {x⃗ = x ∷ x⃗} _ (there y∈⃗)  | _ , _ , x∈ᴸ , x⃗∈ᴸ , refl = ∈combine-elim x⃗∈ᴸ y∈⃗
+```
+
 **<u>引理</u>** 对任意累积列表和维数 `n`, 前项的 `n` 维组合包含于后项的 `n` 维组合.  
 **<u>证明</u>** 直观上, 由于前项包含于后项, 前项元素的组合也必定包含于后项元素的组合. ∎
 
 ```agda
 combine-≤→⊆ : Cumulation f → m ≤ o → combine (f m) n ⊆ combine (f o) n
-combine-≤→⊆ {n = zero} _ _ H = H
-combine-≤→⊆ {n = suc n} cum m≤o H with ∈map[×]-elim H
-... | x , y , x∈ , y∈ , refl = ∈map[×]-intro (cum-≤→⊆ cum m≤o x∈) (combine-≤→⊆ cum m≤o y∈)
+combine-≤→⊆ cum m≤o H = ∈combine-intro $ cum-≤→⊆ cum m≤o ∘ ∈combine-elim H
 ```
 
 **<u>引理</u>** 对 `A` 的任意累积列表 `f` 和任意 `n` 维向量 `x⃗`, 如果 `f` 见证了 `x⃗` 的所有元素, 那么组合的序列 `λ k → combine (f k) n` 见证了 `x⃗`.  

@@ -9,7 +9,7 @@ url: foundation.enumeration.plainview
 ```agda
 module Foundation.Function.Enumeration.PlainView where
 open import Foundation.Function.Enumeration.ListView.Base as Ⓛ
-  using (𝕃ₙ; cum; cum-total)
+  using (𝕃ₙ; cum-total)
 
 open import Foundation.Prelude
 open import Foundation.Prop.Logic
@@ -19,6 +19,7 @@ open import Foundation.Data.Maybe
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Sum
 open import Foundation.Data.List
+open import Foundation.Data.List.SetTheoretic
 
 open import Foundation.Relation.Nullary.Discrete.Base
 open import Foundation.Relation.Nullary.Discrete.List
@@ -47,7 +48,15 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) w
   enum n = Ⓛ.enum n [ l> n ]⁻¹!
 ```
 
-**<u>定理</u>** `enum` 见证了每一个 `x : A`.  
+**<u>引理</u>** `enum n` 的值必然等于列表 `Ⓛ.enum n` 中的某个元素.  
+**<u>证明</u>** 由 `enum` 的定义即得. ∎
+
+```agda
+  cum : ∀ n → enum n ∈ Ⓛ.enum n
+  cum n = []?→∈ _ $ Ⓛ.enum n [ l> n ]⁻¹!≡
+```
+
+**<u>引理</u>** `enum` 见证了每一个 `x : A`.  
 **<u>证明</u>** 我们有 `x` 在 `Ⓛ.enum` 中的见证 `m`, 需要将它转化成 `x` 在 `enum` 中的见证.
 
 一方面, 由 `x ∈ Ⓛ.enum m`, 可以找到 `n` 满足 `Ⓛ.enum m [ x ]⁻¹? ≡ some n`, 也即 `Ⓛ.enum m [ n ]? ≡ some x`.
@@ -68,8 +77,8 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) w
   wit x = 𝟙.map H (Ⓛ.wit x) where
     H : Ⓛ.Witness Ⓛ.enum x → Σ n ， enum n ≡ x
     H (m , Hm) with ∈→Σ[]⁻¹? Hm
-    H (m , Hm) | n , Hn with cum-total cum m n
-      | (Ⓛ.enum n) [ l> n ]⁻¹!≡   -- = H1 : Ⓛ.enum n [ n ]? ≡ some (enum n)
+    H (m , Hm) | n , Hn with cum-total Ⓛ.cum m n
+      | Ⓛ.enum n [ l> n ]⁻¹!≡   -- = H1 : Ⓛ.enum n [ n ]? ≡ some (enum n)
       | index-inv (Ⓛ.enum m) Hn   -- = H2 : Ⓛ.enum m [ n ]? ≡ some x
     ... | inj₁ (xs , n≡m++) | H1 | H2 = n , some-inj (
       some (enum n)           ≡˘⟨ H1 ⟩
@@ -87,3 +96,4 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) w
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/Foundation/Function/Enumeration/PlainView.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/Foundation.Function.Enumeration.PlainView.html) | [语雀](https://www.yuque.com/ocau/metalogic/foundation.enumeration.plainview)  
 > 交流Q群: 893531731
+ 

@@ -12,7 +12,7 @@ open import Cubical.Foundations.HLevels public
 𝕊 : ∀ ℓ → 𝕋 (ℓ ⁺)
 𝕊 ℓ = TypeWithStr ℓ isSet
 
-𝕊₀ : 𝕋 (ℓ0 ⁺)
+𝕊₀ : 𝕋₁
 𝕊₀ = 𝕊 ℓ0
 
 variable

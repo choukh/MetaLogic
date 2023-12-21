@@ -10,13 +10,18 @@ url: fol.syntax.enumeration
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
+open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈ᴸ_)
 import Foundation.Function.Enumeration.PlainView as Plain
 
 open import FOL.Language
 module FOL.Syntax.Enumeration (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Discrete ℒ
+open import FOL.Syntax.FreshVariables ℒ
 instance _ = ℒ
+
+private variable
+  m n : ℕ
 ```
 
 ## 项的枚举
@@ -41,7 +46,16 @@ instance
 
 我们递归定义 `e` 如下:
 - 输入 `zero` 时, 输出空列表.
-- 输入 `suc n` 时, 输出 `e n` 并上 `[ # n ]` 以及*一些* `f : 𝓕` 的所有 `e n` 应用. 其中*一些* `f : 𝓕` 是指函数符号的枚举函数 `enum` (由语言的定义, 函数符号集 `𝓕` 可枚举) 应用于 `n` 所输出的那些 `f : 𝓕`.
+- 输入 `suc n` 时, 输出 `e n` 并上 `[ # n ]`, 再并上以*一些* `f : 𝓕` 为下标的集族 `apps n` 的并 (`concat`). 其中*一些* `f : 𝓕` 是指函数符号的枚举函数 `enum` (由语言的定义, 函数符号集 `𝓕` 可枚举) 应用于 `n` 所输出的那些 `f`.
+
+此定义用传统集合论符号可表述为
+
+$$
+\begin{align*}
+e(0) &= \emptyset\\
+e(n^+) &= e(n) \cup \{\#n\} \cup \bigcup\{ apps(n, f) \mid f \in enum(n) \}
+\end{align*}
+$$
 
 ```agda
     e zero = []
@@ -167,6 +181,30 @@ formulaₙ = Plain.enum enumFormula-proper
 
 formulaₙ-wit : ∀ φ → ∃ n ， formulaₙ n ≡ φ
 formulaₙ-wit = Plain.wit enumFormula-proper
+```
+
+## 新变元的枚举性质
+
+```agda
+termEnum-fresh : m ≤ n → t ∈ᴸ enum m → freshₜ n t
+termEnum-fresh {(zero)} _ ()
+termEnum-fresh {suc m} le t∈ with ∈-++⁻ (enum m) t∈
+... | inj₁ t∈ = termEnum-fresh (m+n≤o⇒n≤o 1 le) t∈
+... | inj₂ (here refl) = fresh# λ { refl → 1+n≰n le }
+termEnum-fresh {t = # o} _ _ | inj₂ (there t∈) with ∈-concat⁻′ _ t∈
+... | _ , t∈ts , ts∈ with ∈map-elim ts∈
+... | _ , _ , refl with ∈map-elim t∈ts
+... | _ , _ , ()
+termEnum-fresh {t = f $̇ t⃗} le _ | inj₂ (there t∈) with ∈-concat⁻′ _ t∈
+... | _ , t∈ts , ts∈ with ∈map-elim ts∈
+... | _ , _ , refl with ∈map-elim t∈ts
+... | _ , t⃗∈ , refl with ∈combine-elim t⃗∈
+... | H = fresh$̇ λ t t∈t⃗ → termEnum-fresh (m+n≤o⇒n≤o 1 le) (H t∈t⃗)
+```
+
+```agda
+--formulaₙ-fresh : m ≤ n → fresh n (formulaₙ m)
+--formulaₙ-fresh le = {!   !}
 ```
 
 ---

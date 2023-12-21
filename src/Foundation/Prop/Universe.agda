@@ -23,7 +23,7 @@ import Cubical.Foundations.Univalence as 🧊
 ℙ : ∀ ℓ → 𝕋 (ℓ ⁺)
 ℙ ℓ = TypeWithStr ℓ isProp
 
-ℙ₀ : 𝕋 (ℓ0 ⁺)
+ℙ₀ : 𝕋₁
 ℙ₀ = ℙ ℓ0
 
 _holds : ℙ ℓ → 𝕋 ℓ
