@@ -38,7 +38,7 @@ proper f = ∀ n → length (f n) > n
 现在, 给定离散集 `A` 和它枚举, 其中的累积列表是真累积.
 
 ```agda
-module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) where
+module PlainEnum ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) where
 ```
 
 **<u>定义</u>** 由于 `Ⓛ.enum n` 的长度大于 `n`, 它必然在索引 `n` 处有值, 我们就取这个值, 作为 `A` 的普通视角枚举函数 `enum : ℕ → A` 在 `n` 处的值.
@@ -52,8 +52,8 @@ module _ ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ.enum) w
 **<u>证明</u>** 由 `enum` 的定义即得. ∎
 
 ```agda
-  cum : ∀ n → enum n ∈ Ⓛ.enum n
-  cum n = []?→∈ _ $ Ⓛ.enum n [ l> n ]⁻¹!≡
+  cum : ∀ {n} → enum n ∈ Ⓛ.enum n
+  cum {n} = []?→∈ _ $ Ⓛ.enum n [ l> n ]⁻¹!≡
 ```
 
 **<u>引理</u>** `enum` 见证了每一个 `x : A`.  

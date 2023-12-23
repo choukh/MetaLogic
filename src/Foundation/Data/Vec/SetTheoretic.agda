@@ -10,9 +10,9 @@ open import Data.Vec.Relation.Unary.Any public
 
 private variable
   n : ℕ
-  t⃗ : 𝕍 A n
+  x⃗ : 𝕍 A n
   f g : A → B
 
-map-ext : (∀ t → t ∈ t⃗ → f t ≡ g t) → map⃗ f t⃗ ≡ map⃗ g t⃗
-map-ext {t⃗ = []} H = refl
-map-ext {t⃗ = t ∷ t⃗} H = cong2 _∷_ (H t $ here refl) (map-ext λ s s∈t⃗ → H s $ there s∈t⃗)
+map-ext : (∀ x → x ∈ x⃗ → f x ≡ g x) → map⃗ f x⃗ ≡ map⃗ g x⃗
+map-ext {x⃗ = []} H = refl
+map-ext {x⃗ = x ∷ x⃗} H = cong2 _∷_ (H x $ here refl) (map-ext λ y y∈x⃗ → H y $ there y∈x⃗)
