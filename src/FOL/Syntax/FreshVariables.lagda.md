@@ -4,6 +4,8 @@ url: fol.syntax.fresh
 
 # 一阶逻辑 ▸ 语法 ▸ 新变元与闭公式
 
+我们目前定义的公式较为宽泛, 实用上通常只需要一类称为**闭公式 (closed formula)** 的公式, 本篇将给出其定义.
+
 ```agda
 open import Foundation.Essential
 open import Foundation.Data.Nat.Order
