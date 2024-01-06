@@ -15,13 +15,23 @@ module FOL.Syntax.FreshVariables (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 ```
 
-**<u>定义</u>** 我们说 `n` 在 `t` 中未使用 (或者说 `n` 对 `t` 是新变元), 当且仅当
+**<u>定义</u>** 我们说 `n` 在 `t` 中未使用 (或者说 `n` 对 `t` 是新变元), 当且仅当以下任一种情况成立
+
+- `t` 是变元 `# m`, 且 `n ≢ m`.
+- `t` 是函数应用 `f $̇ t⃗`, 且对于任意 `t ∈⃗ t⃗`, `n` 在 `t` 中未使用.
 
 ```agda
 data freshₜ (n : ℕ) : Term → 𝕋 where
   fresh# : ∀ {m} → n ≢ m → freshₜ n (# m)
   fresh$̇ : ∀ {f t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → freshₜ n (f $̇ t⃗)
 ```
+
+**<u>定义</u>** 我们说 `n` 在 `φ` 中未使用 (或者说 `n` 对 `φ` 是新变元), 当且仅当以下任一种情况成立
+
+- `φ` 是恒假式 `⊥̇`.
+- `φ` 是蕴含式 `φ →̇ ψ`, 且 `n` 在 `φ` 中未使用, 且 `n` 在 `ψ` 中未使用.
+- `φ` 是全称量化式 `∀̇ φ`, 且 `suc n` 在 `φ` 中未使用.
+- `φ` 是关系应用 `R $̇ t⃗`, 且对于任意 `t ∈⃗ t⃗`, `n` 在 `t` 中未使用.
 
 ```agda
 data fresh (n : ℕ) : Formula → 𝕋 where
@@ -31,10 +41,14 @@ data fresh (n : ℕ) : Formula → 𝕋 where
   fresh$̇ : ∀ {R t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → fresh n (R $̇ t⃗)
 ```
 
+**<u>定义</u>** 我们说 `n` 以上的变元在 `t` 中未使用 (或者说 `n` 以上的变元对 `t` 是新变元), 当且仅当对任意 `m ≥ n`, `m` 在 `t` 中未使用.
+
 ```agda
 freshₜFrom : ℕ → Term → 𝕋
 freshₜFrom n t = ∀ {m} → n ≤ m → freshₜ m t
 ```
+
+**<u>定义</u>** 我们说 `n` 以上的变元在 `φ` 中未使用 (或者说 `n` 以上的变元对 `φ` 是新变元), 当且仅当对任意 `m ≥ n`, `m` 在 `φ` 中未使用.
 
 ```agda
 freshFrom : ℕ → Formula → 𝕋
@@ -44,7 +58,6 @@ freshFrom n φ = ∀ {m} → n ≤ m → fresh m φ
 ```agda
 Freshₜ⃗ : ∀ {n} (t⃗ : 𝕍 Term n) → (∀ t → t ∈⃗ t⃗ → Σ n ， freshₜFrom n t) →
   Σ n ， ∀ t → t ∈⃗ t⃗ → freshₜFrom n t
-
 Freshₜ⃗ [] H = 0 , λ _ ()
 Freshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Freshₜ⃗ t⃗ (λ t t∈⃗ → H t (there t∈⃗))
 ... | n , Hn | m , Hm = n + m , Hn+m where
