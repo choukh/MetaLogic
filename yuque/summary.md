@@ -15,7 +15,7 @@
   - [1.0 语言](fol.language)
   - [1.1 语法](fol.syntax)
     - [1.1.0 语法蕴含](fol.syntax.base)
-    - [1.1.1ᐞ 新变元与闭公式](fol.syntax.fresh)
+    - [1.1.1 新变元与闭公式](fol.syntax.fresh)
     - [1.1.2 公式的离散性](fol.syntax.discrete)
     - [1.1.3 公式的枚举](fol.syntax.enumeration)
   - [1.2 语义](fol.semantics)
