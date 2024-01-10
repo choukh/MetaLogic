@@ -18,7 +18,7 @@ open import FOL.Semantics.Base ℒ
 record Input : 𝕋₁ where
   field
     𝒯ⁱ : Theory
-    𝒯ⁱ-closed : ∀ φ → 𝒯ⁱ φ holds → closed φ
+    𝒯ⁱ-closed : ∀ φ → φ ∈ 𝒯ⁱ → closed φ
 ```
 
 ```agda
