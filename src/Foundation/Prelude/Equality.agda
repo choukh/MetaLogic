@@ -7,14 +7,13 @@ open import Relation.Binary.PropositionalEquality public
   using (_≢_; _≗_; sym; cong)
 
 open import Cubical.Data.Equality public
-  using (
-    funExt; _≃_
-  )
+  using (funExt)
   renaming (
+    _≃_           to infix 2 _≃_;
     happly        to funExt⁻;
     eqToPath      to Eq→🧊;
     pathToEq      to Eq←🧊;
-    Iso           to infix 4 _≅_;
+    Iso           to infix 2 _≅_;
     iso           to mk≅;
     isoToIsoPath  to Iso→🧊;
     isoToEquiv    to Iso→Equiv;

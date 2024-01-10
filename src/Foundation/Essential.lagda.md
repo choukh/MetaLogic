@@ -367,7 +367,7 @@ open import Foundation.Data.List public
 
 ```agda
 open import Foundation.Data.List.SetTheoretic public
-  renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_)
+  renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_; _⊆_ to _⊆ᴸ_)
 ```
 
 #### 向量
@@ -382,7 +382,7 @@ open import Foundation.Data.Vec public
 
 ```agda
 open import Foundation.Data.Vec.SetTheoretic public
-  renaming (_∈_ to _∈⃗_; Any to Any⃗)
+  renaming (_∈_ to _∈⃗_; _∉_ to _∉⃗_; Any to Any⃗)
 ```
 
 ## 函数
@@ -467,7 +467,7 @@ open import Foundation.Relation.Nullary.Decidable public
 
 **<u>定义</u>** `A` 可判定, 记作 `Dec A`, 当且仅当 `A` 或 `¬ A`.
 
-如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPropDec`).
+如果 `A` 是一个命题, 那么其可判定性 `Dec A` 也是一个命题 (`isPredDec`).
 
 #### 离散性
 

@@ -59,7 +59,7 @@ discrete←🧊 H {x} {y} = Dec←🧊 $ subst 🧊.Dec Eq≡🧊 (H x y)
 
 ```agda
 isPropDiscrete : isSet A → isProp (discrete A)
-isPropDiscrete H = isPropΠ̅2 λ x y → isPropDec (H x y)
+isPropDiscrete H = isPropΠ̅2 λ x y → isPredDec (H x y)
 ```
 
 **<u>引理</u>** 如果一个类型是离散的, 那么它是一个集合.

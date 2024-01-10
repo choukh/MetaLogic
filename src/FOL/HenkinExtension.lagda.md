@@ -11,13 +11,27 @@ module FOL.HenkinExtension (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
+open import FOL.Semantics.Base ℒ
 ```
 
 ```agda
 record Input : 𝕋₁ where
   field
-    𝒯 : Theory
-    𝒯-closed : ∀ φ → 𝒯 φ holds → closed φ
+    𝒯ⁱ : Theory
+    𝒯ⁱ-closed : ∀ φ → 𝒯ⁱ φ holds → closed φ
+```
+
+```agda
+record Output (input : Input) : 𝕋ω where
+  open Input input
+  field
+    𝒯ᵒ : Theory
+    𝒯ᵒ-consistent : 𝒯ᵒ ⊫ ⊥̇ → 𝒯ⁱ ⊫ ⊥̇
+    𝒯ᵒ-extension : 𝒯ⁱ ⊆ 𝒯ᵒ
+
+    𝒯ᵒ-closed-under-⊩ : ∀ φ → 𝒯ᵒ ⊩ φ → φ ∈ 𝒯ᵒ
+    𝒯ᵒ-distributes-over-→̇ : ∀ φ ψ → φ →̇ ψ ∈ 𝒯ᵒ ↔ (φ ∈ 𝒯ᵒ → ψ ∈ 𝒯ᵒ)
+    𝒯ᵒ-distributes-over-∀̇ : ∀ φ → ∀̇ φ ∈ 𝒯ᵒ ↔ ∀ t → φ [ t ∷] ∈ 𝒯ᵒ
 ```
 
 ---
