@@ -271,8 +271,31 @@ _⊩_ _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
 ```
 
+## 理论的一致性
+
+**<u>定义</u>** 我们说理论 `𝒯` 一致, 当且仅当不存在从 `𝒯` 到恒假的证明.
+
+```agda
+Con : Theory → 𝕋
+Con 𝒯 = 𝒯 ⊮ ⊥̇
+```
+
+**<u>定义</u>** 我们说 `𝒯₁` 相对于 `𝒯₂` 一致, 当且仅当 `𝒯₁` 到恒假的证明能翻译到 `𝒯₂` 到恒假的证明.
+
+```agda
+Con_to_ : Theory → Theory → 𝕋
+Con 𝒯₁ to 𝒯₂ = 𝒯₁ ⊩ ⊥̇ → 𝒯₂ ⊩ ⊥̇
+```
+
+**<u>事实</u>** 相对一致性: 如果 `𝒯₁` 相对于 `𝒯₂` 一致, 那么 `𝒯₂` 一致蕴含 `𝒯₁` 一致.  
+**<u>证明</u>** 由定义即得. ∎
+
+```agda
+relative-consistency : ∀ {𝒯₁ 𝒯₂} → Con 𝒯₁ to 𝒯₂ → Con 𝒯₂ → Con 𝒯₁
+relative-consistency C₁₂ C₂ = C₂ ∘ C₁₂
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.base)  
 > 交流Q群: 893531731
-  

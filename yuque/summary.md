@@ -22,5 +22,5 @@
     - [1.2.0 语义蕴含](fol.semantics.base)
     - [1.2.1ᐨ 公式取值的性质](fol.semantics.properties)
   - [1.3✩ 可靠性](fol.soundness)
-  - [1.4ᐞ 亨金构造](fol.henkin)
+  - [1.4ᐞ 亨金扩张](fol.henkin)
   - [1.5✩ᐞ 完备性](fol.completeness)
