@@ -145,6 +145,16 @@ close-closed φ {m} _ with Fresh φ
 ... | n , Hn = ∀̇ⁿ-freshFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
 ```
 
+**<u>定义</u>** 由闭公式组成的理论叫做闭理论.
+
+```agda
+closedTheory : Theory → 𝕋
+closedTheory 𝒯 = ∀ φ → φ ∈ 𝒯 → closed φ
+
+ClosedTheory : 𝕋₁
+ClosedTheory = Σ Theory closedTheory
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/FreshVariables.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.FreshVariables.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.fresh)  
