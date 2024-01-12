@@ -2,7 +2,9 @@ module Foundation.Set.Powerset where
 
 open import Foundation.Prelude
   hiding (A; B; C)
+open import Foundation.Prop.Logic
 open import Foundation.Prop.Iff
+open import Foundation.Prop.Truncation
 open import Foundation.Prop.Universe
 open import Foundation.Data.Sigma
 open import Foundation.Relation.Nullary.Negation
@@ -63,3 +65,8 @@ isProp⊆ {A} {B} = isPropΠ̅ $ λ _ → isPropΠ λ _ → isProp∈ {A = B}
 ⊆-extensionalityEquiv {A} {B} = Iso→Equiv $ mk≅ ⊆-extensionality ⊆-extensionality⁻
   (λ _ → isSet𝒫 _ _ _ _)
   (λ _ → isPropΣ (isProp⊆ {A = A} {B = B}) (λ _ → isProp⊆ {A = B} {B = A}) _ _)
+
+-- Big union
+
+⋃ᵢ_ : {X Y : 𝕋 ℓ} → (X → 𝒫 Y) → 𝒫 Y
+(⋃ᵢ Aᵢ) y = (∃ x ， y ∈ Aᵢ x) , 𝟙.squash

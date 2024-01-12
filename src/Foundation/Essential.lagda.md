@@ -73,7 +73,7 @@ open import Foundation.Prelude.Builtin public
 注意, 对某些相似概念的 Cubical 版本, 我们会在其名字中带上“🧊”, 以示区别. 此外, 我们对符号作如下约定:
 
 - 宇宙层级序号 `ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level`
-- 任意给定宇宙的类型 `A B C D X : 𝕋 ℓ`
+- 任意给定宇宙的类型 `A B C D X Y : 𝕋 ℓ`
 - 类型族 / 性质 / 一元关系 `P Q : A → 𝕋 ℓ`
   ※ 我们保留“谓词”这个名称给可以证明是命题的一元关系
 - 二元关系 `R R₁ R₂ : A → B → 𝕋 ℓ`
@@ -252,6 +252,8 @@ open import Foundation.Set.Powerset public
 
 给定项 `x : X` 和子集 `A : 𝒫 X`, 属于关系 `x ∈ A` 定义为 `A x holds`. `A` 是取值到 `ℙ ℓ` 的函数, 这保证了属于关系是取值到命题的 (`isProp∈`).
 
+由此可以发展出以某类型 `X` 为全集的各种集合论概念, 如包含关系 `_⊆_`, 集族的并 `⋃ᵢ_` 等等, 这里不一一赘述.
+
 ### 集合截断
 
 ```agda
@@ -361,7 +363,7 @@ open import Foundation.Data.Maybe public
 open import Foundation.Data.List public
 ```
 
-列表 `𝕃 A` 是不定长可数有限类型. 不定长是指列表的类型签名中不储存长度信息, 可数是指列表的项有一个典范线序, 有限是指列表的长度是个自然数. 当 `A` 是集合时, `𝕃 A` 也是集合 (`isSet𝕃`).
+列表 `𝕃 A` 是不定长有限类型. 不定长是指列表的类型签名中不储存长度信息, 有限是指列表的长度是个自然数. 当 `A` 是集合时, `𝕃 A` 也是集合 (`isSet𝕃`).
 
 我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈ᴸ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈ᴸ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
 
@@ -370,13 +372,19 @@ open import Foundation.Data.List.SetTheoretic public
   renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_; _⊆_ to _⊆ᴸ_)
 ```
 
+我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_ᴸ⊆ᴾ_`.
+
+```agda
+open import Foundation.Set.Powerset+List public
+```
+
 #### 向量
 
 ```agda
 open import Foundation.Data.Vec public
 ```
 
-向量 `𝕍 A n` 是定长可数有限类型. 定长是指向量的类型签名中储存了长度信息 `n`. 当 `A` 是集合时, `𝕍 A n` 也是集合 (`isSet𝕍`).
+向量 `𝕍 A n` 是定长有限类型. 定长是指向量的类型签名中储存了长度信息 `n`. 当 `A` 是集合时, `𝕍 A n` 也是集合 (`isSet𝕍`).
 
 我们可以问 `x : A` 在不在向量 `x⃗ : 𝕍 A n` 中, 这引入了向量的属于关系 `x ∈⃗ x⃗` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈⃗ x⃗` 不是命题, 因为 `x` 不保证在 `x⃗` 中只出现一次.
 

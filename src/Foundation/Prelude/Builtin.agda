@@ -37,7 +37,7 @@ open import Agda.Builtin.Sigma public
 
 variable
   ℓ ℓ′ ℓ″ ℓ‴ ℓ⁗ ℓ₀ ℓ₁ ℓ₂ ℓ₃ ℓ₄ : Level
-  A B C D T X : 𝕋 ℓ
+  A B C D T X Y : 𝕋 ℓ
   P Q : A → 𝕋 ℓ
   R R₁ R₂ : A → B → 𝕋 ℓ
   P₂ Q₂ : (x : A) → P x → 𝕋 ℓ
