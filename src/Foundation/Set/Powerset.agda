@@ -70,3 +70,6 @@ isProp⊆ {A} {B} = isPropΠ̅ $ λ _ → isPropΠ λ _ → isProp∈ {A = B}
 
 ⋃ᵢ_ : {X Y : 𝕋 ℓ} → (X → 𝒫 Y) → 𝒫 Y
 (⋃ᵢ Aᵢ) y = (∃ x ， y ∈ Aᵢ x) , 𝟙.squash
+
+⊆⋃ᵢ : {X Y : 𝕋 ℓ} {Aᵢ : X → 𝒫 Y} → ∀ x → Aᵢ x ⊆ ⋃ᵢ Aᵢ
+⊆⋃ᵢ x = ex x
