@@ -4,7 +4,7 @@ url: fol.syntax.enumeration
 
 # 一阶逻辑 ▸ 语法 ▸ 公式的枚举
 
-本篇的目标是构造公式的[普通视角枚举函数](https://www.yuque.com/ocau/metalogic/foundation.enumeration.plainview) `formulaₙ : ℕ → Formula`, 满足对任意 `φ : Formula` 都存在 `n : ℕ` 使得 `formulaₙ n ≡ φ`.
+本篇的目标是构造公式的[普通视角枚举函数](https://www.yuque.com/ocau/metalogic/foundation.enumeration.plainview) `Ψ : ℕ → Formula`, 满足对任意 `φ : Formula` 都存在 `n : ℕ` 使得 `Ψ n ≡ φ`.
 
 ```agda
 {-# OPTIONS --lossy-unification #-}
@@ -173,22 +173,22 @@ enumFormula-proper (suc n) = subst (_> _) (length-++-++ _ _) (<-≤-trans H m≤
   H = +-mono-≤-< (cum-length cum z≤n) (subst (_ <_) (length-map _ _) (enumFormula-proper n))
 ```
 
-**<u>定理</u>** 存在公式的枚举函数 `formulaₙ : ℕ → Formula`, 满足对任意 `φ : Formula` 都存在 `n : ℕ` 使得 `formulaₙ n ≡ φ`.  
-**<u>证明</u>** 由于公式类型 `Formula` 是离散集且可枚举, 且其中的累积列表是真累积, 符合普通视角枚举函数 `Plain.enum` 的要求, 按其定义构造即得符合要求的 `formulaₙ : ℕ → Formula`. ∎
+**<u>定理</u>** 存在公式的枚举函数 `Ψ : ℕ → Formula`, 满足对任意 `φ : Formula` 都存在 `n : ℕ` 使得 `Ψ n ≡ φ`.  
+**<u>证明</u>** 由于公式类型 `Formula` 是离散集且可枚举, 且其中的累积列表是真累积, 符合普通视角枚举函数 `Plain.enum` 的要求, 按其定义构造即得符合要求的 `Ψ : ℕ → Formula`. ∎
 
 ```agda
 module Plain = PlainEnum enumFormula-proper
 
-formulaₙ : ℕ → Formula
-formulaₙ = Plain.enum
+Ψ : ℕ → Formula
+Ψ = Plain.enum
 
-formulaₙ-wit : ∀ φ → ∃ n ， formulaₙ n ≡ φ
-formulaₙ-wit = Plain.wit
+Ψ-wit : ∀ φ → ∃ n ， Ψ n ≡ φ
+Ψ-wit = Plain.wit
 ```
 
 ## 枚举物的新变元
 
-公式的枚举函数 `formulaₙ` 有一个非常显然的性质: 对任意 `m ≤ n`, `# n` 是 `formulaₙ m` 的新变元 (`formulaₙ-fresh`). 因为变元的数量是无限的, 而任一时刻只有有限个被枚举出来. 然而完整地写出其形式化证明却相当冗长且乏味, 因为必须对枚举函数的结构一步步地归纳. 比较适合处理这种情况的是 Coq 和 Lean 等自带 tactic 的证明助理. 虽然 Agda 也可以使用反射机制实现 tactic, 但毕竟需要额外去实现, 除非后面经常出现这种情况, 否则暂不考虑.
+公式的枚举函数 `Ψ` 有一个非常显然的性质: 对任意 `m ≤ n`, `# n` 是 `Ψ m` 的新变元 (`Ψ-fresh`). 因为变元的数量是无限的, 而任一时刻只有有限个被枚举出来. 然而完整地写出其形式化证明却相当冗长且乏味, 因为必须对枚举函数的结构一步步地归纳. 比较适合处理这种情况的是 Coq 和 Lean 等自带 tactic 的证明助理. 虽然 Agda 也可以使用反射机制实现 tactic, 但毕竟需要额外去实现, 除非后面经常出现这种情况, 否则暂不考虑.
 
 ```agda
 termEnum-fresh : m ≤ n → t ∈ᴸ enum m → freshₜ n t
@@ -265,8 +265,8 @@ formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le _ | _ | _
   ...   | _ , _ , refl with ∈map-elim φ∈φs
   ...     | _ , t⃗∈ , refl = fresh$̇ λ _ t∈t⃗ → termEnum-fresh-vec le t⃗∈ t∈t⃗
 
-formulaₙ-fresh : m ≤ n → fresh n (formulaₙ m)
-formulaₙ-fresh le = formulaEnum-fresh le Plain.cum
+Ψ-fresh : m ≤ n → fresh n (Ψ m)
+Ψ-fresh le = formulaEnum-fresh le Plain.cum
 ```
 
 ---

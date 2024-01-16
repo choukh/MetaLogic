@@ -220,8 +220,8 @@ Theory = 𝒫 Formula
 ```agda
 variable
   t : Term
-  φ ψ : Formula
-  Γ : Context
+  φ ψ ξ : Formula
+  Γ Δ : Context
 ```
 
 ## 语法蕴含
@@ -269,6 +269,32 @@ _⊬_ : Context → Formula → 𝕋
 _⊩_ _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊩ φ = Σ̅ λ Γ → Γ ᴸ⊆ᴾ 𝒯 ∧ Γ ⊢ φ
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
+```
+
+### 导出规则
+
+以下是一条重要的导出规则.
+
+**<u>引理</u>** 弱化规则: `Γ ⊆ᴸ Δ` 蕴含 `Γ ⊢ φ → Δ ⊢ φ`.
+**<u>证明</u>** 对证明树归纳即得. ∎
+
+```agda
+Wkn : Γ ⊆ᴸ Δ → Γ ⊢ φ → Δ ⊢ φ
+Wkn sub (Ctx H) = Ctx (sub H)
+Wkn sub (ImpI H) = ImpI (Wkn (∷⊆∷ sub) H)
+Wkn sub (ImpE H₁ H₂) = ImpE (Wkn sub H₁) (Wkn sub H₂)
+Wkn sub (AllI H) = AllI (Wkn (map⊆map sub) H)
+Wkn sub (AllE H) = AllE (Wkn sub H)
+Wkn sub (FalseE H) = FalseE (Wkn sub H)
+Wkn sub (Peirce φ ψ) = Peirce φ ψ
+```
+
+**<u>推论</u>** `Γ ⊢ φ → ξ ∷ Γ ⊢ φ`.  
+**<u>证明</u>** 显然. ∎
+
+```agda
+Wkn∷ : Γ ⊢ φ → (ξ ∷ Γ) ⊢ φ
+Wkn∷ = Wkn there
 ```
 
 ## 理论的一致性

@@ -39,6 +39,7 @@ isProp∈ {x} {A} = isPredHolds (A x)
 
 private variable
   A B C : 𝒫 X
+  x : X
 
 _⊆_ : 𝒫 X → 𝒫 X → 𝕋 _
 A ⊆ B = ∀ {x} → x ∈ A → x ∈ B
@@ -66,10 +67,36 @@ isProp⊆ {A} {B} = isPropΠ̅ $ λ _ → isPropΠ λ _ → isProp∈ {A = B}
   (λ _ → isSet𝒫 _ _ _ _)
   (λ _ → isPropΣ (isProp⊆ {A = A} {B = B}) (λ _ → isProp⊆ {A = B} {B = A}) _ _)
 
+------------------------------------------------------------------------
+-- Operations on sets
+
+-- Union
+
+_∪_ : 𝒫 X → 𝒫 X → 𝒫 X
+A ∪ B = λ x → x ∈ A ∨ x ∈ B , 𝟙.squash
+
 -- Big union
 
-⋃ᵢ_ : {X Y : 𝕋 ℓ} → (X → 𝒫 Y) → 𝒫 Y
-(⋃ᵢ Aᵢ) y = (∃ x ， y ∈ Aᵢ x) , 𝟙.squash
+module _ {X Y : 𝕋 ℓ} (Aᵢ : X → 𝒫 Y) where
 
-⊆⋃ᵢ : {X Y : 𝕋 ℓ} (Aᵢ : X → 𝒫 Y) → ∀ {x} → Aᵢ x ⊆ ⋃ᵢ Aᵢ
-⊆⋃ᵢ _ {x} = ex x
+  ⋃ᵢ : 𝒫 Y
+  ⋃ᵢ = λ y → (∃ x ， y ∈ Aᵢ x) , 𝟙.squash
+
+  ⊆⋃ᵢ : Aᵢ x ⊆ ⋃ᵢ
+  ⊆⋃ᵢ {x} = ex x
+
+module SetOperation (Xset : isSet X) where
+
+  -- Singleton set
+
+  ｛_｝ : X → 𝒫 X
+  ｛ x ｝ = λ y → (x ≡ y) , Xset x y
+
+  -- Incusion
+
+  infixl 6 _⨭_
+  _⨭_ : (A : 𝒫 X) (x : X) → 𝒫 X
+  A ⨭ x = A ∪ ｛ x ｝
+
+  ⊆⨭ : ∀ A → A ⊆ A ⨭ x
+  ⊆⨭ _ x∈A = inl x∈A
