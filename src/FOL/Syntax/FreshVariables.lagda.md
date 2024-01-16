@@ -13,6 +13,9 @@ open import Foundation.Data.Nat.Order
 open import FOL.Language
 module FOL.Syntax.FreshVariables (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
+
+private variable
+  m n : ℕ
 ```
 
 ## 新变元
@@ -36,11 +39,18 @@ data freshₜ (n : ℕ) : Term → 𝕋 where
 - `φ` 是关系应用 `R $̇ t⃗`, 且 `n` 是任意 `t ∈⃗ t⃗` 的新变元.
 
 ```agda
-data fresh (n : ℕ) : Formula → 𝕋 where
-  fresh⊥̇ : fresh n ⊥̇
-  fresh→̇ : ∀ {φ ψ} → fresh n φ → fresh n ψ → fresh n (φ →̇ ψ)
-  fresh∀̇ : ∀ {φ} → fresh (suc n) φ → fresh n (∀̇ φ)
-  fresh$̇ : ∀ {R t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → fresh n (R $̇ t⃗)
+data freshᵩ (n : ℕ) : Formula → 𝕋 where
+  fresh⊥̇ : freshᵩ n ⊥̇
+  fresh→̇ : ∀ {φ ψ} → freshᵩ n φ → freshᵩ n ψ → freshᵩ n (φ →̇ ψ)
+  fresh∀̇ : ∀ {φ} → freshᵩ (suc n) φ → freshᵩ n (∀̇ φ)
+  fresh$̇ : ∀ {R t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → freshᵩ n (R $̇ t⃗)
+```
+
+**<u>定义</u>** 我们说 `n` 是 `Γ` 的新变元 (或者说 `n` 在 `Γ` 中未使用), 当且仅当 `n` 是每个 `φ ∈ᴸ Γ` 的新变元.
+
+```agda
+fresh : ℕ → Context → 𝕋
+fresh n Γ = ∀ {φ} → φ ∈ᴸ Γ → freshᵩ n φ
 ```
 
 **<u>定义</u>** 我们说 `n` (含) 以上的变元都是项 `t` (或公式 `φ`) 的新变元, 当且仅当任意 `m ≥ n` 都是 `t` (或 `φ`) 的新变元.
@@ -50,14 +60,14 @@ freshₜFrom : ℕ → Term → 𝕋
 freshₜFrom n t = ∀ {m} → n ≤ m → freshₜ m t
 
 freshFrom : ℕ → Formula → 𝕋
-freshFrom n φ = ∀ {m} → n ≤ m → fresh m φ
+freshFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
 ```
 
 **<u>引理</u>** 给定项的向量 `t⃗` 以及每个 `t ∈⃗ t⃗` 的一个新变元, 可以找到对任意 `t ∈⃗ t⃗` 都是新变元的一个 `n` (简称 `t⃗` 的新变元).  
 **<u>证明</u>** 归纳 `t⃗` 的长度. 长度为零时虚空真. 长度为后继时取向量的头 `t` 及尾 `t⃗`. 由前提有 `t` 的新变元 `n`, 由归纳假设有 `t⃗` 的新变元 `m`. 取 `n + m` 即可. ∎
 
 ```agda
-Σfreshₜ⃗ : ∀ {n} (t⃗ : 𝕍 Term n) → (∀ t → t ∈⃗ t⃗ → Σ n ， freshₜFrom n t) →
+Σfreshₜ⃗ : (t⃗ : 𝕍 Term n) → (∀ t → t ∈⃗ t⃗ → Σ n ， freshₜFrom n t) →
   Σ n ， ∀ t → t ∈⃗ t⃗ → freshₜFrom n t
 Σfreshₜ⃗ [] H = 0 , λ _ ()
 Σfreshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Σfreshₜ⃗ t⃗ (λ t t∈⃗ → H t (there t∈⃗))
@@ -165,12 +175,12 @@ ClosedTheory = Σ Theory closedTheory
 **<u>证明</u>** 根源在于 `fresh#` 的前提 `n ≢ m`, 也即 `⊥` 的命题性. 分别对 `freshₜ` 和 `fresh` 归纳即得. ∎
 
 ```agda
-isPropFreshₜ : ∀ {n} t → isProp (freshₜ n t)
+isPropFreshₜ : ∀ t → isProp (freshₜ n t)
 isPropFreshₜ = term-elim
   (λ { _ (fresh# p) (fresh# q) → cong fresh# $ isProp→ isProp⊥ p q })
   (λ { f t⃗ IH (fresh$̇ p) (fresh$̇ q) → cong fresh$̇ $ isPropΠ2 IH p q })
 
-isPropFresh : ∀ {n} {φ} → isProp (fresh n φ)
+isPropFresh : ∀ {φ} → isProp (freshᵩ n φ)
 isPropFresh {φ = ⊥̇} fresh⊥̇ fresh⊥̇ = refl
 isPropFresh {φ = _ →̇ _} (fresh→̇ p₁ p₂) (fresh→̇ q₁ q₂) = cong2 fresh→̇ (isPropFresh p₁ q₁) (isPropFresh p₂ q₂)
 isPropFresh {φ = ∀̇ _} (fresh∀̇ p) (fresh∀̇ q) = cong fresh∀̇ (isPropFresh p q)
@@ -181,6 +191,15 @@ isPredClosed _ = isPropΠ̅ λ _ → isProp→ isPropFresh
 
 isPredClosedTheory : isPred closedTheory
 isPredClosedTheory _ = isPropΠ2 λ _ _ → isPredClosed _
+```
+
+## 局部无名
+
+借助新变元的概念, 我们可以表述关于全称量词的所谓**局部无名 (locally nameless)**规则, 它是一条可容许规则.
+
+```agda
+Nameless : fresh n Γ → freshᵩ n (∀̇ φ) → (∀ t → Γ ⊢ φ [ t ]₀) → Γ ⊢ ∀̇ φ
+Nameless = {!   !}
 ```
 
 ---

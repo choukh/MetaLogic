@@ -212,7 +212,7 @@ termEnum-fresh-vec {suc m} le t⃗∈ᴸ t∈⃗ with ∈-++⁻ _ t⃗∈ᴸ
 ... | inj₁ t⃗∈ᴸ = termEnum-fresh-vec (m+n≤o⇒n≤o 1 le) t⃗∈ᴸ t∈⃗
 ... | inj₂ t⃗∈ᴸ = termEnum-fresh (m+n≤o⇒n≤o 1 le) (∈combine-elim t⃗∈ᴸ t∈⃗)
 
-formulaEnum-fresh : m ≤ n → φ ∈ᴸ enum m → fresh n φ
+formulaEnum-fresh : m ≤ n → φ ∈ᴸ enum m → freshᵩ n φ
 formulaEnum-fresh {(zero)} _ (here refl) = fresh⊥̇
 formulaEnum-fresh {suc m} {φ = ⊥̇} le φ∈ = fresh⊥̇
 
@@ -259,13 +259,13 @@ formulaEnum-fresh le _ | _
 ...       | _ , _ , ()
 formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le _ | _ | _
         | inj₂ φ∈$̇ = H (m+n≤o⇒n≤o 1 le) φ∈$̇ where
-  H : m ≤ n → φ ∈ᴸ concat (map (apps m) (enum m)) → fresh n φ
+  H : m ≤ n → φ ∈ᴸ concat (map (apps m) (enum m)) → freshᵩ n φ
   H le φ∈$̇ with ∈-concat⁻′ _ φ∈$̇
   ... | _ , φ∈φs , φs∈ with ∈map-elim φs∈
   ...   | _ , _ , refl with ∈map-elim φ∈φs
   ...     | _ , t⃗∈ , refl = fresh$̇ λ _ t∈t⃗ → termEnum-fresh-vec le t⃗∈ t∈t⃗
 
-Ψ-fresh : m ≤ n → fresh n (Ψ m)
+Ψ-fresh : m ≤ n → freshᵩ n (Ψ m)
 Ψ-fresh le = formulaEnum-fresh le Plain.cum
 ```
 
