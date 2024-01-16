@@ -11,7 +11,8 @@ open import Data.Nat public
     _≤′_ to infix 5 _≤_; ≤′-refl to ≤-refl; ≤′-step to ≤-step;
     _≥′_ to infix 5 _≥_;
     _<′_ to infix 5 _<_;
-    _>′_ to infix 5 _>_
+    _>′_ to infix 5 _>_;
+    _⊔_ to max
   )
 
 open import Data.Nat.Properties public
@@ -102,6 +103,15 @@ m+n≤o⇒n≤o _ = map $ ℕ.m+n≤o⇒n≤o _
 
 +-cancelʳ-≤ : ∀ m n o → n + m ≤ o + m → n ≤ o
 +-cancelʳ-≤ m n o = map (ℕ.+-cancelʳ-≤ m n o)
+
+------------------------------------------------------------------------
+-- Properties of max and _≤_
+
+≤maxˡ : ∀ {m n} → m ≤ max m n
+≤maxˡ = ≤⇒≤′ $ ℕ.m≤m⊔n _ _
+
+≤maxʳ : ∀ {m n} → m ≤ max n m
+≤maxʳ = ≤⇒≤′ $ ℕ.m≤n⊔m _ _
 
 ------------------------------------------------------------------------
 -- Properties of _+_ and _<_

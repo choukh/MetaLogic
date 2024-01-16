@@ -11,7 +11,3 @@ open import Data.Nat.Properties public
     m≤m+n; m≤n+m;
     +-monoʳ-≤;
     n∸n≡0; ∸-+-assoc; m≤n+m∸n)
-  renaming (
-    m≤m⊔n to ≤maxˡ;
-    m≤n⊔m to ≤maxʳ
-  )
