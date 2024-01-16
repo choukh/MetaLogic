@@ -86,7 +86,7 @@ module ∞-Extension
 ```
 
 **<u>引理</u>** 无穷扩张的极限包含任意一步理论.  
-**<u>证明</u>** 由定义即得. ∎
+**<u>证明</u>** 依定义即得. ∎
 
 ```agda
   Λ-sub : ∀ {n} → 𝒯ᵢ n ⊆ Λ
@@ -126,6 +126,14 @@ module ∞-Extension
     𝟙.intro (Λ⊩→𝒯ₙ⊩ Λ⊩⊥̇) λ { (n , 𝒯ₙ⊩⊥̇) → 𝒯≤-con z≤n ∣ 𝒯ₙ⊩⊥̇ ∣₁ }
 ```
 
+**<u>引理</u>** 如果每一步扩张都是闭理论, 那么极限是闭理论.  
+**<u>证明</u>** 依定义即得. ∎
+
+```agda
+  Λ-closed : (∀ n → closedTheory (𝒯ᵢ n)) → closedTheory Λ
+  Λ-closed H φ = 𝟙.rec (isPredClosed φ) λ { (m , φ∈𝒯ₘ) → H m φ φ∈𝒯ₘ }
+```
+
 ### Herbelin-Ilik扩张
 
 ### 极大一致扩张
@@ -134,4 +142,3 @@ module ∞-Extension
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/HenkinExtension.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.HenkinExtension.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.henkin)  
 > 交流Q群: 893531731
- 

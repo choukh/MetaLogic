@@ -15,6 +15,8 @@ module FOL.Syntax.FreshVariables (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 ```
 
+## 新变元
+
 **<u>归纳定义</u>** 我们说 `n` 是 `t` 的新变元 (或者说 `n` 在 `t` 中未使用), 当且仅当以下任一种情况成立
 
 - `t` 是变元 `# m`, 且 `n ≢ m`.
@@ -55,10 +57,10 @@ freshFrom n φ = ∀ {m} → n ≤ m → fresh m φ
 **<u>证明</u>** 归纳 `t⃗` 的长度. 长度为零时虚空真. 长度为后继时取向量的头 `t` 及尾 `t⃗`. 由前提有 `t` 的新变元 `n`, 由归纳假设有 `t⃗` 的新变元 `m`. 取 `n + m` 即可. ∎
 
 ```agda
-Freshₜ⃗ : ∀ {n} (t⃗ : 𝕍 Term n) → (∀ t → t ∈⃗ t⃗ → Σ n ， freshₜFrom n t) →
+Σfreshₜ⃗ : ∀ {n} (t⃗ : 𝕍 Term n) → (∀ t → t ∈⃗ t⃗ → Σ n ， freshₜFrom n t) →
   Σ n ， ∀ t → t ∈⃗ t⃗ → freshₜFrom n t
-Freshₜ⃗ [] H = 0 , λ _ ()
-Freshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Freshₜ⃗ t⃗ (λ t t∈⃗ → H t (there t∈⃗))
+Σfreshₜ⃗ [] H = 0 , λ _ ()
+Σfreshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Σfreshₜ⃗ t⃗ (λ t t∈⃗ → H t (there t∈⃗))
 ... | n , Hn | m , Hm = n + m , Hn+m where
   Hn+m : ∀ s → s ∈⃗ t ∷ t⃗ → freshₜFrom (n + m) s
   Hn+m s (here refl) n+m≤k = Hn $ ≤-trans (m≤m+n _ _) n+m≤k
@@ -69,10 +71,10 @@ Freshₜ⃗ (t ∷ t⃗) H with H t (here refl) | Freshₜ⃗ t⃗ (λ t t∈⃗
 **<u>证明</u>** 使用项的结构归纳法. 当项是变元 `# n` 时取 `suc n` 即可. 当项是函数应用 `f $̇ t⃗` 时, 由归纳假设及引理 `Freshₜ⃗`, 有 `t⃗` 的新变元 `n`, 它就是函数应用 `f $̇ t⃗` 的新变元. ∎
 
 ```agda
-Freshₜ : ∀ t → Σ n ， freshₜFrom n t
-Freshₜ = term-elim
+Σfreshₜ : ∀ t → Σ n ， freshₜFrom n t
+Σfreshₜ = term-elim
   (λ n → suc n , λ le → fresh# λ { refl → 1+n≰n le })
-  (λ f t⃗ IH → let n , Hn = Freshₜ⃗ t⃗ IH in
+  (λ f t⃗ IH → let n , Hn = Σfreshₜ⃗ t⃗ IH in
     n , λ n≤m → fresh$̇ λ t t∈⃗ → Hn t t∈⃗ n≤m)
 ```
 
@@ -84,15 +86,15 @@ Freshₜ = term-elim
 - 当公式是关系应用 `R $̇ t⃗` 时, 由归纳假设及引理 `Freshₜ⃗`, 有 `t⃗` 的新变元 `n`, 取 `n` 即可. ∎
 
 ```agda
-Fresh : ∀ φ → Σ n ， freshFrom n φ
-Fresh ⊥̇ = 0 , (λ _ → fresh⊥̇)
-Fresh (φ →̇ ψ) with Fresh φ | Fresh ψ
+Σfresh : ∀ φ → Σ n ， freshFrom n φ
+Σfresh ⊥̇ = 0 , (λ _ → fresh⊥̇)
+Σfresh (φ →̇ ψ) with Σfresh φ | Σfresh ψ
 ... | n , Hn | m , Hm = n + m , λ le → fresh→̇
   (Hn $ ≤-trans (m≤m+n _ _) le)
   (Hm $ ≤-trans (m≤n+m _ _) le)
-Fresh (∀̇ φ) with Fresh φ
+Σfresh (∀̇ φ) with Σfresh φ
 ... | n , Hn = n , λ n≤m → fresh∀̇ $ Hn $ ≤-trans n≤m (n≤1+n _)
-Fresh (R $̇ t⃗) with Freshₜ⃗ t⃗ (λ t _ → Freshₜ t)
+Σfresh (R $̇ t⃗) with Σfreshₜ⃗ t⃗ (λ t _ → Σfreshₜ t)
 ... | n , Hn = n , λ n≤m → fresh$̇ λ t t∈⃗ → Hn t t∈⃗ n≤m
 ```
 
@@ -122,6 +124,8 @@ Fresh (R $̇ t⃗) with Freshₜ⃗ t⃗ (λ t _ → Freshₜ t)
            n ∸ m ∸ 1    ∎
 ```
 
+## 闭公式
+
 **<u>定义</u>** `0` 是其新变元 (即没有未使用变元) 的公式叫做闭公式.
 
 ```agda
@@ -133,7 +137,7 @@ closed = freshFrom 0
 
 ```agda
 close : Formula → Formula
-close φ = ∀̇ⁿ (Fresh φ .fst) φ
+close φ = ∀̇ⁿ (Σfresh φ .fst) φ
 ```
 
 **<u>定理</u>** 对任意 `φ`, `close φ` 是闭公式.  
@@ -141,7 +145,7 @@ close φ = ∀̇ⁿ (Fresh φ .fst) φ
 
 ```agda
 close-closed : ∀ φ → closed (close φ)
-close-closed φ {m} _ with Fresh φ
+close-closed φ {m} _ with Σfresh φ
 ... | n , Hn = ∀̇ⁿ-freshFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
 ```
 
@@ -153,6 +157,30 @@ closedTheory 𝒯 = ∀ φ → φ ∈ 𝒯 → closed φ
 
 ClosedTheory : 𝕋₁
 ClosedTheory = Σ Theory closedTheory
+```
+
+## 命题性
+
+**<u>事实</u>** “是闭公式” 和 “是闭理论” 是谓词.  
+**<u>证明</u>** 根源在于 `fresh#` 的前提 `n ≢ m`, 也即 `⊥` 的命题性. 分别对 `freshₜ` 和 `fresh` 归纳即得. ∎
+
+```agda
+isPropFreshₜ : ∀ {n} t → isProp (freshₜ n t)
+isPropFreshₜ = term-elim
+  (λ { _ (fresh# p) (fresh# q) → cong fresh# $ isProp→ isProp⊥ p q })
+  (λ { f t⃗ IH (fresh$̇ p) (fresh$̇ q) → cong fresh$̇ $ isPropΠ2 IH p q })
+
+isPropFresh : ∀ {n} {φ} → isProp (fresh n φ)
+isPropFresh {φ = ⊥̇} fresh⊥̇ fresh⊥̇ = refl
+isPropFresh {φ = _ →̇ _} (fresh→̇ p₁ p₂) (fresh→̇ q₁ q₂) = cong2 fresh→̇ (isPropFresh p₁ q₁) (isPropFresh p₂ q₂)
+isPropFresh {φ = ∀̇ _} (fresh∀̇ p) (fresh∀̇ q) = cong fresh∀̇ (isPropFresh p q)
+isPropFresh {φ = _ $̇ _} (fresh$̇ p) (fresh$̇ q) = cong fresh$̇ (isPropΠ2 (λ t _ → isPropFreshₜ t) p q)
+
+isPredClosed : isPred closed
+isPredClosed _ = isPropΠ̅ λ _ → isProp→ isPropFresh
+
+isPredClosedTheory : isPred closedTheory
+isPredClosedTheory _ = isPropΠ2 λ _ _ → isPredClosed _
 ```
 
 ---
