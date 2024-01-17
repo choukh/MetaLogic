@@ -271,24 +271,6 @@ _⊩_ _⊮_ : Theory → Formula → 𝕋
 𝒯 ⊮ φ = ¬ (𝒯 ⊩ φ)
 ```
 
-### 可容许规则
-
-若在一个形式系统中添加一个推理规则后, 该系统的定理集合不发生变化, 则称该推理规则在该形式系统中是**可容许的 (admissible)**. 换句话说, 使用该规则可证明的每个公式在没有该规则的情况下已经是可证明的. 因此在某种程度上说, 该规则是冗余的. 但是对于研究这个系统而言, 它们是重要引理.
-
-**<u>引理</u>** 弱化规则: `Γ ⊆ᴸ Δ` 蕴含 `Γ ⊢ φ → Δ ⊢ φ`.
-**<u>证明</u>** 对证明树归纳即得. ∎
-
-```agda
-Wkn : Γ ⊆ᴸ Δ → Γ ⊢ φ → Δ ⊢ φ
-Wkn sub (Ctx H) = Ctx (sub H)
-Wkn sub (ImpI H) = ImpI (Wkn (∷⊆∷ sub) H)
-Wkn sub (ImpE H₁ H₂) = ImpE (Wkn sub H₁) (Wkn sub H₂)
-Wkn sub (AllI H) = AllI (Wkn (map⊆map sub) H)
-Wkn sub (AllE H) = AllE (Wkn sub H)
-Wkn sub (FalseE H) = FalseE (Wkn sub H)
-Wkn sub (Peirce φ ψ) = Peirce φ ψ
-```
-
 ## 理论的一致性
 
 **<u>定义</u>** 我们说理论 `𝒯` 一致, 当且仅当不存在从 `𝒯` 到恒假的证明.

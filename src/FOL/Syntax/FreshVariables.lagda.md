@@ -193,15 +193,6 @@ isPredClosedTheory : isPred closedTheory
 isPredClosedTheory _ = isPropΠ2 λ _ _ → isPredClosed _
 ```
 
-## 局部无名
-
-借助新变元的概念, 我们可以表述关于全称量词的所谓**局部无名 (locally nameless)**规则, 它是一条可容许规则.
-
-```agda
-Nameless : fresh n Γ → freshᵩ n (∀̇ φ) → (∀ t → Γ ⊢ φ [ t ]₀) → Γ ⊢ ∀̇ φ
-Nameless = {!   !}
-```
-
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/FreshVariables.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.FreshVariables.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.fresh)  

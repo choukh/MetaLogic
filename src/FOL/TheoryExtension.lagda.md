@@ -1,37 +1,38 @@
 ---
-url: fol.henkin
+url: fol.extension
 ---
 
-# 一阶逻辑 ▸ 亨金扩张
+# 一阶逻辑 ▸ 理论的扩张
 
-亨金扩张是指一种扩张理论的方法, 也可以指用该方法扩张后的理论. 亨金扩张的目的是使扩张后的理论满足一定的性质, 以证明一阶逻辑的完备性, 这会在下一篇讲解. 本篇先介绍亨金扩张所具有的性质, 然后讲解扩张的方法.
+理论扩张的目的是使扩张后的理论满足一定的性质, 以证明一阶逻辑的完备性, 这会在下一篇讲解. 本篇先介绍此种扩张 (以下称为完备化扩张) 应具有的性质, 然后讲解该扩张的具体构造.
 
 ```agda
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 
 open import FOL.Language
-module FOL.HenkinExtension (ℒ : Language) where
+module FOL.TheoryExtension (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Discrete ℒ
 open import FOL.Syntax.Enumeration ℒ
 open import FOL.Syntax.FreshVariables ℒ
+open import FOL.Syntax.AdmissibleRule ℒ
 
 private variable
   m n : ℕ
   𝒯 : Theory
 ```
 
-## 亨金扩张的输入和输出
+## 扩张的输入和输出
 
-亨金扩张的输入要求是一个闭理论, 即由闭公式所组成的理论.
+完备化扩张的输入要求是一个闭理论, 即由闭公式所组成的理论.
 
 ```agda
 module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 ```
 
-闭理论 `𝒯ⁱ` 的亨金扩张是一个理论 `𝒯ᵒ`, 满足
+闭理论 `𝒯ⁱ` 的完备化扩张是一个理论 `𝒯ᵒ`, 满足
 
 - `𝒯ᵒ` 是 `𝒯ⁱ` 的一致扩张, 即 `𝒯ᵒ` 包含 `𝒯ⁱ` 且 `𝒯ᵒ` 相对于 `𝒯ⁱ` 一致
 - `𝒯ᵒ` 对证明封闭, 即 `𝒯ᵒ` 的任意可证的公式都是 `𝒯ᵒ` 的成员
@@ -50,26 +51,24 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       𝒯ᵒ-distrib-over-∀̇ : ∀ φ → ∀̇ φ ∈ 𝒯ᵒ ↔ ∀ t → φ [ t ]₀ ∈ 𝒯ᵒ
 ```
 
-## 亨金扩张的构造
+## 扩张的构造
 
-亨金扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
+完备化扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
 
-1. Herbelin-Ilik扩张
+1. Henkin扩张
 2. 极大一致扩张
 
-**<u>注意</u>** 狭义的亨金扩张特指第一轮扩张, 而我们这里把两轮扩张的复合称为亨金扩张. 其中第一轮的Herbelin-Ilik扩张命名自 [Herbelin 和 Ilik](https://pauillac.inria.fr/~herbelin/articles/godel-completeness-draft16.pdf) 对狭义亨金扩张的构造主义改良.
-
-两轮扩张可以抽象出一个共通的基础构造: 理论的无穷扩张. 我们先讲这个.
+它们可以抽象出一个共通的基础构造: 理论的无穷扩张. 我们先讲这个.
 
 ### 理论的无穷扩张
 
-Herbelin-Ilik扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做理论的无穷扩张.
+Henkin扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做理论的无穷扩张.
 
 **<u>定义</u>** 理论的无穷扩张是理论的一个无穷序列, 其中每一项都是上一项的一致扩张.
 
 ```agda
-record TheoryExtension : 𝕋₁ where
-  constructor mkTheoryExtension
+record GeneralizedExtension : 𝕋₁ where
+  constructor mkGenExt
   field
     𝒯ᵢ : ℕ → Theory
     𝒯₊-sub : 𝒯ᵢ n ⊆ 𝒯ᵢ (suc n)
@@ -145,10 +144,12 @@ record TheoryExtension : 𝕋₁ where
   𝒯ω-closed H φ = 𝟙.rec (isPredClosed φ) λ { (m , φ∈𝒯ₘ) → H m φ φ∈𝒯ₘ }
 ```
 
-### Herbelin-Ilik扩张
+### Henkin扩张
+
+这里讲的Henkin扩张采用 [Herbelin和Ilik](https://pauillac.inria.fr/~herbelin/articles/godel-completeness-draft16.pdf) 对原版Henkin扩张的构造主义改良版本.
 
 ```agda
-module HerbelinIlikExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
+module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   open SetOperation (discreteSet {A = Formula})
 
   isℋ : Theory → 𝕋₁
@@ -171,7 +172,7 @@ module HerbelinIlikExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       H1 : freshᵩ n (Ψ n)
       H1 = Ψ-fresh ≤-refl
 
-  open TheoryExtension (mkTheoryExtension ℋᵢ ℋ₊-sub ℋ₊-con) public
+  open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
     renaming ( 𝒯ω to ℋω
              ; 𝒯ω-sub to ℋω-sub
              ; 𝒯ω-con to ℋω-con
@@ -196,5 +197,5 @@ module HerbelinIlikExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/HenkinExtension.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.HenkinExtension.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.henkin)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/TheoryExtension.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.TheoryExtension.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.extension)  
 > 交流Q群: 893531731

@@ -1,5 +1,5 @@
 ---
-url: fol.semantics.properties
+url: fol.semantics.evaluation
 ---
 
 # 一阶逻辑 ▸ 语义 ▸ᐨ 公式取值的性质
@@ -9,7 +9,7 @@ url: fol.semantics.properties
 ```agda
 open import Foundation.Essential
 open import FOL.Language
-module FOL.Semantics.Properties (ℒ : Language) where
+module FOL.Semantics.EvaluationFacts (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Semantics.Base ℒ
@@ -195,5 +195,5 @@ _⊨∷_ : ⦃ _ : Interpretation D ⦄ →
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/Properties.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.Properties.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.properties)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Semantics/EvaluationFacts.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Semantics.EvaluationFacts.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.semantics.evaluation)  
 > 交流Q群: 893531731

@@ -14,7 +14,7 @@ module FOL.Soundness (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Semantics.Base ℒ
-open import FOL.Semantics.Properties ℒ
+open import FOL.Semantics.EvaluationFacts ℒ
 ```
 
 ## 可靠性定理
