@@ -2,7 +2,7 @@
 url: fol.semantics.evaluation
 ---
 
-# 一阶逻辑 ▸ 语义 ▸ᐨ 公式取值的性质
+# 一阶逻辑 ▸ 语义 ▸ᐨ 取值的性质
 
 这是一篇标题中带上标减号 (ᐨ) 的章节. 这表示这种章节不推荐线性阅读, 读者应该在需要时再回来查看. 因为这种章节只是一些枯燥引理及其证明的简单罗列, 而不包含动机的说明. 读者应该在使用这些引理的章节中寻找动机.
 
@@ -44,8 +44,8 @@ open import FOL.Semantics.Base ℒ
   H f t⃗ IH = cong (fᴵ f) H2 where
     H2 : (𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ⃗ t⃗ ≡ 𝓋 ⊨ₜ⃗ t⃗ [ σ ]ₜ⃗
     H2 rewrite ⊨ₜ⃗≡map⃗ (𝓋 ⊨ₜ_ ∘ σ) t⃗ | ⊨ₜ⃗≡map⃗ 𝓋 (t⃗ [ σ ]ₜ⃗) | []ₜ⃗≡map⃗ t⃗ σ =
-      map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map-ext IH ⟩
-      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
+      map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map⃗-ext IH ⟩
+      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map⃗-∘ _ _ _ ⟩
       map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
 ```
 
@@ -78,7 +78,7 @@ open import FOL.Semantics.Base ℒ
   ∀ {𝓋 𝓊} → 𝓋 ≗ 𝓊 → 𝓋 ⊨ₜ_ ≗ 𝓊 ⊨ₜ_
 ⊨ₜ-ext {𝓋} {𝓊} eq = term-elim eq H where
   H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → 𝓋 ⊨ₜ t ≡ 𝓊 ⊨ₜ t) → 𝓋 ⊨ₜ (f $̇ t⃗) ≡ 𝓊 ⊨ₜ (f $̇ t⃗)
-  H f t⃗ IH rewrite ⊨ₜ⃗≡map⃗ 𝓋 t⃗ | ⊨ₜ⃗≡map⃗ 𝓊 t⃗ = cong (fᴵ f) (map-ext IH)
+  H f t⃗ IH rewrite ⊨ₜ⃗≡map⃗ 𝓋 t⃗ | ⊨ₜ⃗≡map⃗ 𝓊 t⃗ = cong (fᴵ f) (map⃗-ext IH)
 ```
 
 ## 公式取值的性质
@@ -108,7 +108,7 @@ open import FOL.Semantics.Base ℒ
 ⊨ᵩ-ext : ⦃ _ : Interpretation D ⦄ →
   ∀ {𝓋 𝓊} → 𝓋 ≗ 𝓊 → ∀ φ → 𝓋 ⊨ᵩ φ ↔ 𝓊 ⊨ᵩ φ
 ⊨ᵩ-ext eq ⊥̇ = ↔-refl
-⊨ᵩ-ext eq (R $̇ t⃗) = ↔-cong (λ t → Rᴵ R t holds) (map-cong (⊨ₜ-ext eq) t⃗)
+⊨ᵩ-ext eq (R $̇ t⃗) = ↔-cong (λ t → Rᴵ R t holds) (map⃗-cong (⊨ₜ-ext eq) t⃗)
 ⊨ᵩ-ext eq (φ →̇ ψ) = ↔-cong-→ (⊨ᵩ-ext eq φ) (⊨ᵩ-ext eq ψ)
 ⊨ᵩ-ext {𝓋} {𝓊} eq (∀̇ φ) = ↔-cong-Π λ x → ⊨ᵩ-ext (H x) φ where
   H : ∀ x → x ∷ₙ 𝓋 ≗ x ∷ₙ 𝓊
@@ -135,8 +135,8 @@ open import FOL.Semantics.Base ℒ
   ∀ 𝓋 φ σ → (𝓋 ⊨ₜ_ ∘ σ) ⊨ᵩ φ ↔ 𝓋 ⊨ᵩ φ [ σ ]ᵩ
 ⊨ᵩ-∘ 𝓋 ⊥̇ σ = ↔-refl
 ⊨ᵩ-∘ 𝓋 (R $̇ t⃗) σ = ↔-cong (λ t → Rᴵ R t holds) H where
-  H = map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map-cong (⊨ₜ-∘ 𝓋 σ) t⃗ ⟩
-      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map-∘ _ _ _ ⟩
+  H = map⃗ ((𝓋 ⊨ₜ_ ∘ σ) ⊨ₜ_) t⃗       ≡⟨ map⃗-cong (⊨ₜ-∘ 𝓋 σ) t⃗ ⟩
+      map⃗ (𝓋 ⊨ₜ_ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map⃗-∘ _ _ _ ⟩
       map⃗ (𝓋 ⊨ₜ_) (map⃗ (_[ σ ]ₜ) t⃗) ∎
 ⊨ᵩ-∘ 𝓋 (φ →̇ ψ) σ = ↔-cong-→ (⊨ᵩ-∘ 𝓋 φ σ) (⊨ᵩ-∘ 𝓋 ψ σ)
 ⊨ᵩ-∘ 𝓋 (∀̇ φ) σ = ↔-cong-Π λ x →

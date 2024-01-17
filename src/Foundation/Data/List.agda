@@ -7,7 +7,10 @@ open import Data.List public
   using (map; _++_; concat; length; [_])
 
 open import Data.List.Properties public
-  using (length-map; length-++; ++-assoc; ++-identityʳ)
+  using (
+    length-map; map-∘;
+    length-++; ++-assoc; ++-identityʳ
+  )
 
 open import Cubical.Data.List
   using (isOfHLevelList)

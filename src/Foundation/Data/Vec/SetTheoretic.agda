@@ -13,6 +13,6 @@ private variable
   x⃗ : 𝕍 A n
   f g : A → B
 
-map-ext : (∀ x → x ∈ x⃗ → f x ≡ g x) → map⃗ f x⃗ ≡ map⃗ g x⃗
-map-ext {x⃗ = []} H = refl
-map-ext {x⃗ = x ∷ x⃗} H = cong2 _∷_ (H x $ here refl) (map-ext λ y y∈x⃗ → H y $ there y∈x⃗)
+map⃗-ext : (∀ x → x ∈ x⃗ → f x ≡ g x) → map⃗ f x⃗ ≡ map⃗ g x⃗
+map⃗-ext {x⃗ = []} H = refl
+map⃗-ext {x⃗ = x ∷ x⃗} H = cong2 _∷_ (H x $ here refl) (map⃗-ext λ y y∈x⃗ → H y $ there y∈x⃗)

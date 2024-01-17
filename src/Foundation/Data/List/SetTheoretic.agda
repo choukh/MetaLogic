@@ -24,7 +24,11 @@ private variable
   z : C
   xs : 𝕃 A
   ys : 𝕃 B
-  f : A → B
+  f g : A → B
+
+map-ext : (∀ x → x ∈ xs → f x ≡ g x) → map f xs ≡ map g xs
+map-ext {xs = []} H = refl
+map-ext {xs = x ∷ xs} H = cong2 _∷_ (H x $ here refl) (map-ext (λ y y∈xs → H y $ there y∈xs))
 
 ------------------------------------------------------------------------
 -- Membership

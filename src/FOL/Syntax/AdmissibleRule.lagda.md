@@ -22,7 +22,7 @@ private variable
 
 ## 弱化
 
-弱化指的是对语境的弱化. 此类规则允许我们通过在弱化后的语境中证明某公式, 来说明原语境中就能证明该公式.
+弱化指的是对语境的弱化. 此类规则允许我们通过在弱化的语境中证明某公式, 来说明原语境中就能证明该公式.
 
 **<u>引理</u>** 弱化规则: `Γ ⊆ᴸ Δ` 蕴含 `Γ ⊢ φ → Δ ⊢ φ`.
 **<u>证明</u>** 对证明树归纳即得. ∎
@@ -39,17 +39,27 @@ Wkn sub (Peirce φ ψ) = Peirce φ ψ
 ```
 
 **<u>引理</u>** 替换弱化规则: 一个证明在其语境和结论同时做同种替换后仍然有效.  
-**<u>证明</u>** 对证明树归纳即得. ∎
+**<u>证明</u>** 对证明树归纳, 我们只讲 `AllI` 和 `AllE` 的情况, 其他情况的证明与 `Wkn` 类似.
 
 ```agda
 SubstWkn : (σ : Subst) → Γ ⊢ φ → map _[ σ ]ᵩ Γ ⊢ φ [ σ ]ᵩ
 SubstWkn σ (Ctx H) = Ctx (∈map-intro H refl)
 SubstWkn σ (ImpI H) = ImpI (SubstWkn σ H)
 SubstWkn σ (ImpE H₁ H₂) = ImpE (SubstWkn σ H₁) (SubstWkn σ H₂)
-SubstWkn σ (AllI H) = AllI {! SubstWkn σ H !}
-SubstWkn σ (AllE {t} H) = {!  AllE {t = t [ σ ]ₜ}  !}
 SubstWkn σ (FalseE H) = FalseE (SubstWkn σ H)
 SubstWkn σ (Peirce φ ψ) = Peirce (φ [ σ ]ᵩ) (ψ [ σ ]ᵩ)
+```
+
+```agda
+SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ-∘-[]₀ _) (AllE (SubstWkn σ H))
+```
+
+```agda
+SubstWkn {Γ} σ (AllI H) = AllI $ subst (_⊢ _) eq (SubstWkn (↑ₛ σ) H) where
+  eq = ↑ (map (_[ σ ]ᵩ) Γ)      ≡˘⟨ map-∘ Γ ⟩
+       map (↑ᵩ ∘ _[ σ ]ᵩ) Γ     ≡⟨ map-ext (λ t _ → ↑ᵩ-∘-[]ᵩ σ t) ⟩
+       map (_[ ↑ₛ σ ]ᵩ ∘ ↑ᵩ) Γ  ≡⟨ map-∘ Γ ⟩
+       map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)   ∎
 ```
 
 ## 局部无名
