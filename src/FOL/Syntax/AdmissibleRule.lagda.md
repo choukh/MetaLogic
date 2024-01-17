@@ -39,7 +39,7 @@ Wkn sub (Peirce φ ψ) = Peirce φ ψ
 ```
 
 **<u>引理</u>** 替换弱化规则: 一个证明在其语境和结论同时做同种替换后仍然有效.  
-**<u>证明</u>** 对证明树归纳, 我们只讲 `AllI` 和 `AllE` 的情况, 其他情况的证明与 `Wkn` 类似.
+**<u>证明</u>** 对证明树归纳. 除 `AllI` 和 `AllE` 之外的情况的证明与 `Wkn` 类似.
 
 ```agda
 SubstWkn : (σ : Subst) → Γ ⊢ φ → map _[ σ ]ᵩ Γ ⊢ φ [ σ ]ᵩ
@@ -50,25 +50,63 @@ SubstWkn σ (FalseE H) = FalseE (SubstWkn σ H)
 SubstWkn σ (Peirce φ ψ) = Peirce (φ [ σ ]ᵩ) (ψ [ σ ]ᵩ)
 ```
 
-```agda
-SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ-∘-[]₀ _) (AllE (SubstWkn σ H))
-```
+对于 `AllI` 的情况, 要证 `map (_[ σ ]ᵩ) Γ ⊢ (∀̇ φ) [ σ ]ᵩ`.
+有归纳假设 `map (_[ ↑ₛ σ ]ᵩ) (↑ Γ) ⊢ φ [ ↑ₛ σ ]ᵩ`.
+对目标使用 `AllI` 归纳, 只要证 `↑ (map (_[ σ ]ᵩ) Γ) ⊢ φ [ ↑ₛ σ ]ᵩ`.
+将目标 `⊢` 式的左边换成 `map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)` 即证. ∎
 
 ```agda
-SubstWkn {Γ} σ (AllI H) = AllI $ subst (_⊢ _) eq (SubstWkn (↑ₛ σ) H) where
-  eq = ↑ (map (_[ σ ]ᵩ) Γ)      ≡˘⟨ map-∘ Γ ⟩
-       map (↑ᵩ ∘ _[ σ ]ᵩ) Γ     ≡⟨ map-ext (λ t _ → ↑ᵩ-∘-[]ᵩ σ t) ⟩
-       map (_[ ↑ₛ σ ]ᵩ ∘ ↑ᵩ) Γ  ≡⟨ map-∘ Γ ⟩
-       map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)   ∎
+SubstWkn {Γ} σ (AllI H) = AllI $ subst (_⊢ _) ↑∘[] (SubstWkn (↑ₛ σ) H)
+```
+
+对于 `AllE` 的情况, 要证 `map (_[ σ ]ᵩ) Γ ⊢ (φ [ t ]₀) [ σ ]ᵩ`.
+有归纳假设 `map (_[ σ ]ᵩ) Γ ⊢ (∀̇ φ) [ σ ]ᵩ`.
+对归纳假设使用 `AllE` 规则, 可得对任意 `t` 有 `map (_[ σ ]ᵩ) Γ ⊢ (φ [ ↑ₛ σ ]ᵩ) [ t ]₀`.
+将目标 `⊢` 式的右边可以换成 `(φ [ ↑ₛ σ ]ᵩ) [ t [ σ ]ₜ ]₀` 即证.
+
+```agda
+SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 ```
 
 ## 局部无名
 
-借助新变元的概念, 我们可以表述关于全称量词的所谓**局部无名 (locally nameless)** 规则 `AllI′`.
+借助“未使用变元”的概念, 我们可以表述所谓**局部无名 (locally nameless)** 变换, 并且利用替换弱化规则, 我们可以证明它.
+
+**<u>引理</u>** 局部无名变换: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `↑ Γ ⊢ φ` 与 `Γ ⊢ φ [ # n ]₀` 逻辑等价.  
+**<u>证明</u>**
+
+```agda
+nameless-conversion : fresh n Γ → freshᵩ n (∀̇ φ) → ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # n ]₀
+nameless-conversion {n} {Γ} freshΓ fresh∀̇φ =
+  ⇒: (λ ↑Γ⊢φ   → subst (_⊢ _) eq (SubstWkn (# n ∷ₙ #) ↑Γ⊢φ))
+  ⇐: (λ Γ⊢φ[n] → {!   !})
+  where
+  eq = Γ                         ≡˘⟨ map-id Γ ⟩
+    map id Γ                     ≡˘⟨ map-ext (λ _ _ → ↑ᵩ[]₀) ⟩
+    map (_[ # n ∷ₙ # ]ᵩ ∘ ↑ᵩ) Γ  ≡⟨ map-∘ Γ ⟩
+    map (_[ # n ∷ₙ # ]ᵩ) (↑ Γ)   ∎
+  -- switch binder to n
+  -- k   = 0 1 2 3 4 5 6 ...
+  -- ζ 4 = 1 2 3 4 0 6 7 ...
+  ζ : ℕ → Subst
+  ζ n = λ k → if does (n ≟ k) then # 0 else # (suc k)
+  -- k        = 0 1 2 3 | 4
+  -- [ ζ 4 ]ᵩ = 1 2 3 4 | 0
+  ζ-lift : ∀ n → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
+  ζ-lift n H = {!   !}
+  -- k                 = 0 1 2 3 | 4
+  -- [ # 3 ]₀          = 3 0 1 2 | 4
+  -- [ # 3 ]₀ [ ζ 3 ]ᵩ = 0 1 2 3 | 4
+  ζ-id : ∀ n → freshᵩ (suc n) φ → φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
+  ζ-id n H = {!   !}
+```
+
+**<u>引理</u>** 局部无名规则: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  
+**<u>证明</u>** 由局部无名变换及 `AllI` 即得. ∎
 
 ```agda
 AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ ⊢ ∀̇ φ
-AllI′ freshΓ fresh∀̇φ Γ⊢φ[n] = AllI {!   !}
+AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
 ```
 
 ---

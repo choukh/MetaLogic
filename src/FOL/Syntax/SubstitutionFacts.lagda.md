@@ -13,18 +13,49 @@ module FOL.Syntax.SubstitutionFacts (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
+
+private variable
+  n : ℕ
+  σ τ : Subst
 ```
 
 ## 恒等替换
 
 ```agda
-[#]ₜ : ∀ t → t [ # ]ₜ ≡ t
-[#]ₜ = term-elim (λ _ → refl) H where
-  H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → t [ # ]ₜ ≡ t) → (f $̇ t⃗) [ # ]ₜ ≡ (f $̇ t⃗)
-  H f t⃗ IH rewrite []ₜ⃗≡map⃗ t⃗ # = cong (f $̇_) $
-    map⃗ (_[ # ]ₜ) t⃗ ≡⟨ map⃗-ext IH ⟩
+[id]ₜ : σ ≗ # → ∀ t → t [ σ ]ₜ ≡ t
+[id]ₜ {σ} eq = term-elim eq H where
+  H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → t [ σ ]ₜ ≡ t) → (f $̇ t⃗) [ σ ]ₜ ≡ (f $̇ t⃗)
+  H f t⃗ IH rewrite []ₜ⃗≡map⃗ t⃗ σ = cong (f $̇_) $
+    map⃗ (_[ σ ]ₜ) t⃗ ≡⟨ map⃗-ext IH ⟩
     map⃗ id t⃗        ≡⟨ map⃗-id t⃗ ⟩
     t⃗               ∎
+```
+
+```agda
+[#]ₜ : t [ # ]ₜ ≡ t
+[#]ₜ = [id]ₜ (λ _ → refl) _
+```
+
+```agda
+↑ₛ-id : σ ≗ # → ↑ₛ σ ≗ #
+↑ₛ-id eq zero = refl
+↑ₛ-id eq (suc n) = cong ↑ₜ (eq n)
+```
+
+```agda
+[id]ᵩ : σ ≗ # → ∀ φ → φ [ σ ]ᵩ ≡ φ
+[id]ᵩ eq ⊥̇        = refl
+[id]ᵩ eq (φ →̇ ψ)  = cong2 _→̇_ ([id]ᵩ eq φ) ([id]ᵩ eq ψ)
+[id]ᵩ eq (∀̇ φ)    = cong ∀̇_ ([id]ᵩ (↑ₛ-id eq) φ)
+[id]ᵩ {σ} eq (R $̇ t⃗) = cong (R $̇_) $
+  map⃗ (_[ σ ]ₜ) t⃗ ≡⟨ map⃗-ext (λ t _ → [id]ₜ eq t) ⟩
+  map⃗ id t⃗        ≡⟨ map⃗-id t⃗ ⟩
+  t⃗               ∎
+```
+
+```agda
+[#]ᵩ : φ [ # ]ᵩ ≡ φ
+[#]ᵩ = [id]ᵩ (λ _ → refl) _
 ```
 
 ## 替换的复合
@@ -42,7 +73,7 @@ open import FOL.Syntax.FreshVariables ℒ
 ```
 
 ```agda
-[]ₜ-∘ : ∀ {σ τ} → _[ τ ]ₜ ∘ _[ σ ]ₜ ≗ _[ _[ τ ]ₜ ∘ σ ]ₜ
+[]ₜ-∘ : _[ τ ]ₜ ∘ _[ σ ]ₜ ≗ _[ _[ τ ]ₜ ∘ σ ]ₜ
 []ₜ-∘ = []ₜ-∘-≗ _ _ _ (λ _ → refl)
 ```
 
@@ -71,13 +102,21 @@ open import FOL.Syntax.FreshVariables ℒ
 ```
 
 ```agda
-[]ᵩ-∘ : ∀ {σ τ} → _[ τ ]ᵩ ∘ _[ σ ]ᵩ ≗ _[ _[ τ ]ₜ ∘ σ ]ᵩ
+[]ᵩ-∘ : _[ τ ]ᵩ ∘ _[ σ ]ᵩ ≗ _[ _[ τ ]ₜ ∘ σ ]ᵩ
 []ᵩ-∘ = []ᵩ-∘-≗ _ _ _ (λ _ → refl)
 ```
 
 ```agda
-[]ᵩ-∘-[]₀ : ∀ {t σ} → _[ σ ]ᵩ ∘ _[ t ]₀ ≗ _[ t [ σ ]ₜ ]₀ ∘ _[ ↑ₛ σ ]ᵩ
-[]ᵩ-∘-[]₀ {t} {σ} φ =
+↑ᵩ[]₀ : (↑ᵩ φ) [ # n ]₀ ≡ φ
+↑ᵩ[]₀ {φ} {n} =
+  (↑ᵩ φ) [ # n ]₀                   ≡⟨ []ᵩ-∘ φ ⟩
+  φ [ _[ # n ∷ₙ # ]ₜ ∘ # ∘ suc ]ᵩ   ≡⟨ [#]ᵩ ⟩
+  φ                                 ∎
+```
+
+```agda
+[]ᵩ∘[]₀ : _[ σ ]ᵩ ∘ _[ t ]₀ ≗ _[ t [ σ ]ₜ ]₀ ∘ _[ ↑ₛ σ ]ᵩ
+[]ᵩ∘[]₀ {σ} {t} φ =
   φ [ t ]₀ [ σ ]ᵩ           ≡⟨ []ᵩ-∘ _ ⟩
   φ [ _[ σ ]ₜ ∘ (t ∷ₙ #) ]ᵩ ≡˘⟨ []ᵩ-∘-≗ (↑ₛ σ) (t [ σ ]ₜ ∷ₙ #) _ H φ ⟩
   φ [ ↑ₛ σ ]ᵩ [ t [ σ ]ₜ ]₀ ∎ where
@@ -85,14 +124,14 @@ open import FOL.Syntax.FreshVariables ℒ
     H zero = refl
     H (suc n) =
       (σ n) [ # ∘ suc ]ₜ [ t [ σ ]ₜ ∷ₙ # ]ₜ     ≡⟨ []ₜ-∘ (σ n) ⟩
-      (σ n) [ _[ t [ σ ]ₜ ∷ₙ # ]ₜ ∘ # ∘ suc ]ₜ  ≡⟨ [#]ₜ _ ⟩
+      (σ n) [ _[ t [ σ ]ₜ ∷ₙ # ]ₜ ∘ # ∘ suc ]ₜ  ≡⟨ [#]ₜ ⟩
       σ n                                       ∎
 ```
 
 ## 替换的外延性
 
 ```agda
-[]ₜ-ext : ∀ {σ τ} → σ ≗ τ → _[ σ ]ₜ ≗ _[ τ ]ₜ
+[]ₜ-ext : σ ≗ τ → _[ σ ]ₜ ≗ _[ τ ]ₜ
 []ₜ-ext {σ} {τ} eq = term-elim eq H where
   H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → t [ σ ]ₜ ≡ t [ τ ]ₜ) → (f $̇ t⃗) [ σ ]ₜ ≡ (f $̇ t⃗) [ τ ]ₜ
   H f t⃗ IH = cong (f $̇_) H2 where
@@ -101,13 +140,13 @@ open import FOL.Syntax.FreshVariables ℒ
 ```
 
 ```agda
-↑ₛ-ext : ∀ {σ τ} → σ ≗ τ → ↑ₛ σ ≗ ↑ₛ τ
+↑ₛ-ext : σ ≗ τ → ↑ₛ σ ≗ ↑ₛ τ
 ↑ₛ-ext eq zero = refl
 ↑ₛ-ext eq (suc n) = cong ↑ₜ (eq n)
 ```
 
 ```agda
-[]ᵩ-ext : ∀ {σ τ} → σ ≗ τ → _[ σ ]ᵩ ≗ _[ τ ]ᵩ
+[]ᵩ-ext : σ ≗ τ → _[ σ ]ᵩ ≗ _[ τ ]ᵩ
 []ᵩ-ext eq ⊥̇        = refl
 []ᵩ-ext eq (φ →̇ ψ)  = cong2 _→̇_ ([]ᵩ-ext eq φ) ([]ᵩ-ext eq ψ)
 []ᵩ-ext eq (∀̇ φ)    = cong ∀̇_ ([]ᵩ-ext (↑ₛ-ext eq) φ)
@@ -115,12 +154,21 @@ open import FOL.Syntax.FreshVariables ℒ
 ```
 
 ```agda
-↑ᵩ-∘-[]ᵩ : ∀ σ → ↑ᵩ ∘ _[ σ ]ᵩ ≗ _[ ↑ₛ σ ]ᵩ ∘ ↑ᵩ
-↑ᵩ-∘-[]ᵩ σ φ =
+↑ᵩ∘[]ᵩ : ↑ᵩ ∘ _[ σ ]ᵩ ≗ _[ ↑ₛ σ ]ᵩ ∘ ↑ᵩ
+↑ᵩ∘[]ᵩ {σ} φ =
   φ [ σ ]ᵩ [ # ∘ suc ]ᵩ       ≡⟨ []ᵩ-∘ _ ⟩
   φ [ _[ # ∘ suc ]ₜ ∘ σ ]ᵩ    ≡⟨ []ᵩ-ext (λ _ → refl) φ ⟩
   φ [ _[ ↑ₛ σ ]ₜ ∘ # ∘ suc ]ᵩ ≡˘⟨ []ᵩ-∘ _ ⟩
   φ [ # ∘ suc ]ᵩ [ ↑ₛ σ ]ᵩ    ∎
+```
+
+```agda
+↑∘[] : ↑ (map (_[ σ ]ᵩ) Γ) ≡ map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)
+↑∘[] {σ} {Γ} =
+  ↑ (map (_[ σ ]ᵩ) Γ)      ≡˘⟨ map-∘ Γ ⟩
+  map (↑ᵩ ∘ _[ σ ]ᵩ) Γ     ≡⟨ map-ext (λ t _ → ↑ᵩ∘[]ᵩ t) ⟩
+  map (_[ ↑ₛ σ ]ᵩ ∘ ↑ᵩ) Γ  ≡⟨ map-∘ Γ ⟩
+  map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)   ∎
 ```
 
 ---

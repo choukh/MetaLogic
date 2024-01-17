@@ -8,7 +8,7 @@ open import Data.List public
 
 open import Data.List.Properties public
   using (
-    length-map; map-∘;
+    length-map; map-id; map-∘;
     length-++; ++-assoc; ++-identityʳ
   )
 
