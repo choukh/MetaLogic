@@ -371,7 +371,7 @@ open import Foundation.Data.List public
 open import Foundation.Data.List.SetTheoretic public
   renaming (
     _∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_;
-    _⊆_ to _⊆ᴸ_;
+    _⊆_ to _⊆ᴸ_; _⊈_ to _⊈ᴸ_;
     ⊆-trans to ⊆ᴸ-trans)
 ```
 

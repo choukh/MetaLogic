@@ -22,9 +22,19 @@ module Foundation.Relation.Nullary.Discrete.List ⦃ dA : discrete A ⦄ where
 open import Foundation.Data.Empty
 open import Foundation.Data.Bool
 open import Foundation.Data.Maybe
+open import Foundation.Data.Sigma
 open import Foundation.Data.List
 open import Foundation.Data.List.SetTheoretic
 open import Foundation.Relation.Nullary.Decidable
+```
+
+我们使用以下隐式参数
+
+```agda
+private variable
+  n : ℕ
+  x y : A
+  xs : 𝕃 A
 ```
 
 ## 逆索引
@@ -52,11 +62,11 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
 - 否则 `x` 必在 `xs` 的尾部, 将该证据递归地输入到本算法中, 可知 `x` 在尾部必有索引 `n`, 所以 `x` 在 `xs` 中必有索引 `suc n`. ∎
 
 ```agda
-∈→Σ[]⁻¹? : {xs : 𝕃 A} {x : A} → x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
-∈→Σ[]⁻¹? {y ∷ xs} {x} _ with x ≟ y
-...                   | yes _ = 0 , refl
-∈→Σ[]⁻¹? (here p)     | no ¬p = exfalso (¬p p)
-∈→Σ[]⁻¹? (there x∈)   | no _ with ∈→Σ[]⁻¹? x∈
+∈→Σ[]⁻¹? : x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
+∈→Σ[]⁻¹? {x} {y ∷ xs} _ with x ≟ y
+...                     | yes _ = 0 , refl
+∈→Σ[]⁻¹? (here p)       | no ¬p = exfalso (¬p p)
+∈→Σ[]⁻¹? (there x∈)     | no _ with ∈→Σ[]⁻¹? x∈
 ... | n , H rewrite H = suc n , refl
 ```
 
@@ -64,8 +74,8 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
 **<u>证明</u>** 计算即得. ∎
 
 ```agda
-index-inv : (xs : 𝕃 A) {x : A} {n : ℕ} → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x
-index-inv (y ∷ xs) {x} H with x ≟ y | xs [ x ]⁻¹? in eq
+index-inv : (xs : 𝕃 A) → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x
+index-inv {x} (y ∷ xs) H with x ≟ y | xs [ x ]⁻¹? in eq
 index-inv _        refl  | yes refl | _      = refl
 index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
 ```
@@ -76,6 +86,20 @@ index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
 _-ᴸ_ : 𝕃 A → A → 𝕃 A
 xs -ᴸ x = filter {P = _≢ x} (λ _ → ¬? it) xs
 ```
+
+```agda
+∈remove-elim : x ∈ xs -ᴸ y → x ∈ xs × x ≢ y
+∈remove-elim H = {!   !} , {!   !}
+```
+
+```agda
+⊆remove : xs -ᴸ x ⊆ xs
+⊆remove x∈ = {!   !}
+```
+
+⊆remove : x ∷ xs ⊆ x ∷ xs -ᴸ x
+⊆remove (here refl) = here refl
+⊆remove (there y∈) = {!   !}
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
