@@ -8,6 +8,6 @@ open import Data.Nat.Base public
 
 open import Data.Nat.Properties as ℕ public
   using (
-    ≡ᵇ⇒≡;
+    ≡ᵇ⇒≡; ≡⇒≡ᵇ;
     +-suc; +-comm
   )

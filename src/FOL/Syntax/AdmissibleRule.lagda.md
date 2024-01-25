@@ -9,12 +9,17 @@ url: fol.syntax.admissible
 
 ```agda
 open import Foundation.Essential
+open import Foundation.Relation.Nullary.Discrete.List
+
 open import FOL.Language
 module FOL.Syntax.AdmissibleRule (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
+
+open import FOL.Syntax.Discrete ℒ
+open SetOperation (discreteSet {A = Formula})
 
 private variable
   n : ℕ
@@ -91,14 +96,25 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   ζ-lift : ∀ n φ → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
   ζ-lift n φ Hfresh = []ᵩ-ext-freshᵩ Hfresh H where
     H : ∀ m → m ≢ n → ζ n m ≡ # (suc m)
-    H m m≢n with does (m ≟ n) in H
-    ... | true = exfalso $ m≢n $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 H tt
+    H m m≢n with m ≡ᵇ n in m≡ᵇn
+    ... | true = exfalso $ m≢n $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 m≡ᵇn tt
     ... | false = refl
   -- k                 = 0 1 2 3 | 4
   -- [ # 3 ]₀          = 3 0 1 2 | 4
   -- [ # 3 ]₀ [ ζ 3 ]ᵩ = 0 1 2 3 | 4
   ζ-id : ∀ n φ → freshᵩ (suc n) φ → φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
-  ζ-id n φ H = {!   !}
+  ζ-id n φ Hfresh =
+    φ [ # n ]₀ [ ζ n ]ᵩ           ≡⟨ []ᵩ-∘ φ ⟩
+    φ [ _[ ζ n ]ₜ ∘ (# n ∷ₙ #) ]ᵩ ≡⟨ []ᵩ-ext-freshᵩ Hfresh H ⟩
+    φ [ # ]ᵩ                      ≡⟨ [#]ᵩ ⟩
+    φ                             ∎ where
+    H : ∀ m → m ≢ suc n → (# n ∷ₙ #) m [ ζ n ]ₜ ≡ # m
+    H zero _ with n ≡ᵇ n in n≡ᵇn
+    ... | true = refl
+    ... | false = exfalso $ subst 𝖳 (sym n≡ᵇn) (≡⇒≡ᵇ n _ refl)
+    H (suc m) sm≢sn with m ≡ᵇ n in m≡ᵇn
+    ... | true = exfalso $ sm≢sn $ cong suc $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 m≡ᵇn tt
+    ... | false = refl
   eq1 : map (_[ ζ n ]ᵩ) Γ ≡ ↑ Γ
   eq1 = map-ext (λ φ φ∈Γ → ζ-lift n φ (freshΓ φ∈Γ))
   eq2 : (φ [ # n ]₀) [ ζ n ]ᵩ ≡ φ
@@ -113,8 +129,21 @@ AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ �
 AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
 ```
 
+## 理论版
+
+```agda
+Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊩ φ
+Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx (here refl)
+```
+
+```agda
+ImpIᵀ : (𝒯 ⨭ φ) ⊩ ψ → 𝒯 ⊩ φ →̇ ψ
+ImpIᵀ {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ -ᴸ φ , {!   !} , ImpI (Wkn H2 Γ⊢) where
+  H2 : Γ ⊆ᴸ φ ∷ (Γ -ᴸ φ)
+  H2 φ∈Γ = {!   !}
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
- 

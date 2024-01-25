@@ -4,7 +4,7 @@ open import Foundation.Prelude
 open import Foundation.Relation.Nullary.Negation
 
 open import Relation.Nullary public
-  using (Dec; yes; no; does)
+  using (Dec; yes; no; does; ¬?)
 
 import Cubical.Relation.Nullary as 🧊
 

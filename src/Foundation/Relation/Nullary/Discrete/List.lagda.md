@@ -27,6 +27,8 @@ open import Foundation.Data.List.SetTheoretic
 open import Foundation.Relation.Nullary.Decidable
 ```
 
+## 逆索引
+
 **<u>算法</u>** 列表 `xs` 中指定元素 `x` 的索引, 记作 `xs [ x ]⁻¹?`, 计算如下
 
 - 当列表为空时, 返回 `none`, 即列表中不存在 `x`.
@@ -66,6 +68,13 @@ index-inv : (xs : 𝕃 A) {x : A} {n : ℕ} → xs [ x ]⁻¹? ≡ some n → xs
 index-inv (y ∷ xs) {x} H with x ≟ y | xs [ x ]⁻¹? in eq
 index-inv _        refl  | yes refl | _      = refl
 index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
+```
+
+## 元素的移除
+
+```
+_-ᴸ_ : 𝕃 A → A → 𝕃 A
+xs -ᴸ x = filter {P = _≢ x} (λ _ → ¬? it) xs
 ```
 
 ---

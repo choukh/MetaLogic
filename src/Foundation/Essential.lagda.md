@@ -369,7 +369,10 @@ open import Foundation.Data.List public
 
 ```agda
 open import Foundation.Data.List.SetTheoretic public
-  renaming (_∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_; _⊆_ to _⊆ᴸ_)
+  renaming (
+    _∈_ to _∈ᴸ_; _∉_ to _∉ᴸ_;
+    _⊆_ to _⊆ᴸ_;
+    ⊆-trans to ⊆ᴸ-trans)
 ```
 
 我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_ᴸ⊆ᴾ_`.

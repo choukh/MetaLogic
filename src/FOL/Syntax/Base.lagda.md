@@ -222,6 +222,7 @@ variable
   t : Term
   φ ψ ξ : Formula
   Γ Δ : Context
+  𝒯 : Theory
 ```
 
 ## 语法蕴含

@@ -21,7 +21,6 @@ open import FOL.Syntax.AdmissibleRule ℒ
 
 private variable
   m n : ℕ
-  𝒯 : Theory
 ```
 
 ## 扩张的输入和输出
@@ -166,11 +165,9 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   ℋ₊-sub {n} = ⊆⨭ (ℋᵢ n)
 
   ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
-  ℋ₊-con = 𝟙.map ℋ₊-⊩⊥̇ where
+  ℋ₊-con {n} = 𝟙.map ℋ₊-⊩⊥̇ where
     ℋ₊-⊩⊥̇ : ℋᵢ (suc n) ⊩ ⊥̇ → ℋᵢ n ⊩ ⊥̇
-    ℋ₊-⊩⊥̇ (Γ , Γ⊆ℋ₊ , Γ⊢) = {!   !} where
-      H1 : freshᵩ n (Ψ n)
-      H1 = Ψ-fresh ≤-refl
+    ℋ₊-⊩⊥̇ (Γ , Γ⊆ℋ₊ , Γ⊢) = ?
 
   open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
     renaming ( 𝒯ω to ℋω

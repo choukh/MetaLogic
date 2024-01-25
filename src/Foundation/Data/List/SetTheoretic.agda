@@ -14,6 +14,8 @@ open import Data.List.Membership.Propositional.Properties as Ⓜ public
   using (map-∈↔; ∈-++⁺ˡ; ∈-++⁻; ∈-concat⁺′; ∈-concat⁻′)
 open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_)
+open import Data.List.Relation.Binary.Subset.Propositional.Properties public
+  using (⊆-trans)
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
 
