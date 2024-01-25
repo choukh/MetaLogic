@@ -85,11 +85,15 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   -- k   = 0 1 2 3 4 5 6 ...
   -- ζ 4 = 1 2 3 4 0 6 7 ...
   ζ : ℕ → Subst
-  ζ n = λ k → if does (n ≟ k) then # 0 else # (suc k)
+  ζ n = λ k → if does (k ≟ n) then # 0 else # (suc k)
   -- k        = 0 1 2 3 | 4
   -- [ ζ 4 ]ᵩ = 1 2 3 4 | 0
   ζ-lift : ∀ n φ → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
-  ζ-lift n H = {!   !}
+  ζ-lift n φ Hfresh = []ᵩ-ext-freshᵩ Hfresh H where
+    H : ∀ m → m ≢ n → ζ n m ≡ # (suc m)
+    H m m≢n with does (m ≟ n) in H
+    ... | true = exfalso $ m≢n $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 H tt
+    ... | false = refl
   -- k                 = 0 1 2 3 | 4
   -- [ # 3 ]₀          = 3 0 1 2 | 4
   -- [ # 3 ]₀ [ ζ 3 ]ᵩ = 0 1 2 3 | 4
@@ -113,3 +117,4 @@ AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
+ 
