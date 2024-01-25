@@ -171,6 +171,53 @@ private variable
   map (_[ ↑ₛ σ ]ᵩ) (↑ Γ)   ∎
 ```
 
+## 含新变元的替换
+
+**<u>引理</u>** 如果对任意 `n`, 要么 `n` 对 `t` 是新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `t [ σ ]ₜ ≡ t [ τ ]ₜ`.  
+
+```agda
+[]ₜ-ext-freshₜ-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
+  ∀ t → (∀ n → P n → freshₜ n t) → t [ σ ]ₜ ≡ t [ τ ]ₜ
+[]ₜ-ext-freshₜ-dec {P} {σ} {τ} decP Hext = term-elim H# H$̇ where
+  H# : ∀ m → (∀ n → P n → freshₜ n (# m)) → # m [ σ ]ₜ ≡ # m [ τ ]ₜ
+  H# m Hfresh with decP m
+  ... | no ¬Pm = Hext m ¬Pm
+  ... | yes Pm = exfalso $ fresh#-elim (Hfresh m Pm) refl
+  H$̇ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → (∀ n → P n → freshₜ n t) → t [ σ ]ₜ ≡ t [ τ ]ₜ) →
+    (∀ n → P n → freshₜ n (f $̇ t⃗)) → (f $̇ t⃗) [ σ ]ₜ ≡ (f $̇ t⃗) [ τ ]ₜ
+  H$̇ f t⃗ IH Hfresh rewrite []ₜ⃗≡map⃗ t⃗ σ | []ₜ⃗≡map⃗ t⃗ τ = cong (f $̇_) $ map⃗-ext
+    λ t t∈⃗ → IH t t∈⃗ λ n Pn → fresh$̇-elim (Hfresh n Pn) t t∈⃗
+```
+
+```agda
+[]ᵩ-ext-freshᵩ-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
+  ∀ φ → (∀ n → P n → freshᵩ n φ) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
+[]ᵩ-ext-freshᵩ-dec _ _ ⊥̇ _ = refl
+[]ᵩ-ext-freshᵩ-dec decP Hext (R $̇ t⃗) Hfresh = cong (R $̇_) $ map⃗-ext
+  λ t t∈⃗ → []ₜ-ext-freshₜ-dec decP Hext t λ n Pn → freshR$̇-elim (Hfresh n Pn) t t∈⃗
+[]ᵩ-ext-freshᵩ-dec {P} decP Hext (φ →̇ ψ) Hfresh = cong2 _→̇_
+  ([]ᵩ-ext-freshᵩ-dec decP Hext φ λ n Pn → fst $ fresh→̇-elim $ Hfresh n Pn)
+  ([]ᵩ-ext-freshᵩ-dec decP Hext ψ λ n Pn → snd $ fresh→̇-elim $ Hfresh n Pn)
+[]ᵩ-ext-freshᵩ-dec {P} {σ} {τ} decP Hext (∀̇ φ) Hfresh = cong ∀̇_ $
+  []ᵩ-ext-freshᵩ-dec {P = P′} H1 H2 φ H3 where
+  P′ : ℕ → 𝕋 _
+  P′ zero = ⊥*
+  P′ (suc n) = P n
+  H1 : Decℙ P′
+  H1 zero = no λ ()
+  H1 (suc n) = decP n
+  H2 : ∀ n → ¬ P′ n → ↑ₛ σ n ≡ ↑ₛ τ n
+  H2 zero _ = refl
+  H2 (suc n) ¬Pn = (cong (_[ # ∘ suc ]ₜ)) (Hext n ¬Pn)
+  H3 : ∀ n → P′ n → freshᵩ n φ
+  H3 (suc n) Pn = fresh∀̇-elim (Hfresh n Pn)
+```
+
+```agda
+[]ᵩ-ext-freshᵩ : freshᵩ n φ → (∀ m → m ≢ n → σ m ≡ τ m) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
+[]ᵩ-ext-freshᵩ {n} {φ} Hfresh Hext = []ᵩ-ext-freshᵩ-dec {P = _≡ n} (λ _ → it) Hext φ λ { _ refl → Hfresh }
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/SubstitutionFacts.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.SubstitutionFacts.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.substitution)  

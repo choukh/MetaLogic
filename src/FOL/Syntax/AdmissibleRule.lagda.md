@@ -73,18 +73,14 @@ SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 借助“未使用变元”的概念, 我们可以表述所谓**局部无名 (locally nameless)** 变换, 并且利用替换弱化规则, 我们可以证明它.
 
 **<u>引理</u>** 局部无名变换: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `↑ Γ ⊢ φ` 与 `Γ ⊢ φ [ # n ]₀` 逻辑等价.  
-**<u>证明</u>**
+**<u>证明</u>** TODO. ∎
 
 ```agda
 nameless-conversion : fresh n Γ → freshᵩ n (∀̇ φ) → ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # n ]₀
-nameless-conversion {n} {Γ} freshΓ fresh∀̇φ =
-  ⇒: (λ ↑Γ⊢φ   → subst (_⊢ _) eq (SubstWkn (# n ∷ₙ #) ↑Γ⊢φ))
-  ⇐: (λ Γ⊢φ[n] → {!   !})
+nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
+  ⇒: AllE ∘ AllI
+  ⇐: λ Γ⊢φ[n] → subst2 (_⊢_) eq1 eq2 (SubstWkn (ζ n) Γ⊢φ[n])
   where
-  eq = Γ                         ≡˘⟨ map-id Γ ⟩
-    map id Γ                     ≡˘⟨ map-ext (λ _ _ → ↑ᵩ[]₀) ⟩
-    map (_[ # n ∷ₙ # ]ᵩ ∘ ↑ᵩ) Γ  ≡⟨ map-∘ Γ ⟩
-    map (_[ # n ∷ₙ # ]ᵩ) (↑ Γ)   ∎
   -- switch binder to n
   -- k   = 0 1 2 3 4 5 6 ...
   -- ζ 4 = 1 2 3 4 0 6 7 ...
@@ -92,13 +88,17 @@ nameless-conversion {n} {Γ} freshΓ fresh∀̇φ =
   ζ n = λ k → if does (n ≟ k) then # 0 else # (suc k)
   -- k        = 0 1 2 3 | 4
   -- [ ζ 4 ]ᵩ = 1 2 3 4 | 0
-  ζ-lift : ∀ n → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
+  ζ-lift : ∀ n φ → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
   ζ-lift n H = {!   !}
   -- k                 = 0 1 2 3 | 4
   -- [ # 3 ]₀          = 3 0 1 2 | 4
   -- [ # 3 ]₀ [ ζ 3 ]ᵩ = 0 1 2 3 | 4
-  ζ-id : ∀ n → freshᵩ (suc n) φ → φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
-  ζ-id n H = {!   !}
+  ζ-id : ∀ n φ → freshᵩ (suc n) φ → φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
+  ζ-id n φ H = {!   !}
+  eq1 : map (_[ ζ n ]ᵩ) Γ ≡ ↑ Γ
+  eq1 = map-ext (λ φ φ∈Γ → ζ-lift n φ (freshΓ φ∈Γ))
+  eq2 : (φ [ # n ]₀) [ ζ n ]ᵩ ≡ φ
+  eq2 = ζ-id n φ freshᵩ-suc
 ```
 
 **<u>引理</u>** 局部无名规则: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  

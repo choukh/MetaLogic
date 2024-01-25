@@ -29,6 +29,12 @@ private variable
 data freshₜ (n : ℕ) : Term → 𝕋 where
   fresh# : ∀ {m} → n ≢ m → freshₜ n (# m)
   fresh$̇ : ∀ {f t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → freshₜ n (f $̇ t⃗)
+
+fresh#-elim : ∀ {n m} → freshₜ n (# m) → n ≢ m
+fresh#-elim (fresh# p) = p
+
+fresh$̇-elim : ∀ {n f t⃗} → freshₜ n (f $̇ t⃗) → (∀ t → t ∈⃗ t⃗ → freshₜ n t)
+fresh$̇-elim (fresh$̇ p) = p
 ```
 
 **<u>归纳定义</u>** 我们说 `n` 是 `φ` 的新变元 (或者说 `n` 在 `φ` 中未使用), 当且仅当以下任一种情况成立
@@ -44,6 +50,15 @@ data freshᵩ (n : ℕ) : Formula → 𝕋 where
   fresh→̇ : ∀ {φ ψ} → freshᵩ n φ → freshᵩ n ψ → freshᵩ n (φ →̇ ψ)
   fresh∀̇ : ∀ {φ} → freshᵩ (suc n) φ → freshᵩ n (∀̇ φ)
   fresh$̇ : ∀ {R t⃗} → (∀ t → t ∈⃗ t⃗ → freshₜ n t) → freshᵩ n (R $̇ t⃗)
+
+fresh→̇-elim : ∀ {n φ ψ} → freshᵩ n (φ →̇ ψ) → freshᵩ n φ × freshᵩ n ψ
+fresh→̇-elim (fresh→̇ p q) = p , q
+
+fresh∀̇-elim : ∀ {n φ} → freshᵩ n (∀̇ φ) → freshᵩ (suc n) φ
+fresh∀̇-elim (fresh∀̇ p) = p
+
+freshR$̇-elim : ∀ {n R t⃗} → freshᵩ n (R $̇ t⃗) → (∀ t → t ∈⃗ t⃗ → freshₜ n t)
+freshR$̇-elim (fresh$̇ p) = p
 ```
 
 **<u>定义</u>** 我们说 `n` 是 `Γ` 的新变元 (或者说 `n` 在 `Γ` 中未使用), 当且仅当 `n` 是每个 `φ ∈ᴸ Γ` 的新变元.
