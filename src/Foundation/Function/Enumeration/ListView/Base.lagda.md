@@ -83,7 +83,7 @@ module _ (cum : Cumulation f) where
 ```agda
   cum-≤→⊆ : m ≤ n → f m ⊆ f n
   cum-≤→⊆ m≤n x∈fm with cum-≤→Σ m≤n
-  ... | xs , eq = subst (_ ∈ᴸ_) eq (∈-++⁺ˡ x∈fm)
+  ... | xs , eq = subst (_ ∈ᴸ_) eq (∈++-introˡ x∈fm)
 ```
 
 **<u>引理</u>** 对累积列表的任意两个项, 前项的长度小于等于后项的长度.

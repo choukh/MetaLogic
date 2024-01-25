@@ -23,8 +23,8 @@ open import Foundation.Relation.Unary.Countable
 
 ∈eℕ-intro : ∀ m n → m ≤ n → m ∈ enum n
 ∈eℕ-intro zero zero ≤-refl = here refl
-∈eℕ-intro (suc m) (suc m) ≤-refl = ∈-++⁺ʳ (here refl)
-∈eℕ-intro m (suc n) (≤-step m≤n) = ∈-++⁺ˡ (∈eℕ-intro m n m≤n)
+∈eℕ-intro (suc m) (suc m) ≤-refl = ∈++-introʳ (here refl)
+∈eℕ-intro m (suc n) (≤-step m≤n) = ∈++-introˡ (∈eℕ-intro m n m≤n)
 
 eℕ-length : ∀ n → length (enum n) ≡ suc n
 eℕ-length zero = refl
@@ -35,7 +35,7 @@ eℕ-length (suc n) =
   suc (suc n)                         ∎
 
 ∈e2ℕ-intro : ∀ m n → (m , n) ∈ enum (suc (m + n))
-∈e2ℕ-intro m n = ∈-++⁺ʳ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
+∈e2ℕ-intro m n = ∈++-introʳ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
   m∈eℕm+n : m ∈ enum (m + n)
   m∈eℕm+n = ∈eℕ-intro m (m + n) m≤m+n
   n∈eℕm+n : n ∈ enum (m + n)
@@ -133,9 +133,9 @@ Enumℙ←Ⓜ {A} {P} (f , f-enum) = mkEnumℙ h h-cum h-enum where
     g witness x   ↔⟨ ↔-map $ ⇒: uncurry H1 ⇐: uncurry H2 ⟩
     h witness x   ↔∎ where
       H1 : ∀ n → x ∈ g n → Witness h x
-      H1 n x∈gn = suc n , ∈-++⁺ʳ x∈gn
+      H1 n x∈gn = suc n , ∈++-introʳ x∈gn
       H2 : ∀ n → x ∈ h n → Witness g x
-      H2 (suc n) x∈hn++gn with ∈-++⁻ (h n) x∈hn++gn
+      H2 (suc n) x∈hn++gn with ∈++-elim (h n) x∈hn++gn
       ... | inj₁ x∈hn = H2 n x∈hn
       ... | inj₂ x∈gn = n , x∈gn
 

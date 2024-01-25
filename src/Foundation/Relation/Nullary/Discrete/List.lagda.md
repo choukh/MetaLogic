@@ -83,23 +83,33 @@ index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
 ## 元素的移除
 
 ```
-_-ᴸ_ : 𝕃 A → A → 𝕃 A
-xs -ᴸ x = filter {P = _≢ x} (λ _ → ¬? it) xs
+infix 30 _∖[_]
+_∖[_] : 𝕃 A → A → 𝕃 A
+xs ∖[ x ] = filter {P = _≢ x} (λ _ → ¬? it) xs
 ```
 
 ```agda
-∈remove-elim : x ∈ xs -ᴸ y → x ∈ xs × x ≢ y
-∈remove-elim H = {!   !} , {!   !}
+∈∖[]-intro : x ∈ xs → x ≢ y → x ∈ xs ∖[ y ]
+∈∖[]-intro = ∈filter-intro (λ _ → ¬? it)
 ```
 
 ```agda
-⊆remove : xs -ᴸ x ⊆ xs
-⊆remove x∈ = {!   !}
+∈∖[]-elim : x ∈ xs ∖[ y ] → x ∈ xs × x ≢ y
+∈∖[]-elim = ∈filter-elim (λ _ → ¬? it)
 ```
 
-⊆remove : x ∷ xs ⊆ x ∷ xs -ᴸ x
-⊆remove (here refl) = here refl
-⊆remove (there y∈) = {!   !}
+```agda
+∖[]⊆ : xs ∖[ x ] ⊆ xs
+∖[]⊆ x∈ = ∈∖[]-elim x∈ .fst
+```
+
+```agda
+∷⊆∷∖[] : y ∷ xs ⊆ y ∷ xs ∖[ y ]
+∷⊆∷∖[] (here refl) = here refl
+∷⊆∷∖[] {y} {x} (there x∈) with x ≟ y
+... | yes refl = here refl
+... | no x≢y = there (∈∖[]-intro x∈ x≢y)
+```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  

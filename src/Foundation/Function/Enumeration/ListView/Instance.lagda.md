@@ -54,7 +54,7 @@ instance
     w n = ex n (H n) where
       H : ∀ n → n ∈ e n
       H zero = here refl
-      H (suc n) = ∈-++⁺ʳ (here refl)
+      H (suc n) = ∈++-introʳ (here refl)
 ```
 
 **<u>实例/构造</u>** 可枚举集的笛卡尔积可枚举: 取两集合枚举的每项的笛卡尔积, 累积起来即可. `(x , y)` 的见证是 `x` 的见证加 `y` 的见证. ∎
@@ -70,7 +70,7 @@ instance
     w : ∀ xy → e witness xy
     w (x , y) = 𝟙.map2 H (wit x) (wit y) where
       H : Witness enum x → Witness enum y → Witness e (x , y)
-      H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈-++⁺ʳ H2 where
+      H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈++-introʳ H2 where
         H2 : (x , y) ∈ enum (m + n) [×] enum (m + n)
         H2 = ∈[×]-intro (cum-≤→⊆ cum m≤m+n x∈fm) (cum-≤→⊆ cum m≤n+m x∈gn)
 ```
@@ -88,7 +88,7 @@ instance
     c _ = _ , refl
 
     e-≤→⊆ : {x⃗ : 𝕍 A n} → m ≤ o → x⃗ ∈ e m → x⃗ ∈ combine (enum o) n
-    e-≤→⊆ {m = suc m} sm≤o H with ∈-++⁻ (e m) H
+    e-≤→⊆ {m = suc m} sm≤o H with ∈++-elim (e m) H
     ... | inj₁ x⃗∈en   = e-≤→⊆ (m+n≤o⇒n≤o 1 sm≤o) x⃗∈en
     ... | inj₂ x⃗∈comb = combine-≤→⊆ cum (m+n≤o⇒n≤o 1 sm≤o) x⃗∈comb
 
@@ -96,7 +96,7 @@ instance
     w [] = ex 1 (here refl)
     w (x ∷ x⃗) = 𝟙.map2 H (wit x) (w x⃗) where
       H : Witness enum x → Witness e x⃗ → Witness e (x ∷ x⃗)
-      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈-++⁺ʳ (∈map[×]-intro H1 H2) where
+      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈++-introʳ (∈map[×]-intro H1 H2) where
         H1 : x ∈ enum (m + suc n)
         H1 = cum-≤→⊆ cum m≤m+n Hm
         H2 : x⃗ ∈ combine (enum (m + suc n)) _

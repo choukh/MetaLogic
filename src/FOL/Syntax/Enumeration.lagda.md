@@ -85,11 +85,11 @@ $$
     w : ∀ t → e witness t
     w = term-elim H# H$̇ where
       H# : ∀ n → e witness # n
-      H# n = ex (suc n) $ ∈-++⁺ʳ (here refl)
+      H# n = ex (suc n) $ ∈++-introʳ (here refl)
       H$̇ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → e witness t) → e witness (f $̇ t⃗)
       H$̇ f t⃗ IH = 𝟙.map2 H (wit f) (combine-wit c t⃗ IH) where
         H : Witness _ f → Witness _ t⃗ → Witness _ (f $̇ t⃗)
-        H (m , Hm) (n , Hn) = suc m + n , ∈-++⁺ʳ (there $ ∈-concat⁺′ H1 H2) where
+        H (m , Hm) (n , Hn) = suc m + n , ∈++-introʳ (there $ ∈concat-intro H1 H2) where
           H1 : f $̇ t⃗ ∈ᴸ apps (m + n) f
           H1 = ∈map-intro (combine-≤→⊆ c m≤n+m Hn) refl
           H2 : apps (m + n) f ∈ᴸ map (apps (m + n)) (enum (m + n))
@@ -148,14 +148,14 @@ instance
     w ⊥̇ = ex 0 (here refl)
     w (∀̇ φ) = 𝟙.map H (w φ) where
       H : Witness e φ → Witness e (∀̇ φ)
-      H (n , Hn) = suc n , (∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map-intro Hn refl)
+      H (n , Hn) = suc n , (∈++-introʳ $ ∈++-introˡ $ ∈map-intro Hn refl)
     w (φ →̇ ψ) = 𝟙.map2 H (w φ) (w ψ) where
       H : Witness e φ → Witness e ψ → Witness e (φ →̇ ψ)
-      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ˡ $ ∈map[×]-intro
+      H (m , Hm) (n , Hn) = suc m + n , (∈++-introʳ $ ∈++-introʳ $ ∈++-introˡ $ ∈map[×]-intro
         (cum-≤→⊆ c m≤m+n Hm) (cum-≤→⊆ c m≤n+m Hn))
     w (R $̇ t⃗) = 𝟙.map2 H (wit R) (wit t⃗) where
       H : Witness enum R → Witness enum t⃗ → Witness e (R $̇ t⃗)
-      H (m , Hm) (n , Hn) = suc m + n , (∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-++⁺ʳ $ ∈-concat⁺′ H1 H2) where
+      H (m , Hm) (n , Hn) = suc m + n , (∈++-introʳ $ ∈++-introʳ $ ∈++-introʳ $ ∈concat-intro H1 H2) where
           H1 : R $̇ t⃗ ∈ᴸ apps (m + n) R
           H1 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
           H2 : apps (m + n) R ∈ᴸ map (apps (m + n)) (enum (m + n))
@@ -192,23 +192,23 @@ module Plain = PlainEnum enumFormula-proper
 
 ```agda
 termEnum-fresh : m ≤ n → t ∈ᴸ enum m → freshₜ n t
-termEnum-fresh {suc m} le t∈ with ∈-++⁻ _ t∈
+termEnum-fresh {suc m} le t∈ with ∈++-elim _ t∈
 ... | inj₁ t∈ = termEnum-fresh (m+n≤o⇒n≤o 1 le) t∈
 ... | inj₂ (here refl) = fresh# λ { refl → 1+n≰n le }
 termEnum-fresh {t = # o} _ _
-    | inj₂ (there t∈) with ∈-concat⁻′ _ t∈
+    | inj₂ (there t∈) with ∈concat-elim _ t∈
 ...   | _ , t∈ts , ts∈ with ∈map-elim ts∈
 ...     | _ , _ , refl with ∈map-elim t∈ts
 ...       | _ , _ , ()
 termEnum-fresh {t = f $̇ t⃗} le _
-    | inj₂ (there t∈) with ∈-concat⁻′ _ t∈
+    | inj₂ (there t∈) with ∈concat-elim _ t∈
 ...   | _ , t∈ts , ts∈ with ∈map-elim ts∈
 ...     | _ , _ , refl with ∈map-elim t∈ts
 ...       | _ , t⃗∈ , refl with ∈combine-elim t⃗∈
 ...         | H = fresh$̇ λ t t∈t⃗ → termEnum-fresh (m+n≤o⇒n≤o 1 le) (H t∈t⃗)
 
 termEnum-fresh-vec : m ≤ n → {t⃗ : 𝕍 Term o} → t⃗ ∈ᴸ enum m → ∀ {t} → t ∈⃗ t⃗ → freshₜ n t
-termEnum-fresh-vec {suc m} le t⃗∈ᴸ t∈⃗ with ∈-++⁻ _ t⃗∈ᴸ
+termEnum-fresh-vec {suc m} le t⃗∈ᴸ t∈⃗ with ∈++-elim _ t⃗∈ᴸ
 ... | inj₁ t⃗∈ᴸ = termEnum-fresh-vec (m+n≤o⇒n≤o 1 le) t⃗∈ᴸ t∈⃗
 ... | inj₂ t⃗∈ᴸ = termEnum-fresh (m+n≤o⇒n≤o 1 le) (∈combine-elim t⃗∈ᴸ t∈⃗)
 
@@ -216,51 +216,51 @@ formulaEnum-fresh : m ≤ n → φ ∈ᴸ enum m → freshᵩ n φ
 formulaEnum-fresh {(zero)} _ (here refl) = fresh⊥̇
 formulaEnum-fresh {suc m} {φ = ⊥̇} le φ∈ = fresh⊥̇
 
-formulaEnum-fresh {suc m} {φ = ∀̇ φ} le φ∈ with ∈-++⁻ _ φ∈
+formulaEnum-fresh {suc m} {φ = ∀̇ φ} le φ∈ with ∈++-elim _ φ∈
 ... | inj₁ φ∈e = formulaEnum-fresh (m+n≤o⇒n≤o 1 le) φ∈e
-... | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+... | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...   | inj₁ φ∈∀̇ with ∈map-elim φ∈∀̇
 ...     | _ , φ∈e , refl = fresh∀̇ $ formulaEnum-fresh (≤-trans (m+n≤o⇒n≤o 1 le) m≤n+m) φ∈e
 formulaEnum-fresh _ _ | _
-      | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+      | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...     | inj₁ φ∈→̇ with ∈map-elim φ∈→̇
 ...       | _ , _ , ()
 formulaEnum-fresh _ _ | _ | _
-        | inj₂ φ∈$̇ with ∈-concat⁻′ _ φ∈$̇
+        | inj₂ φ∈$̇ with ∈concat-elim _ φ∈$̇
 ...       | _ , φ∈φs , φs∈ with ∈map-elim φs∈
 ...         | _ , _ , eq with ∈map-elim $ subst (_ ∈ᴸ_) (sym eq) φ∈φs
 ...           | _ , _ , ()
 
-formulaEnum-fresh {suc m} {φ = φ →̇ ψ} le φ∈ with ∈-++⁻ _ φ∈
+formulaEnum-fresh {suc m} {φ = φ →̇ ψ} le φ∈ with ∈++-elim _ φ∈
 ... | inj₁ φ∈e = formulaEnum-fresh (m+n≤o⇒n≤o 1 le) φ∈e
-... | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+... | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...   | inj₁ φ∈∀̇ with ∈map-elim φ∈∀̇
 ...     | _ , _ , ()
 formulaEnum-fresh le _ | _
-      | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+      | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...     | inj₁ φ∈→̇ with ∈map-elim φ∈→̇
 ...       | _ , φ∈× , refl with ∈[×]-elim φ∈×
 ...         | φ∈e₁ , φ∈e₂ = let H = ≤-trans (m+n≤o⇒n≤o 1 le) m≤n+m in
               fresh→̇ (formulaEnum-fresh H φ∈e₁) (formulaEnum-fresh H φ∈e₂)
 formulaEnum-fresh _ _ | _ | _
-        | inj₂ φ∈$̇ with ∈-concat⁻′ _ φ∈$̇
+        | inj₂ φ∈$̇ with ∈concat-elim _ φ∈$̇
 ...       | _ , φ∈φs , φs∈ with ∈map-elim φs∈
 ...         | _ , _ , eq with ∈map-elim $ subst (_ ∈ᴸ_) (sym eq) φ∈φs
 ...           | _ , _ , ()
 
-formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le φ∈ with ∈-++⁻ _ φ∈
+formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le φ∈ with ∈++-elim _ φ∈
 ... | inj₁ φ∈e = formulaEnum-fresh (m+n≤o⇒n≤o 1 le) φ∈e
-... | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+... | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...   | inj₁ φ∈∀̇ with ∈map-elim φ∈∀̇
 ...     | _ , _ , ()
 formulaEnum-fresh le _ | _
-      | inj₂ φ∈++ with ∈-++⁻ _ φ∈++
+      | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...     | inj₁ φ∈→̇ with ∈map-elim φ∈→̇
 ...       | _ , _ , ()
 formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le _ | _ | _
         | inj₂ φ∈$̇ = H (m+n≤o⇒n≤o 1 le) φ∈$̇ where
   H : m ≤ n → φ ∈ᴸ concat (map (apps m) (enum m)) → freshᵩ n φ
-  H le φ∈$̇ with ∈-concat⁻′ _ φ∈$̇
+  H le φ∈$̇ with ∈concat-elim _ φ∈$̇
   ... | _ , φ∈φs , φs∈ with ∈map-elim φs∈
   ...   | _ , _ , refl with ∈map-elim φ∈φs
   ...     | _ , t⃗∈ , refl = fresh$̇ λ _ t∈t⃗ → termEnum-fresh-vec le t⃗∈ t∈t⃗

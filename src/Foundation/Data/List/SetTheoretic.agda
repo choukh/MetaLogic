@@ -11,7 +11,13 @@ open import Foundation.Data.Sum
 open import Data.List.Membership.Propositional public
   using (_∈_; _∉_)
 open import Data.List.Membership.Propositional.Properties as Ⓜ public
-  using (map-∈↔; ∈-++⁺ˡ; ∈-++⁻; ∈-concat⁺′; ∈-concat⁻′; ∈-filter⁺; ∈-filter⁻)
+  using ()
+  renaming (
+    map-∈↔     to ∈map-iff;
+    ∈-++⁺ˡ     to ∈++-introˡ;    ∈-++⁻      to ∈++-elim;
+    ∈-concat⁺′ to ∈concat-intro; ∈-concat⁻′ to ∈concat-elim;
+    ∈-filter⁺  to ∈filter-intro; ∈-filter⁻  to ∈filter-elim
+    )
 open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_; _⊈_)
 open import Data.List.Relation.Binary.Subset.Propositional.Properties public
@@ -35,8 +41,8 @@ map-ext {xs = x ∷ xs} H = cong2 _∷_ (H x $ here refl) (map-ext (λ y y∈xs 
 ------------------------------------------------------------------------
 -- Membership
 
-∈-++⁺ʳ : x ∈ ys → x ∈ xs ++ ys
-∈-++⁺ʳ = Ⓜ.∈-++⁺ʳ _
+∈++-introʳ : x ∈ ys → x ∈ xs ++ ys
+∈++-introʳ = Ⓜ.∈-++⁺ʳ _
 
 ∈→Σ[]? : x ∈ xs → Σ n ， xs [ n ]? ≡ some x
 ∈→Σ[]? {xs = x ∷ xs} (here refl) = 0 , refl
@@ -48,10 +54,10 @@ map-ext {xs = x ∷ xs} H = cong2 _∷_ (H x $ here refl) (map-ext (λ y y∈xs 
 []?→∈ {n = suc n} (y ∷ xs) eq = there $ []?→∈ xs eq
 
 ∈map-intro : x ∈ xs → y ≡ f x → y ∈ map f xs
-∈map-intro {f} H1 H2 = Iso←ⓢ (map-∈↔ f) .fun $ _ , H1 , H2
+∈map-intro {f} H1 H2 = Iso←ⓢ (∈map-iff f) .fun $ _ , H1 , H2
 
 ∈map-elim : y ∈ map f xs → Σ x ， x ∈ xs × y ≡ f x
-∈map-elim {f} = Iso←ⓢ (map-∈↔ f) .inv
+∈map-elim {f} = Iso←ⓢ (∈map-iff f) .inv
 
 map⊆P-intro : (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
 map⊆P-intro {P} H y y∈map with ∈map-elim y∈map
@@ -63,11 +69,11 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 (x ∷ xs) [×] ys = map (x ,_) ys ++ xs [×] ys
 
 ∈[×]-intro : x ∈ xs → y ∈ ys → (x , y) ∈ xs [×] ys
-∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈-++⁺ˡ $ ∈map-intro y∈ refl
-∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈-++⁺ʳ $ ∈[×]-intro x∈ y∈
+∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈++-introˡ $ ∈map-intro y∈ refl
+∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈++-introʳ $ ∈[×]-intro x∈ y∈
 
 ∈[×]-elim : {p@(x , y) : A × B} → p ∈ xs [×] ys → x ∈ xs × y ∈ ys
-∈[×]-elim {xs = x ∷ xs} {ys} p∈ with ∈-++⁻ (map (x ,_) ys) p∈
+∈[×]-elim {xs = x ∷ xs} {ys} p∈ with ∈++-elim (map (x ,_) ys) p∈
 ∈[×]-elim _ | inj₁ H with ∈map-elim H
 ... | y , y∈ , refl = here refl , y∈
 ∈[×]-elim _ | inj₂ H with ∈[×]-elim H
