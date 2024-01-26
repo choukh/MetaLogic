@@ -25,7 +25,20 @@ private variable
   n : ℕ
 ```
 
-## 弱化
+## 语境
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Ctx0 : φ ∷ Γ ⊢ φ
+Ctx0 = Ctx $ here refl
+
+Ctx1 : ψ ≡ ξ → φ ∷ ψ ∷ Γ ⊢ ξ
+Ctx1 refl = Ctx $ there (here refl)
+```
+
+### 弱化
 
 弱化指的是对语境的弱化. 此类规则允许我们通过在弱化的语境中证明某公式, 来说明原语境中就能证明该公式.
 
@@ -42,6 +55,36 @@ Wkn sub (AllE H) = AllE (Wkn sub H)
 Wkn sub (FalseE H) = FalseE (Wkn sub H)
 Wkn sub (Peirce φ ψ) = Peirce φ ψ
 ```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Wkn0 : Γ ⊢ ψ → φ ∷ Γ ⊢ ψ
+Wkn0 = Wkn there
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Swap : φ ∷ ψ ∷ Γ ⊢ ξ → ψ ∷ φ ∷ Γ ⊢ ξ
+Swap = Wkn H where
+  H : φ ∷ ψ ∷ Γ ⊆ᴸ ψ ∷ φ ∷ Γ
+  H (here refl) = there (here refl)
+  H (there (here refl)) = here refl
+  H (there (there H)) = there (there H)
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Wkn1 : φ ∷ Γ ⊢ ξ → φ ∷ ψ ∷ Γ ⊢ ξ
+Wkn1 = Swap ∘ Wkn0
+```
+
+### 替换
 
 **<u>引理</u>** 替换弱化规则: 一个证明在其语境和结论同时做同种替换后仍然有效.  
 **<u>证明</u>** 对证明树归纳. 除 `AllI` 和 `AllE` 之外的情况的证明与 `Wkn` 类似.
@@ -73,7 +116,53 @@ SubstWkn {Γ} σ (AllI H) = AllI $ subst (_⊢ _) ↑∘[] (SubstWkn (↑ₛ σ)
 SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 ```
 
-## 局部无名
+## 蕴含
+
+**<u>引理</u>** 切消规则: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
+Cut _ H₁ H₂ = ImpE (ImpI H₂) H₁
+```
+
+**<u>引理</u>** `ImpI` 的弱化: 可以通过证明蕴含式的右边可证明来证明该蕴含式.  
+**<u>证明</u>** 由 `ImpI` 和弱化规则即得. ∎
+
+```agda
+ImpIʷ : Γ ⊢ ψ → Γ ⊢ φ →̇ ψ
+ImpIʷ = ImpI ∘ Wkn0
+```
+
+**<u>引理</u>** 蕴含式的应用: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+App : Γ ⊢ φ → φ →̇ ψ ∷ Γ ⊢ ψ
+App H = ImpE Ctx0 (Wkn0 H)
+```
+
+### 演绎定理
+
+**<u>引理</u>** `ImpI` 的逆命题成立.  
+**<u>证明</u>** 将前提 `Γ ⊢ φ →̇ ψ` 弱化成 `φ ∷ Γ ⊢ φ →̇ ψ`, 又由语境规则有 `φ ∷ Γ ⊢ φ`. 使用原版 `ImpE` 即得 `φ ∷ Γ ⊢ ψ`. ∎
+
+```agda
+ImpI⁻¹ : Γ ⊢ φ →̇ ψ → φ ∷ Γ ⊢ ψ
+ImpI⁻¹ Γ⊢ = ImpE (Wkn0 Γ⊢) Ctx0
+```
+
+演绎定理是一条非常重要的元定理, 它表明了语法蕴含与实质蕴含的关系. 在我们的系统中, 它的证明是相对简单的.
+
+**<u>定理</u>** 演绎定理: `φ ∷ Γ ⊢ ψ` 与 `Γ ⊢ φ →̇ ψ` 逻辑等价.  
+**<u>证明</u>** 由 `ImpI` 和 `ImpI⁻¹` 即得. ∎
+
+```agda
+Deduction : φ ∷ Γ ⊢ ψ ↔ Γ ⊢ φ →̇ ψ
+Deduction = ⇒: ImpI ⇐: ImpI⁻¹
+```
+
+## 全称量化
 
 借助“未使用变元”的概念, 我们可以表述所谓**局部无名 (locally nameless)** 变换, 并且利用替换弱化规则, 我们可以证明它.
 
@@ -121,7 +210,7 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   eq2 = ζ-id n φ freshᵩ-suc
 ```
 
-**<u>引理</u>** 局部无名规则: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  
+**<u>引理</u>** 全称量化的引入规则 (变体): 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  
 **<u>证明</u>** 由局部无名变换及 `AllI` 即得. ∎
 
 ```agda
@@ -129,11 +218,100 @@ AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ �
 AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
 ```
 
-## 理论版
+## 否定
+
+**<u>定义</u>** 否定: 我们把 `φ →̇ ⊥̇` 简记作 `¬̇ φ`.
+
+```agda
+¬̇_ : Formula → Formula
+¬̇ φ = φ →̇ ⊥̇
+```
+
+**<u>引理</u>** 反证法: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Contra : ¬̇ φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ
+Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
+```
+
+**<u>引理</u>** 双重否定消去: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+DNE : ¬̇ ¬̇ φ ∷ Γ ⊢ φ
+DNE = (Contra ∘ ImpI⁻¹) Ctx0
+```
+
+**<u>引理</u>** 排中律: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+LEM : ∀ φ → φ ∷ Γ ⊢ ψ → ¬̇ φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
+LEM φ H₁ H₂ = Contra $ Cut (¬̇ φ)
+  (ImpI $ Swap $ App H₁)
+  (Swap $ App H₂)
+```
+
+## 存在量化
+
+**<u>定义</u>** 存在量化: 我们把 `¬̇ ∀̇ ¬̇ φ` 简记作 `∃̇ φ`.
+
+```agda
+∃̇_ : Formula → Formula
+∃̇ φ = ¬̇ ∀̇ ¬̇ φ
+```
+
+**<u>引理</u>** 存在量词的引入规则: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+ExI : ∀ t → Γ ⊢ φ [ t ]₀ → Γ ⊢ ∃̇ φ
+ExI _ H = ImpI $ Cut _
+  (AllE Ctx0)
+  (App $ Wkn0 H)
+```
+
+**<u>引理</u>** 存在量词的消去规则: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+ExE : Γ ⊢ ∃̇ φ → φ ∷ ↑ Γ ⊢ ↑ᵩ ψ → Γ ⊢ ψ
+ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
+  (AllI $ ImpI $ Swap $ App H₂)
+  (ImpI⁻¹ $ Wkn0 H₁)
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Fuck : ∀̇ ¬̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ
+Fuck {φ} = {!   !}
+```
+
+```agda
+NotExNotAll : ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ
+NotExNotAll {φ} = Cut (∀̇ ¬̇ ¬̇ φ) DNE (Wkn1 $ {!   !})
+```
+
+**<u>引理</u>** 饮者悖论: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+DP : Γ ⊢ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
+DP {Γ} {φ} = LEM (∃̇ ¬̇ φ)
+  (ExE (ExI (# 0) {!   !}) (Ctx1 {!   !}))
+  (ExI (# 0) (ImpI $ Wkn0 $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ NotExNotAll))
+```
+
+## 理论版规则
+
+TODO
 
 ```agda
 Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊩ φ
-Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx (here refl)
+Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx0
 ```
 
 ```agda
@@ -153,3 +331,4 @@ ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wk
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
+ 

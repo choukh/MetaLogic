@@ -13,7 +13,7 @@ open import Foundation.Data.Nat.AlternativeOrder
 open import FOL.Language
 module FOL.TheoryExtension (ℒ : Language) where
 
-open import FOL.Syntax.Base ℒ
+open import FOL.Syntax.Base ℒ hiding (Γ)
 open import FOL.Syntax.Discrete ℒ
 open import FOL.Syntax.Enumeration ℒ
 open import FOL.Syntax.FreshVariables ℒ
@@ -165,9 +165,19 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   ℋ₊-sub {n} = ⊆⨭ (ℋᵢ n)
 
   ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
-  ℋ₊-con {n} = 𝟙.map ℋ₊-⊩⊥̇ where
-    ℋ₊-⊩⊥̇ : ℋᵢ (suc n) ⊩ ⊥̇ → ℋᵢ n ⊩ ⊥̇
-    ℋ₊-⊩⊥̇ (Γ , Γ⊆ℋ₊ , Γ⊢) = ?
+  ℋ₊-con {n} = 𝟙.map aux where
+    aux : ℋᵢ (suc n) ⊩ ⊥̇ → ℋᵢ n ⊩ ⊥̇
+    aux ⊩⊥̇ = {!   !} , {!   !} , {!   !} where
+      H : ℋᵢ n ⊩ ¬̇ Ax n
+      H = ImpIᵀ {ℋᵢ n} ⊩⊥̇
+      Γ = H .fst
+      Γ⊆ = H .snd .fst
+      Γ⊢ = H .snd .snd
+      Γ⊢′ : Γ ⊢ (¬̇ (Ψ n →̇ ↑ᵩ (∀̇ Ψ n))) [ # n ]₀
+      Γ⊢′ = subst (Γ ⊢_) {!   !} Γ⊢
+      ↑Γ⊢ : ↑ Γ ⊢ ¬̇ (Ψ n →̇ ↑ᵩ (∀̇ Ψ n))
+      ↑Γ⊢ = nameless-conversion {!   !} {!   !} .⇐ Γ⊢′
+      --ImpE′ ↑Γ⊢
 
   open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
     renaming ( 𝒯ω to ℋω
@@ -181,7 +191,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
     ∷⊆𝒯 : (Ax n ∷ Γ) ᴸ⊆ᴾ 𝒯
     ∷⊆𝒯 (here refl) = ℋω⊆𝒯 (ex (suc n) (inr refl))
     ∷⊆𝒯 (there φ∈Γ) = Γ⊆𝒯 φ∈Γ
-    ∷⊢∀̇ : (Ax n ∷ Γ) ⊢ ∀̇ (Ψ n)
+    ∷⊢∀̇ : Ax n ∷ Γ ⊢ ∀̇ (Ψ n)
     ∷⊢∀̇ = ImpE (Ctx (here refl)) (Wkn there Γ⊢)
 
   ℋω-isℋ : isℋ ℋω
