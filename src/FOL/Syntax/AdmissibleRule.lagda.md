@@ -126,14 +126,6 @@ SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 
 ## 蕴含
 
-**<u>引理</u>** 切消规则: TODO.  
-**<u>证明</u>** TODO. ∎
-
-```agda
-Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
-Cut _ = flip (ImpE ∘ ImpI)
-```
-
 **<u>引理</u>** `ImpI` 的变体: TODO.  
 **<u>证明</u>** TODO. ∎
 
@@ -168,6 +160,19 @@ ImpE′ Γ⊢ = ImpE (Wkn0 Γ⊢) Ctx0
 ```agda
 Deduction : φ ∷ Γ ⊢ ψ ↔ Γ ⊢ φ →̇ ψ
 Deduction = ⇒: ImpI ⇐: ImpE′
+```
+
+### 切消
+
+**<u>引理</u>** 切消规则: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
+Cut _ = flip (ImpE ∘ ImpI)
+
+ImpCut : ∀ ψ → Γ ⊢ φ →̇ ψ → Γ ⊢ ψ →̇ ξ → Γ ⊢ φ →̇ ξ
+ImpCut ψ H₁ H₂ = ImpI $ Cut ψ (ImpE′ H₁) (Wkn1 $ ImpE′ H₂)
 ```
 
 ## 全称量化
@@ -226,12 +231,12 @@ AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ �
 AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
 ```
 
-**<u>引理</u>** TODO.  
+**<u>重言式</u>** TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-AllImpDistr : (∀ Γ → Γ ⊢ ∀̇ (φ →̇ ψ)) → Γ ⊢ ∀̇ φ →̇ ∀̇ ψ
-AllImpDistr H = {!   !} --ImpI′ (λ Γ₁ H → {!   !})
+AllImpDistr : ⊩ ∀̇ (φ →̇ ψ) → ⊩ ∀̇ φ →̇ ∀̇ ψ
+AllImpDistr H = {!   !}
 ```
 
 ## 否定
@@ -251,12 +256,12 @@ Contra : ¬̇ φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ
 Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
 ```
 
-**<u>引理</u>** 双重否定消去: TODO.  
+**<u>重言式</u>** 双重否定消去: TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-DNE : ¬̇ ¬̇ φ ∷ Γ ⊢ φ
-DNE = (Contra ∘ ImpE′) Ctx0
+DNE : ⊩ ¬̇ ¬̇ φ →̇ φ
+DNE = ImpI $ Contra $ ImpE′ Ctx0
 ```
 
 **<u>引理</u>** 排中律: TODO.  
@@ -298,22 +303,22 @@ ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
   (ImpE′ $ Wkn0 H₁)
 ```
 
-**<u>引理</u>** TODO.  
+**<u>重言式</u>** TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-NotExNotAll : ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ
-NotExNotAll {φ} = Cut (∀̇ ¬̇ ¬̇ φ) DNE (Wkn1 $ ImpE′ $ AllImpDistr (λ Γ₁ → AllI (ImpI DNE)))
+NotExNotAll : ⊩ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ φ
+NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllImpDistr $ AllI DNE)
 ```
 
-**<u>引理</u>** 饮者悖论: TODO.  
+**<u>重言式</u>** 饮者悖论: TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-DP : Γ ⊢ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
-DP {Γ} {φ} = LEM (∃̇ ¬̇ φ)
+DP : ⊩ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
+DP {φ} {Γ} = LEM (∃̇ ¬̇ φ)
   (ExE (ExI (# 0) {!   !}) (Ctx1 {!   !}))
-  (ExI (# 0) (ImpI $ Wkn0 $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ NotExNotAll))
+  (ExI (# 0) (ImpI $ Wkn0 $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ (ImpE′ NotExNotAll)))
 ```
 
 ## 理论版规则
