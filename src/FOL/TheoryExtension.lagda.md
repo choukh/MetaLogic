@@ -44,7 +44,7 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       𝒯ᵒ : Theory
       𝒯ᵒ-sub : 𝒯ⁱ ⊆ 𝒯ᵒ
       𝒯ᵒ-con : Con 𝒯ᵒ to 𝒯ⁱ
-      𝒯ᵒ-closed-under-⊩ : ∀ φ → 𝒯ᵒ ⊩ φ → φ ∈ 𝒯ᵒ
+      𝒯ᵒ-closed-under-⊢ : ∀ φ → 𝒯ᵒ ⊢ᵀ φ → φ ∈ 𝒯ᵒ
 
       𝒯ᵒ-distrib-over-→̇ : ∀ φ ψ → φ →̇ ψ ∈ 𝒯ᵒ ↔ (φ ∈ 𝒯ᵒ → ψ ∈ 𝒯ᵒ)
       𝒯ᵒ-distrib-over-∀̇ : ∀ φ → ∀̇ φ ∈ 𝒯ᵒ ↔ ∀ t → φ [ t ]₀ ∈ 𝒯ᵒ
@@ -84,7 +84,7 @@ record GeneralizedExtension : 𝕋₁ where
 
   𝒯≤-con : m ≤ n → Con 𝒯ᵢ n to 𝒯ᵢ m
   𝒯≤-con ≤-refl = id
-  𝒯≤-con (≤-step m≤n) 𝒯₊⊩⊥̇ = 𝒯≤-con m≤n (𝒯₊-con 𝒯₊⊩⊥̇)
+  𝒯≤-con (≤-step m≤n) 𝒯₊⊢⊥̇ = 𝒯≤-con m≤n (𝒯₊-con 𝒯₊⊢⊥̇)
 ```
 
 **<u>定义</u>** 无穷扩张的所有步骤所得到的理论的并, 叫做无穷扩张的极限, 记作 `𝒯ω`.
@@ -119,20 +119,20 @@ record GeneralizedExtension : 𝕋₁ where
 ```
 
 **<u>引理</u>** 如果无穷扩张的极限可证 `φ`, 那么存在其中一步理论可证 `φ`.  
-**<u>证明</u>** 由 `_⊩_` 的定义和引理 `⊆𝒯ω→⊆𝒯ₙ` 即得. ∎
+**<u>证明</u>** 由 `_⊢_` 的定义和引理 `⊆𝒯ω→⊆𝒯ₙ` 即得. ∎
 
 ```agda
-  𝒯ω⊩→𝒯ₙ⊩ : ∀ {φ} → 𝒯ω ⊩ φ → ∃ n ， 𝒯ᵢ n ⊩ φ
-  𝒯ω⊩→𝒯ₙ⊩ (Γ , Γ⊆l , Γ⊢φ) = 𝟙.map (λ { (n , Γ⊆𝒯ᵢ) → n , Γ , Γ⊆𝒯ᵢ , Γ⊢φ }) (⊆𝒯ω→⊆𝒯ₙ Γ Γ⊆l)
+  𝒯ω⊢→𝒯ₙ⊢ : ∀ {φ} → 𝒯ω ⊢ᵀ φ → ∃ n ， 𝒯ᵢ n ⊢ᵀ φ
+  𝒯ω⊢→𝒯ₙ⊢ (Γ , Γ⊆l , Γ⊢φ) = 𝟙.map (λ { (n , Γ⊆𝒯ᵢ) → n , Γ , Γ⊆𝒯ᵢ , Γ⊢φ }) (⊆𝒯ω→⊆𝒯ₙ Γ Γ⊆l)
 ```
 
 **<u>引理</u>** 无穷扩张的极限相对于起始理论一致.  
-**<u>证明</u>** 由引理 `𝒯ω⊩→𝒯ₙ⊩` 和 `𝒯≤-con` 即得. ∎
+**<u>证明</u>** 由引理 `𝒯ω⊢→𝒯ₙ⊢` 和 `𝒯≤-con` 即得. ∎
 
 ```agda
   𝒯ω-con : Con 𝒯ω to 𝒯ᵢ 0
-  𝒯ω-con ∥𝒯ω⊩⊥̇∥₁ = 𝟙.intro ∥𝒯ω⊩⊥̇∥₁ λ 𝒯ω⊩⊥̇ →
-    𝟙.intro (𝒯ω⊩→𝒯ₙ⊩ 𝒯ω⊩⊥̇) λ { (n , 𝒯ₙ⊩⊥̇) → 𝒯≤-con z≤n ∣ 𝒯ₙ⊩⊥̇ ∣₁ }
+  𝒯ω-con ∥𝒯ω⊢⊥̇∥₁ = 𝟙.intro ∥𝒯ω⊢⊥̇∥₁ λ 𝒯ω⊢⊥̇ →
+    𝟙.intro (𝒯ω⊢→𝒯ₙ⊢ 𝒯ω⊢⊥̇) λ { (n , 𝒯ₙ⊢⊥̇) → 𝒯≤-con z≤n ∣ 𝒯ₙ⊢⊥̇ ∣₁ }
 ```
 
 **<u>引理</u>** 如果每一步扩张都是闭理论, 那么极限是闭理论.  
@@ -152,7 +152,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   open SetOperation (discreteSet {A = Formula})
 
   isℋ : Theory → 𝕋₁
-  isℋ 𝒯 = ∀ 𝒯′ φ → 𝒯 ⊆ 𝒯′ → (∀ t → ∥ 𝒯′ ⊩ φ [ t ]₀ ∥₁) → ∥ 𝒯′ ⊩ ∀̇ φ ∥₁
+  isℋ 𝒯 = ∀ 𝒯′ φ → 𝒯 ⊆ 𝒯′ → (∀ t → ∥ 𝒯′ ⊢ᵀ φ [ t ]₀ ∥₁) → ∥ 𝒯′ ⊢ᵀ ∀̇ φ ∥₁
 
   Ax : ℕ → Formula
   Ax n = (Ψ n) [ # n ]₀ →̇ ∀̇ (Ψ n)
@@ -166,10 +166,10 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
   ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
   ℋ₊-con {n} = 𝟙.map aux where
-    aux : ℋᵢ (suc n) ⊩ ⊥̇ → ℋᵢ n ⊩ ⊥̇
-    aux ⊩⊥̇ = {!   !} , {!   !} , {!   !} where
-      H : ℋᵢ n ⊩ ¬̇ Ax n
-      H = ImpIᵀ {ℋᵢ n} ⊩⊥̇
+    aux : ℋᵢ (suc n) ⊢ᵀ ⊥̇ → ℋᵢ n ⊢ᵀ ⊥̇
+    aux ⊢⊥̇ = {!   !} , {!   !} , {!   !} where
+      H : ℋᵢ n ⊢ᵀ ¬̇ Ax n
+      H = ImpIᵀ {ℋᵢ n} ⊢⊥̇
       Γ = H .fst
       Γ⊆ = H .snd .fst
       Γ⊢ = H .snd .snd
@@ -186,7 +186,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
              ; 𝒯ω-closed to ℋω-closed
              )
 
-  ℋω-isℋ-Ψ : ∀ 𝒯 → ℋω ⊆ 𝒯 → 𝒯 ⊩ (Ψ n [ # n ]₀) → 𝒯 ⊩ (∀̇ (Ψ n))
+  ℋω-isℋ-Ψ : ∀ 𝒯 → ℋω ⊆ 𝒯 → 𝒯 ⊢ᵀ (Ψ n [ # n ]₀) → 𝒯 ⊢ᵀ (∀̇ (Ψ n))
   ℋω-isℋ-Ψ {n} 𝒯 ℋω⊆𝒯 (Γ , Γ⊆𝒯 , Γ⊢) = Ax n ∷ Γ , ∷⊆𝒯 , ∷⊢∀̇ where
     ∷⊆𝒯 : (Ax n ∷ Γ) ᴸ⊆ᴾ 𝒯
     ∷⊆𝒯 (here refl) = ℋω⊆𝒯 (ex (suc n) (inr refl))
@@ -196,7 +196,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
   ℋω-isℋ : isℋ ℋω
   ℋω-isℋ 𝒯 φ ℋω⊆𝒯 H∀ = 𝟙.rec 𝟙.squash H (Ψ-wit φ) where
-    H : Σ n ， Ψ n ≡ φ → ∥ 𝒯 ⊩ (∀̇ φ) ∥₁
+    H : Σ n ， Ψ n ≡ φ → ∥ 𝒯 ⊢ᵀ (∀̇ φ) ∥₁
     H (n , refl) = 𝟙.map (ℋω-isℋ-Ψ 𝒯 ℋω⊆𝒯) (H∀ (# n))
 ```
 

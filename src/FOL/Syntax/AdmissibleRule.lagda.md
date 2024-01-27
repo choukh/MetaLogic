@@ -64,6 +64,14 @@ Wkn0 : Γ ⊢ ψ → φ ∷ Γ ⊢ ψ
 Wkn0 = Wkn there
 ```
 
+**<u>引理</u>** `ImpI` 的弱化: 可以通过证明蕴含式的右边可证明来证明该蕴含式.  
+**<u>证明</u>** 由 `ImpI` 和弱化规则即得. ∎
+
+```agda
+WknImpI : Γ ⊢ ψ → Γ ⊢ φ →̇ ψ
+WknImpI = ImpI ∘ Wkn0
+```
+
 **<u>引理</u>** TODO.  
 **<u>证明</u>** TODO. ∎
 
@@ -123,15 +131,15 @@ SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 
 ```agda
 Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
-Cut _ H₁ H₂ = ImpE (ImpI H₂) H₁
+Cut _ = flip (ImpE ∘ ImpI)
 ```
 
-**<u>引理</u>** `ImpI` 的弱化: 可以通过证明蕴含式的右边可证明来证明该蕴含式.  
-**<u>证明</u>** 由 `ImpI` 和弱化规则即得. ∎
+**<u>引理</u>** `ImpI` 的变体: TODO.  
+**<u>证明</u>** TODO. ∎
 
 ```agda
-ImpIʷ : Γ ⊢ ψ → Γ ⊢ φ →̇ ψ
-ImpIʷ = ImpI ∘ Wkn0
+ImpI′ : (∀ Γ → Γ ⊢ φ → Γ ⊢ ψ) → Γ ⊢ φ →̇ ψ
+ImpI′ H = ImpI (H _ Ctx0)
 ```
 
 **<u>引理</u>** 蕴含式的应用: TODO.  
@@ -148,18 +156,18 @@ App H = ImpE Ctx0 (Wkn0 H)
 **<u>证明</u>** 将前提 `Γ ⊢ φ →̇ ψ` 弱化成 `φ ∷ Γ ⊢ φ →̇ ψ`, 又由语境规则有 `φ ∷ Γ ⊢ φ`. 使用原版 `ImpE` 即得 `φ ∷ Γ ⊢ ψ`. ∎
 
 ```agda
-ImpI⁻¹ : Γ ⊢ φ →̇ ψ → φ ∷ Γ ⊢ ψ
-ImpI⁻¹ Γ⊢ = ImpE (Wkn0 Γ⊢) Ctx0
+ImpE′ : Γ ⊢ φ →̇ ψ → φ ∷ Γ ⊢ ψ
+ImpE′ Γ⊢ = ImpE (Wkn0 Γ⊢) Ctx0
 ```
 
 演绎定理是一条非常重要的元定理, 它表明了语法蕴含与实质蕴含的关系. 在我们的系统中, 它的证明是相对简单的.
 
 **<u>定理</u>** 演绎定理: `φ ∷ Γ ⊢ ψ` 与 `Γ ⊢ φ →̇ ψ` 逻辑等价.  
-**<u>证明</u>** 由 `ImpI` 和 `ImpI⁻¹` 即得. ∎
+**<u>证明</u>** 由 `ImpI` 和 `ImpE′` 即得. ∎
 
 ```agda
 Deduction : φ ∷ Γ ⊢ ψ ↔ Γ ⊢ φ →̇ ψ
-Deduction = ⇒: ImpI ⇐: ImpI⁻¹
+Deduction = ⇒: ImpI ⇐: ImpE′
 ```
 
 ## 全称量化
@@ -218,6 +226,14 @@ AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ �
 AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
 ```
 
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+AllImpDistr : (∀ Γ → Γ ⊢ ∀̇ (φ →̇ ψ)) → Γ ⊢ ∀̇ φ →̇ ∀̇ ψ
+AllImpDistr H = {!   !} --ImpI′ (λ Γ₁ H → {!   !})
+```
+
 ## 否定
 
 **<u>定义</u>** 否定: 我们把 `φ →̇ ⊥̇` 简记作 `¬̇ φ`.
@@ -240,7 +256,7 @@ Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
 
 ```agda
 DNE : ¬̇ ¬̇ φ ∷ Γ ⊢ φ
-DNE = (Contra ∘ ImpI⁻¹) Ctx0
+DNE = (Contra ∘ ImpE′) Ctx0
 ```
 
 **<u>引理</u>** 排中律: TODO.  
@@ -279,20 +295,15 @@ ExI _ H = ImpI $ Cut _
 ExE : Γ ⊢ ∃̇ φ → φ ∷ ↑ Γ ⊢ ↑ᵩ ψ → Γ ⊢ ψ
 ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
   (AllI $ ImpI $ Swap $ App H₂)
-  (ImpI⁻¹ $ Wkn0 H₁)
+  (ImpE′ $ Wkn0 H₁)
 ```
 
 **<u>引理</u>** TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-Fuck : ∀̇ ¬̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ
-Fuck {φ} = {!   !}
-```
-
-```agda
 NotExNotAll : ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ
-NotExNotAll {φ} = Cut (∀̇ ¬̇ ¬̇ φ) DNE (Wkn1 $ {!   !})
+NotExNotAll {φ} = Cut (∀̇ ¬̇ ¬̇ φ) DNE (Wkn1 $ ImpE′ $ AllImpDistr (λ Γ₁ → AllI (ImpI DNE)))
 ```
 
 **<u>引理</u>** 饮者悖论: TODO.  
@@ -310,12 +321,12 @@ DP {Γ} {φ} = LEM (∃̇ ¬̇ φ)
 TODO
 
 ```agda
-Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊩ φ
+Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊢ᵀ φ
 Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx0
 ```
 
 ```agda
-ImpIᵀ : (𝒯 ⨭ φ) ⊩ ψ → 𝒯 ⊩ φ →̇ ψ
+ImpIᵀ : (𝒯 ⨭ φ) ⊢ᵀ ψ → 𝒯 ⊢ᵀ φ →̇ ψ
 ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wkn H2 Γ⊢) where
   H1 : Γ ∖[ φ ] ᴸ⊆ᴾ 𝒯
   H1 {x} x∈ with ∈∖[]-elim x∈
@@ -331,4 +342,3 @@ ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wk
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
- 
