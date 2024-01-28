@@ -227,16 +227,16 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
 **<u>证明</u>** 由局部无名变换及 `AllI` 即得. ∎
 
 ```agda
-AllI′ : fresh n Γ → freshᵩ n (∀̇ φ) → Γ ⊢ φ [ # n ]₀ → Γ ⊢ ∀̇ φ
-AllI′ freshΓ fresh∀̇φ = AllI ∘ nameless-conversion freshΓ fresh∀̇φ .⇐
+AllI′ : Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀ → Γ ⊢ ∀̇ φ
+AllI′ {Γ} {φ} = AllI ∘ nameless-conversion (freshVar∷-fresh (∀̇ φ) Γ) (freshVar∷-freshᵩ (∀̇ φ) Γ) .⇐
 ```
 
 **<u>重言式</u>** TODO.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
-AllImpDistr : ⊩ ∀̇ (φ →̇ ψ) → ⊩ ∀̇ φ →̇ ∀̇ ψ
-AllImpDistr H = {!   !}
+AllDistrbImp : ⊩ ∀̇ (φ →̇ ψ) → ⊩ ∀̇ φ →̇ ∀̇ ψ
+AllDistrbImp ⊩∀̇ = ImpI′ λ Γ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩∀̇) (AllE Γ⊢∀̇φ))
 ```
 
 ## 否定
@@ -256,14 +256,6 @@ Contra : ¬̇ φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ
 Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
 ```
 
-**<u>重言式</u>** 双重否定消去: TODO.  
-**<u>证明</u>** TODO. ∎
-
-```agda
-DNE : ⊩ ¬̇ ¬̇ φ →̇ φ
-DNE = ImpI $ Contra $ ImpE′ Ctx0
-```
-
 **<u>引理</u>** 排中律: TODO.  
 **<u>证明</u>** TODO. ∎
 
@@ -272,6 +264,14 @@ LEM : ∀ φ → φ ∷ Γ ⊢ ψ → ¬̇ φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
 LEM φ H₁ H₂ = Contra $ Cut (¬̇ φ)
   (ImpI $ Swap $ App H₁)
   (Swap $ App H₂)
+```
+
+**<u>重言式</u>** 双重否定消去: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+DNE : ⊩ ¬̇ ¬̇ φ →̇ φ
+DNE = ImpI $ Contra $ ImpE′ Ctx0
 ```
 
 ## 存在量化
@@ -308,7 +308,7 @@ ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
 
 ```agda
 NotExNotAll : ⊩ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ φ
-NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllImpDistr $ AllI DNE)
+NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllDistrbImp $ AllI DNE)
 ```
 
 **<u>重言式</u>** 饮者悖论: TODO.  

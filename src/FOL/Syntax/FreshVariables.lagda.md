@@ -68,14 +68,17 @@ fresh : ℕ → Context → 𝕋
 fresh n Γ = ∀ {φ} → φ ∈ᴸ Γ → freshᵩ n φ
 ```
 
-**<u>定义</u>** 我们说 `n` (含) 以上的变元都是项 `t` (或公式 `φ`) 的新变元, 当且仅当任意 `m ≥ n` 都是 `t` (或 `φ`) 的新变元.
+**<u>定义</u>** 我们说 `n` (含) 以上的变元都是项 `t` (或公式 `φ`, 或语境 `Γ`) 的新变元, 当且仅当任意 `m ≥ n` 都是 `t` (或 `φ`, 或 `Γ`) 的新变元.
 
 ```agda
 freshₜFrom : ℕ → Term → 𝕋
 freshₜFrom n t = ∀ {m} → n ≤ m → freshₜ m t
 
-freshFrom : ℕ → Formula → 𝕋
-freshFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
+freshᵩFrom : ℕ → Formula → 𝕋
+freshᵩFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
+
+freshFrom : ℕ → Context → 𝕋
+freshFrom n Γ = ∀ {m} → n ≤ m → fresh m Γ
 ```
 
 **<u>引理</u>** 给定项的向量 `t⃗` 以及每个 `t ∈⃗ t⃗` 的一个新变元, 可以找到对任意 `t ∈⃗ t⃗` 都是新变元的一个 `n` (简称 `t⃗` 的新变元).  
@@ -111,17 +114,44 @@ freshFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
 - 当公式是关系应用 `R $̇ t⃗` 时, 由归纳假设及引理 `Freshₜ⃗`, 有 `t⃗` 的新变元 `n`, 取 `n` 即可. ∎
 
 ```agda
-Σfresh : ∀ φ → Σ n ， freshFrom n φ
-Σfresh ⊥̇ = 0 , (λ _ → fresh⊥̇)
-Σfresh (φ →̇ ψ) with Σfresh φ | Σfresh ψ
+Σfreshᵩ : ∀ φ → Σ n ， freshᵩFrom n φ
+Σfreshᵩ ⊥̇ = 0 , (λ _ → fresh⊥̇)
+Σfreshᵩ (φ →̇ ψ) with Σfreshᵩ φ | Σfreshᵩ ψ
 ... | n , Hn | m , Hm = n + m , λ le → fresh→̇
   (Hn $ ≤-trans (m≤m+n _ _) le)
   (Hm $ ≤-trans (m≤n+m _ _) le)
-Σfresh (∀̇ φ) with Σfresh φ
+Σfreshᵩ (∀̇ φ) with Σfreshᵩ φ
 ... | n , Hn = n , λ n≤m → fresh∀̇ $ Hn $ ≤-trans n≤m (n≤1+n _)
-Σfresh (R $̇ t⃗) with Σfreshₜ⃗ t⃗ (λ t _ → Σfreshₜ t)
+Σfreshᵩ (R $̇ t⃗) with Σfreshₜ⃗ t⃗ (λ t _ → Σfreshₜ t)
 ... | n , Hn = n , λ n≤m → fresh$̇ λ t t∈⃗ → Hn t t∈⃗ n≤m
 ```
+
+**<u>定义</u>** 我们把语境 `Γ` 中那些公式 `φ` 的新变元中的最大者称为语境 `Γ` 的一个新变元, 记作 `freshVar Γ`.
+
+```agda
+freshVar : Context → ℕ
+freshVar Γ = foldr max 0 $ map (fst ∘ Σfreshᵩ) Γ
+
+freshVar-≥ : φ ∈ᴸ Γ → Σfreshᵩ φ .fst ≤ freshVar Γ
+freshVar-≥ {φ} {ψ ∷ Γ} φ∈ = foldr-preservesᵒ H _ _ $
+  inj₂ $ Any-intro $ Σfreshᵩ φ .fst , ∈map-intro φ∈ refl , ≤-refl where
+    H : ∀ m n → (Σfreshᵩ φ .fst ≤ m) ⊎ (Σfreshᵩ φ .fst ≤ n) → Σfreshᵩ φ .fst ≤ max m n
+    H m n (inj₁ p) = ≤-trans p ≤maxˡ
+    H m n (inj₂ p) = ≤-trans p ≤maxʳ
+```
+
+**<u>引理</u>** `freshVar (φ ∷ Γ)` 既是 `φ` 的新变元, 也是 `Γ` 的新变元.  
+**<u>证明</u>** 依定义即得. ∎
+
+```agda
+freshVar∷-freshᵩ : ∀ φ Γ → freshᵩ (freshVar (φ ∷ Γ)) φ
+freshVar∷-freshᵩ φ Γ = Σfreshᵩ _ .snd (freshVar-≥ {Γ = φ ∷ Γ} (here refl))
+
+freshVar∷-fresh : ∀ φ Γ → fresh (freshVar (φ ∷ Γ)) Γ
+freshVar∷-fresh φ Γ H = Σfreshᵩ _ .snd (freshVar-≥ {Γ = φ ∷ Γ} (there H))
+```
+
+## 闭公式
 
 **<u>定义</u>** 公式 `φ` 的 `n` 次全称量化记作 `∀̇ⁿ n φ`.
 
@@ -137,9 +167,9 @@ freshFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
 - 当 `m` 是 `suc m` 时, 由归纳假设有 `n ∸ m` 是 `∀̇ⁿ m φ` 的新变元, 所以 `n ∸ suc m ≡ (n ∸ m) ∸ 1` 是 `∀̇ⁿ (suc m) φ ≡ ∀̇ (∀̇ⁿ m φ)` 的新变元. ∎
 
 ```agda
-∀̇ⁿ-freshFrom : ∀ n m φ → freshFrom n φ → freshFrom (n ∸ m) (∀̇ⁿ m φ)
-∀̇ⁿ-freshFrom n zero φ H = H
-∀̇ⁿ-freshFrom n (suc m) φ H n∸sm≤k = fresh∀̇ $ ∀̇ⁿ-freshFrom n m φ H n∸m≤sk where
+∀̇ⁿ-freshᵩFrom : ∀ n m φ → freshᵩFrom n φ → freshᵩFrom (n ∸ m) (∀̇ⁿ m φ)
+∀̇ⁿ-freshᵩFrom n zero φ H = H
+∀̇ⁿ-freshᵩFrom n (suc m) φ H n∸sm≤k = fresh∀̇ $ ∀̇ⁿ-freshᵩFrom n m φ H n∸m≤sk where
   n∸m≤sk : n ∸ m ≤ suc _
   n∸m≤sk = ≤-trans le (+-monoʳ-≤ 1 n∸sm≤k) where
     le : n ∸ m ≤ suc (n ∸ suc m)
@@ -149,29 +179,27 @@ freshFrom n φ = ∀ {m} → n ≤ m → freshᵩ m φ
            n ∸ m ∸ 1    ∎
 ```
 
-## 闭公式
-
 **<u>定义</u>** `0` 是其新变元 (即没有未使用变元) 的公式叫做闭公式.
 
 ```agda
 closed : Formula → 𝕋
-closed = freshFrom 0
+closed = freshᵩFrom 0
 ```
 
 **<u>定义</u>** 给定公式 `φ`, 取其新变元 `n`, 对 `φ` 做 `n` 次全称量化, 得到的公式叫做 `φ` 的闭公式, 记作 `close φ`.
 
 ```agda
 close : Formula → Formula
-close φ = ∀̇ⁿ (Σfresh φ .fst) φ
+close φ = ∀̇ⁿ (Σfreshᵩ φ .fst) φ
 ```
 
 **<u>定理</u>** 对任意 `φ`, `close φ` 是闭公式.  
-**<u>证明</u>** 取 `φ` 的新变元 `n`, 由引理 `∀̇ⁿ-freshFrom`, `close φ` 的新变元是 `n ∸ n ≡ 0`, 所以 `close φ` 是闭公式. ∎
+**<u>证明</u>** 取 `φ` 的新变元 `n`, 由引理 `∀̇ⁿ-freshᵩFrom`, `close φ` 的新变元是 `n ∸ n ≡ 0`, 所以 `close φ` 是闭公式. ∎
 
 ```agda
 close-closed : ∀ φ → closed (close φ)
-close-closed φ {m} _ with Σfresh φ
-... | n , Hn = ∀̇ⁿ-freshFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
+close-closed φ {m} _ with Σfreshᵩ φ
+... | n , Hn = ∀̇ⁿ-freshᵩFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
 ```
 
 **<u>定义</u>** 由闭公式组成的理论叫做闭理论.
@@ -212,3 +240,4 @@ isPredClosedTheory _ = isPropΠ2 λ _ _ → isPredClosed _
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/FreshVariables.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.FreshVariables.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.fresh)  
 > 交流Q群: 893531731
+  

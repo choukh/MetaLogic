@@ -8,11 +8,14 @@ open import Foundation.Data.List
 open import Foundation.Data.Sigma
 open import Foundation.Data.Sum
 
+open import Data.List.Relation.Unary.Any public
+  using (Any; here; there)
 open import Data.List.Membership.Propositional public
   using (_∈_; _∉_)
 open import Data.List.Membership.Propositional.Properties as Ⓜ public
   using ()
   renaming (
+    ∃∈-Any     to Any-intro;
     map-∈↔     to ∈map-iff;
     ∈-++⁺ˡ     to ∈++-introˡ;    ∈-++⁻      to ∈++-elim;
     ∈-concat⁺′ to ∈concat-intro; ∈-concat⁻′ to ∈concat-elim;
@@ -22,8 +25,6 @@ open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_; _⊈_)
 open import Data.List.Relation.Binary.Subset.Propositional.Properties public
   using (⊆-trans)
-open import Data.List.Relation.Unary.Any public
-  using (Any; here; there)
 
 private variable
   n : ℕ

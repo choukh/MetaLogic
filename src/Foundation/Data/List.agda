@@ -4,12 +4,13 @@ open import Foundation.Prelude
 open import Foundation.Data.Sigma
 
 open import Data.List public
-  using (map; _++_; concat; length; [_]; filter)
+  using (map; _++_; foldr; concat; length; [_]; filter)
 
 open import Data.List.Properties public
   using (
     length-map; map-id; map-∘;
-    length-++; ++-assoc; ++-identityʳ
+    length-++; ++-assoc; ++-identityʳ;
+    foldr-preservesᵒ
   )
 
 open import Cubical.Data.List
