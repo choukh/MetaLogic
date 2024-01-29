@@ -33,9 +33,6 @@ private variable
 ```agda
 Ctx0 : φ ∷ Γ ⊢ φ
 Ctx0 = Ctx $ here refl
-
-Ctx1 : ψ ≡ ξ → φ ∷ ψ ∷ Γ ⊢ ξ
-Ctx1 refl = Ctx $ there (here refl)
 ```
 
 ### 弱化
@@ -130,8 +127,8 @@ SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 **<u>证明</u>** TODO. ∎
 
 ```agda
-ImpI′ : (∀ Γ → Γ ⊢ φ → Γ ⊢ ψ) → Γ ⊢ φ →̇ ψ
-ImpI′ H = ImpI (H _ Ctx0)
+ImpI′ : (∀ {Γ} → Γ ⊢ φ → Γ ⊢ ψ) → Γ ⊢ φ →̇ ψ
+ImpI′ H = ImpI (H Ctx0)
 ```
 
 **<u>引理</u>** 蕴含式的应用: TODO.  
@@ -223,12 +220,19 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   eq2 = ζ-id n φ freshᵩ-suc
 ```
 
+我们可以实际使用对 `∀̇ φ` 和 `Γ` 来说都未使用的变元来消掉上述引理的两个前件.
+
+```agda
+Nameless : ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀
+Nameless {Γ} {φ} = nameless-conversion (freshVar∷-fresh (∀̇ φ) Γ) (freshVar∷-freshᵩ (∀̇ φ) Γ)
+```
+
 **<u>引理</u>** 全称量化的引入规则 (变体): 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  
 **<u>证明</u>** 由局部无名变换及 `AllI` 即得. ∎
 
 ```agda
 AllI′ : Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀ → Γ ⊢ ∀̇ φ
-AllI′ {Γ} {φ} = AllI ∘ nameless-conversion (freshVar∷-fresh (∀̇ φ) Γ) (freshVar∷-freshᵩ (∀̇ φ) Γ) .⇐
+AllI′ = AllI ∘ Nameless .⇐
 ```
 
 **<u>重言式</u>** TODO.  
@@ -236,7 +240,7 @@ AllI′ {Γ} {φ} = AllI ∘ nameless-conversion (freshVar∷-fresh (∀̇ φ) �
 
 ```agda
 AllDistrbImp : ⊩ ∀̇ (φ →̇ ψ) → ⊩ ∀̇ φ →̇ ∀̇ ψ
-AllDistrbImp ⊩∀̇ = ImpI′ λ Γ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩∀̇) (AllE Γ⊢∀̇φ))
+AllDistrbImp ⊩∀̇ = ImpI′ λ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩∀̇) (AllE Γ⊢∀̇φ))
 ```
 
 ## 否定
@@ -246,6 +250,14 @@ AllDistrbImp ⊩∀̇ = ImpI′ λ Γ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩�
 ```agda
 ¬̇_ : Formula → Formula
 ¬̇ φ = φ →̇ ⊥̇
+```
+
+**<u>引理</u>** 虚空真: TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+Vac : φ ∷ Γ ⊢ ψ → ¬̇ ψ ∷ Γ ⊢ φ →̇ ξ
+Vac = ImpI ∘ Swap ∘ FalseE ∘ App
 ```
 
 **<u>引理</u>** 反证法: TODO.  
@@ -317,8 +329,8 @@ NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllDistrbImp $ AllI DNE)
 ```agda
 DP : ⊩ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
 DP {φ} {Γ} = LEM (∃̇ ¬̇ φ)
-  (ExE (ExI (# 0) {!   !}) (Ctx1 {!   !}))
-  (ExI (# 0) (ImpI $ Wkn0 $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ (ImpE′ NotExNotAll)))
+  (ExE Ctx0 $ ExI (# 0) $ Wkn1 $ Vac $ Ctx $ here (sym ↑ₛ[]₀))
+  (ExI (# 0) $ WknImpI $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ (ImpE′ NotExNotAll))
 ```
 
 ## 理论版规则
