@@ -142,10 +142,7 @@ WknImpI {Γ} {ψ} {φ} H =
 
 ```agda
 App : Γ ⊢ φ → φ →̇ ψ ∷ Γ ⊢ ψ
-App {Γ} {φ} {ψ} H =
-                      ∅─⟨ ImpE H₁ H₂ ⟩
-  φ →̇ ψ ∷ Γ ⊢ ψ
-  where
+App {Γ} {φ} {ψ} H = ImpE H₁ H₂ where
   H₁ =                ∅─⟨ Ctx0 ⟩
     φ →̇ ψ ∷ Γ ⊢ φ →̇ ψ
   H₂ =                ∅─⟨ H ⟩
@@ -188,10 +185,7 @@ Wkn1 {φ} {Γ} {ξ} {ψ} H =
 
 ```agda
 ImpE′ : Γ ⊢ φ →̇ ψ → φ ∷ Γ ⊢ ψ
-ImpE′ {Γ} {φ} {ψ} H =
-                  ∅─⟨ ImpE H₁ H₂ ⟩
-  φ ∷ Γ ⊢ ψ
-  where
+ImpE′ {Γ} {φ} {ψ} H = ImpE H₁ H₂ where
   H₁ =            ∅─⟨ H ⟩
     Γ ⊢ φ →̇ ψ     ─⟨ Wkn0 ⟩
     φ ∷ Γ ⊢ φ →̇ ψ
@@ -217,10 +211,7 @@ Deduction = ⇒: ImpI ⇐: ImpE′
 
 ```agda
 Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
-Cut {Γ} {ψ} φ H₁ H₂ =
-              ∅─⟨ ImpE H₃ H₁ ⟩
-  Γ ⊢ ψ
-  where
+Cut {Γ} {ψ} φ H₁ H₂ = ImpE H₃ H₁ where
   H₃ =        ∅─⟨ H₂ ⟩
     φ ∷ Γ ⊢ ψ ─⟨ ImpI ⟩
     Γ ⊢ φ →̇ ψ
@@ -355,23 +346,43 @@ Vac {φ} {Γ} {ψ} {ξ} H =
 
 ```agda
 Contra : ¬̇ φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ
-Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
+Contra {φ} {Γ} H = ImpE H₁ H₂ where
+  H₁ =                    ∅─⟨ Peirce φ ⊥̇ ⟩
+    Γ ⊢ ((φ →̇ ⊥̇) →̇ φ) →̇ φ
+  H₂ =                    ∅─⟨ H ⟩
+    φ →̇ ⊥̇ ∷ Γ ⊢ ⊥̇         ─⟨ FalseE ⟩
+    φ →̇ ⊥̇ ∷ Γ ⊢ φ         ─⟨ ImpI ⟩
+    Γ ⊢ (φ →̇ ⊥̇) →̇ φ
 ```
 
 **<u>规则</u>** 排中律.
 
 ```agda
 LEM : ∀ φ → φ ∷ Γ ⊢ ψ → ¬̇ φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
-LEM φ H₁ H₂ = Contra $ Cut (¬̇ φ)
-  (ImpI $ Swap $ App H₁)
-  (Swap $ App H₂)
+LEM {Γ} {ψ} φ H₁ H₂ =     ∅─⟨ Cut (¬̇ φ) H₃ H₄ ⟩
+  ¬̇ ψ ∷ Γ ⊢ ⊥̇             ─⟨ Contra ⟩
+  Γ ⊢ ψ
+  where
+  H₃ =                    ∅─⟨ H₁ ⟩
+    φ ∷ Γ ⊢ ψ             ─⟨ App ⟩
+    ψ →̇ ⊥̇ ∷ φ ∷  Γ ⊢ ⊥̇    ─⟨ Swap ⟩
+    φ ∷ ψ →̇ ⊥̇ ∷ Γ ⊢ ⊥̇     ─⟨ ImpI ⟩
+    ψ →̇ ⊥̇ ∷ Γ ⊢ (¬̇ φ)
+  H₄ =                    ∅─⟨ H₂ ⟩
+    ¬̇ φ ∷ Γ ⊢ ψ           ─⟨ App ⟩
+    ψ →̇ ⊥̇ ∷ (¬̇ φ) ∷ Γ ⊢ ⊥̇ ─⟨ Swap ⟩
+    (¬̇ φ) ∷ ψ →̇ ⊥̇ ∷ Γ ⊢ ⊥̇
 ```
 
 **<u>重言式</u>** 双重否定消去.
 
 ```agda
 DNE : ⊩ ¬̇ ¬̇ φ →̇ φ
-DNE = ImpI $ Contra $ ImpE′ Ctx0
+DNE {φ} {Γ} =                   ∅─⟨ Ctx0 ⟩
+  (φ →̇ ⊥̇) →̇ ⊥̇ ∷ Γ ⊢ (φ →̇ ⊥̇) →̇ ⊥̇ ─⟨ ImpE′ ⟩
+  ¬̇ φ ∷ ¬̇ ¬̇ φ ∷ Γ ⊢ ⊥̇           ─⟨ Contra ⟩
+  ¬̇ ¬̇ φ ∷ Γ ⊢ φ                 ─⟨ ImpI ⟩
+  Γ ⊢ ¬̇ ¬̇ φ →̇ φ
 ```
 
 ## 饮者悖论
@@ -387,34 +398,80 @@ DNE = ImpI $ Contra $ ImpE′ Ctx0
 
 ```agda
 ExI : ∀ t → Γ ⊢ φ [ t ]₀ → Γ ⊢ ∃̇ φ
-ExI _ H = ImpI $ Cut _
-  (AllE Ctx0)
-  (App $ Wkn0 H)
+ExI {Γ} {φ} t H =               ∅─⟨ Cut (¬̇ φ [ t ]₀) H₁ H₂ ⟩
+  ∀̇ ¬̇ φ ∷ Γ ⊢ ⊥̇                 ─⟨ ImpI ⟩
+  Γ ⊢ ∃̇ φ
+  where
+  H₁ =                          ∅─⟨ Ctx0 ⟩
+    ∀̇ ¬̇ φ ∷ Γ ⊢ ∀̇ ¬̇ φ           ─⟨ AllE ⟩
+    ∀̇ ¬̇ φ ∷ Γ ⊢ ¬̇ φ [ t ]₀
+  H₂ =                          ∅─⟨ H ⟩
+    Γ ⊢ φ [ t ]₀                ─⟨ Wkn0 ⟩
+    ∀̇ ¬̇ φ ∷ Γ ⊢ φ [ t ]₀        ─⟨ App ⟩
+    ¬̇ φ [ t ]₀ ∷ ∀̇ ¬̇ φ ∷ Γ ⊢ ⊥̇
 ```
 
 **<u>规则</u>** 存在量词的消去.
 
 ```agda
 ExE : Γ ⊢ ∃̇ φ → φ ∷ ↑ Γ ⊢ ↑ᵩ ψ → Γ ⊢ ψ
-ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
-  (AllI $ ImpI $ Swap $ App H₂)
-  (ImpE′ $ Wkn0 H₁)
+ExE {Γ} {φ} {ψ} H₁ H₂ =     ∅─⟨ Cut (∀̇ ¬̇ φ) H₃ H₄ ⟩
+  ¬̇ ψ ∷ Γ ⊢ ⊥̇               ─⟨ Contra ⟩
+  Γ ⊢ ψ
+  where
+  H₃ =                      ∅─⟨ H₂ ⟩
+    φ ∷ ↑ Γ ⊢ ↑ᵩ ψ          ─⟨ App ⟩
+    ↑ᵩ ψ →̇ ⊥̇ ∷ φ ∷ ↑ Γ ⊢ ⊥̇  ─⟨ Swap ⟩
+    φ ∷ ↑ᵩ ψ →̇ ⊥̇ ∷ ↑ Γ ⊢ ⊥̇  ─⟨ ImpI ⟩
+    ↑ᵩ ψ →̇ ⊥̇ ∷ ↑ Γ ⊢ ¬̇ φ    ─⟨ AllI ⟩
+    ψ →̇ ⊥̇ ∷ Γ ⊢ ∀̇ ¬̇ φ
+  H₄ =                      ∅─⟨ H₁ ⟩
+    Γ ⊢ ∃̇ φ                 ─⟨ Wkn0 ⟩
+    ψ →̇ ⊥̇ ∷ Γ ⊢ ∃̇ φ         ─⟨ ImpE′ ⟩
+    ∀̇ ¬̇ φ ∷ ψ →̇ ⊥̇ ∷ Γ ⊢ ⊥̇
 ```
 
-**<u>重言式</u>** “并不存在否”蕴含“所有都是”.
+**<u>规则</u>** 从存在证明存在.
+
+```agda
+ExToEx : φ ∷ ↑ Γ ⊢ ψ → ∃̇ φ ∷ Γ ⊢ ∃̇ ψ
+ExToEx {φ} {Γ} {ψ} H = ExE Ctx0 H′ where
+  H′ =                                      ∅─⟨ H ⟩
+    φ ∷ ↑ Γ ⊢ ψ                             ─⟨ subst (_ ⊢_) ↑ₛ[]₀ ⟩
+    φ ∷ ↑ Γ ⊢ ψ [ ↑ₛ (# ∘ suc) ]ᵩ [ # 0 ]₀  ─⟨ ExI (# 0) ⟩
+    φ ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)                      ─⟨ Wkn1 ⟩
+    φ ∷ ↑ᵩ (∃̇ φ) ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)
+```
+
+**<u>重言式</u>** “不存在否”蕴含“所有都是”.
 
 ```agda
 NotExNotAll : ⊩ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ φ
-NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllDistrbImp $ AllI DNE)
+NotExNotAll {φ} {Γ} = ImpCut (∀̇ ¬̇ ¬̇ φ) H₁ (AllDistrbImp H₂)
+  where
+  H₁ =                    ∅─⟨ DNE ⟩
+    Γ ⊢ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ ¬̇ ¬̇ φ
+  H₂ : ⊩ ∀̇ (¬̇ ¬̇ φ →̇ φ)
+  H₂ {Γ} =                ∅─⟨ DNE ⟩
+    ↑ Γ ⊢ ¬̇ ¬̇ φ →̇ φ       ─⟨ AllI ⟩
+    Γ ⊢ ∀̇ (¬̇ ¬̇ φ →̇ φ)
 ```
 
 **<u>重言式</u>** 饮者悖论: 存在一个人, 如果他喝酒, 那么所有人都喝酒.
 
 ```agda
 DP : ⊩ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
-DP {φ} {Γ} = LEM (∃̇ ¬̇ φ)
-  (ExE Ctx0 $ ExI (# 0) $ Wkn1 $ Vac $ Ctx $ here (sym ↑ₛ[]₀))
-  (ExI (# 0) $ WknImpI $ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ (ImpE′ NotExNotAll))
+DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
+  H₁ =                                    ∅─⟨ Ctx0 ⟩
+    φ ∷ ↑ Γ ⊢ φ                           ─⟨ Vac ⟩
+    ¬̇ φ ∷ ↑ Γ ⊢ φ →̇ ↑ᵩ (∀̇ φ)              ─⟨ ExToEx ⟩
+    ∃̇ ¬̇ φ ∷ Γ ⊢ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
+  H₂ =                                    ∅─⟨ NotExNotAll ⟩
+    Γ ⊢ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ φ                     ─⟨ ImpE′ ⟩
+    ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∀̇ φ                     ─⟨ subst (¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢_) ↑ᵩ[]₀ ⟩
+    ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ↑ᵩ (∀̇ φ) [ # 0 ]₀       ─⟨ WknImpI ⟩
+    ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ (φ →̇ ↑ᵩ (∀̇ φ)) [ # 0 ]₀ ─⟨ ExI (# 0) ⟩
+    ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
 ```
 
 ## 理论版规则
@@ -443,3 +500,4 @@ ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wk
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
+ 
