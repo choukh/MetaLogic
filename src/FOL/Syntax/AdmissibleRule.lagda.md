@@ -50,7 +50,8 @@ syntax deduction a B ab = a ─⟨ ab ⟩ B
 ```agda
 Ctx0 : φ ∷ Γ ⊢ φ
 Ctx0 {φ} {Γ} =
-            ∅─⟨ Ctx $ here refl ⟩
+             ∅─⟨ here refl ⟩
+  φ ∈ᴸ φ ∷ Γ ─⟨ Ctx ⟩
   φ ∷ Γ ⊢ φ
 ```
 
@@ -59,7 +60,8 @@ Ctx0 {φ} {Γ} =
 ```agda
 ImpI′ : (∀ {Γ} → Γ ⊢ φ → Γ ⊢ ψ) → Γ ⊢ φ →̇ ψ
 ImpI′ {φ} {ψ} {Γ} H =
-            ∅─⟨ H Ctx0 ⟩
+            ∅─⟨ Ctx0 ⟩
+  φ ∷ Γ ⊢ φ ─⟨ H ⟩
   φ ∷ Γ ⊢ ψ ─⟨ ImpI ⟩
   Γ ⊢ φ →̇ ψ
 ```
@@ -118,11 +120,14 @@ SubstWkn σ (AllE H) = subst (_ ⊢_) ([]ᵩ∘[]₀ _) (AllE (SubstWkn σ H))
 Wkn0 : Γ ⊢ ψ → φ ∷ Γ ⊢ ψ
 Wkn0 {Γ} {ψ} {φ} H =
             ∅─⟨ H ⟩
-  Γ ⊢ ψ     ─⟨ Wkn there ⟩
+  Γ ⊢ ψ     ─⟨ Wkn sub ⟩
   φ ∷ Γ ⊢ ψ
+  where
+  sub : Γ ⊆ᴸ φ ∷ Γ
+  sub = there
 ```
 
-**<u>规则</u>** `ImpI` 的弱化: 可以通过证明蕴含式的右边可证明来证明该蕴含式.
+**<u>规则</u>** `ImpI` 的弱化: 可以通过证明蕴含式的右边可证明来证明原蕴含式.
 
 ```agda
 WknImpI : Γ ⊢ ψ → Γ ⊢ φ →̇ ψ
@@ -138,20 +143,27 @@ WknImpI {Γ} {ψ} {φ} H =
 ```agda
 App : Γ ⊢ φ → φ →̇ ψ ∷ Γ ⊢ ψ
 App {Γ} {φ} {ψ} H =
-                ∅─⟨ H ⟩
-  Γ ⊢ φ         ─⟨ Wkn0 ⟩
-  φ →̇ ψ ∷ Γ ⊢ φ ─⟨ ImpE (∅─⟨ Ctx0 ⟩ φ →̇ ψ ∷ Γ ⊢ φ →̇ ψ)⟩
+                      ∅─⟨ ImpE H₁ H₂ ⟩
   φ →̇ ψ ∷ Γ ⊢ ψ
+  where
+  H₁ =                ∅─⟨ Ctx0 ⟩
+    φ →̇ ψ ∷ Γ ⊢ φ →̇ ψ
+  H₂ =                ∅─⟨ H ⟩
+    Γ ⊢ φ             ─⟨ Wkn0 ⟩
+    φ →̇ ψ ∷ Γ ⊢ φ
 ```
 
-**<u>规则</u>** 交换.
+**<u>规则</u>** 前提交换.
+
+由于我们定义的语境 (公式的列表) 是顺序敏感的, 所以需要此规则, 而对于理论 (公式的集合) 则不需要.
 
 ```agda
 Swap : φ ∷ ψ ∷ Γ ⊢ ξ → ψ ∷ φ ∷ Γ ⊢ ξ
 Swap {φ} {ψ} {Γ} {ξ} H =
                 ∅─⟨ H ⟩
   φ ∷ ψ ∷ Γ ⊢ ξ ─⟨ Wkn sub ⟩
-  ψ ∷ φ ∷ Γ ⊢ ξ where
+  ψ ∷ φ ∷ Γ ⊢ ξ
+  where
   sub : φ ∷ ψ ∷ Γ ⊆ᴸ ψ ∷ φ ∷ Γ
   sub (here refl) = there (here refl)
   sub (there (here refl)) = here refl
@@ -176,7 +188,15 @@ Wkn1 {φ} {Γ} {ξ} {ψ} H =
 
 ```agda
 ImpE′ : Γ ⊢ φ →̇ ψ → φ ∷ Γ ⊢ ψ
-ImpE′ Γ⊢ = ImpE (Wkn0 Γ⊢) Ctx0
+ImpE′ {Γ} {φ} {ψ} H =
+                  ∅─⟨ ImpE H₁ H₂ ⟩
+  φ ∷ Γ ⊢ ψ
+  where
+  H₁ =            ∅─⟨ H ⟩
+    Γ ⊢ φ →̇ ψ     ─⟨ Wkn0 ⟩
+    φ ∷ Γ ⊢ φ →̇ ψ
+  H₂ =            ∅─⟨ Ctx0 ⟩
+    φ ∷ Γ ⊢ φ
 ```
 
 演绎定理是一条非常重要的元定理, 它表明了语法蕴含与实质蕴含的关系. 在我们的系统中, 它的证明是相对简单的.
@@ -191,22 +211,44 @@ Deduction = ⇒: ImpI ⇐: ImpE′
 
 ## 切消
 
-**<u>规则</u>** 切消: TODO.  
-**<u>证明</u>** TODO. ∎
+切削规则允许我们在证明中引入一个新的前提, 并通过该前提来证明原目标, 它有内外两种版本.
+
+**<u>规则</u>** 切消 (外).
 
 ```agda
 Cut : ∀ φ → Γ ⊢ φ → φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
-Cut _ = flip (ImpE ∘ ImpI)
+Cut {Γ} {ψ} φ H₁ H₂ =
+              ∅─⟨ ImpE H₃ H₁ ⟩
+  Γ ⊢ ψ
+  where
+  H₃ =        ∅─⟨ H₂ ⟩
+    φ ∷ Γ ⊢ ψ ─⟨ ImpI ⟩
+    Γ ⊢ φ →̇ ψ
+```
 
+**<u>规则</u>** 切消 (内).
+
+```agda
 ImpCut : ∀ ψ → Γ ⊢ φ →̇ ψ → Γ ⊢ ψ →̇ ξ → Γ ⊢ φ →̇ ξ
-ImpCut ψ H₁ H₂ = ImpI $ Cut ψ (ImpE′ H₁) (Wkn1 $ ImpE′ H₂)
+ImpCut {Γ} {φ} {ξ} ψ H₁ H₂ =
+              ∅─⟨ Cut ψ H₃ H₄ ⟩
+  φ ∷ Γ ⊢ ξ   ─⟨ ImpI ⟩
+  Γ ⊢ φ →̇ ξ
+  where
+  H₃ =        ∅─⟨ H₁ ⟩
+    Γ ⊢ φ →̇ ψ ─⟨ ImpE′ ⟩
+    φ ∷ Γ ⊢ ψ
+  H₄ =        ∅─⟨ H₂ ⟩
+    Γ ⊢ ψ →̇ ξ ─⟨ ImpE′ ⟩
+    ψ ∷ Γ ⊢ ξ ─⟨ Wkn1 ⟩
+    ψ ∷ φ ∷ Γ ⊢ ξ
 ```
 
 ## 局部无名
 
 借助“未使用变元”的概念, 我们可以表述所谓**局部无名 (locally nameless)** 变换, 并且利用替换弱化规则, 我们可以证明它.
 
-**<u>规则</u>** 局部无名: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `↑ Γ ⊢ φ` 与 `Γ ⊢ φ [ # n ]₀` 逻辑等价.  
+**<u>规则</u>** 局部无名变换: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `↑ Γ ⊢ φ` 与 `Γ ⊢ φ [ # n ]₀` 逻辑等价.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
@@ -257,20 +299,34 @@ Nameless : ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀
 Nameless {Γ} {φ} = nameless-conversion (freshVar∷-fresh (∀̇ φ) Γ) (freshVar∷-freshᵩ (∀̇ φ) Γ)
 ```
 
-**<u>规则</u>** `AllI` 的变体: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.  
-**<u>证明</u>** 由局部无名变换及 `AllI` 即得. ∎
+**<u>规则</u>** `AllI` 的变体: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `Γ ⊢ φ [ # n ]₀` 蕴含 `Γ ⊢ ∀̇ φ`.
 
 ```agda
 AllI′ : Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀ → Γ ⊢ ∀̇ φ
-AllI′ = AllI ∘ Nameless .⇐
+AllI′ {Γ} {φ} H =
+                ∅─⟨ H ⟩
+  Γ ⊢ φ [ _ ]₀  ─⟨ Nameless .⇐ ⟩
+  ↑ Γ ⊢ φ       ─⟨ AllI ⟩
+  Γ ⊢ ∀̇ φ
 ```
 
-**<u>重言式</u>** TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>重言式</u>** `∀̇` 对 `→̇` 分配.
 
 ```agda
 AllDistrbImp : ⊩ ∀̇ (φ →̇ ψ) → ⊩ ∀̇ φ →̇ ∀̇ ψ
-AllDistrbImp ⊩∀̇ = ImpI′ λ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩∀̇) (AllE Γ⊢∀̇φ))
+AllDistrbImp {φ} {ψ} H₁ = ImpI′ H₂
+  where
+  H₂ : Γ ⊢ (∀̇ φ) → Γ ⊢ (∀̇ ψ)
+  H₂ {Γ} H₃ =                 ∅─⟨ ImpE H₄ H₅ ⟩
+    Γ ⊢ ψ [ _ ]₀              ─⟨ AllI′ ⟩
+    Γ ⊢ (∀̇ ψ)
+    where
+    H₄ =                      ∅─⟨ H₁ ⟩
+      Γ ⊢ ∀̇ (φ →̇ ψ)           ─⟨ AllE ⟩
+      Γ ⊢ φ [ _ ]₀ →̇ ψ [ _ ]₀
+    H₅ =                      ∅─⟨ H₃ ⟩
+      Γ ⊢ (∀̇ φ)               ─⟨ AllE ⟩
+      Γ ⊢ φ [ _ ]₀
 ```
 
 ## 排中律
@@ -282,24 +338,27 @@ AllDistrbImp ⊩∀̇ = ImpI′ λ Γ⊢∀̇φ → AllI′ (ImpE (AllE ⊩∀̇
 ¬̇ φ = φ →̇ ⊥̇
 ```
 
-**<u>规则</u>** 虚空真: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>规则</u>** 虚空真.
 
 ```agda
 Vac : φ ∷ Γ ⊢ ψ → ¬̇ ψ ∷ Γ ⊢ φ →̇ ξ
-Vac = ImpI ∘ Swap ∘ FalseE ∘ App
+Vac {φ} {Γ} {ψ} {ξ} H =
+                    ∅─⟨ H ⟩
+  φ ∷ Γ ⊢ ψ         ─⟨ App ⟩
+  ψ →̇ ⊥̇ ∷ φ ∷ Γ ⊢ ⊥̇ ─⟨ FalseE ⟩
+  ψ →̇ ⊥̇ ∷ φ ∷ Γ ⊢ ξ ─⟨ Swap ⟩
+  φ ∷ ψ →̇ ⊥̇ ∷ Γ ⊢ ξ ─⟨ ImpI ⟩
+  ¬̇ ψ ∷ Γ ⊢ φ →̇ ξ
 ```
 
-**<u>规则</u>** 反证法: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>规则</u>** 反证法.
 
 ```agda
 Contra : ¬̇ φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ
 Contra {φ} H = ImpE (Peirce φ ⊥̇) (ImpI $ FalseE $ H)
 ```
 
-**<u>规则</u>** 排中律: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>规则</u>** 排中律.
 
 ```agda
 LEM : ∀ φ → φ ∷ Γ ⊢ ψ → ¬̇ φ ∷ Γ ⊢ ψ → Γ ⊢ ψ
@@ -308,8 +367,7 @@ LEM φ H₁ H₂ = Contra $ Cut (¬̇ φ)
   (Swap $ App H₂)
 ```
 
-**<u>重言式</u>** 双重否定消去: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>重言式</u>** 双重否定消去.
 
 ```agda
 DNE : ⊩ ¬̇ ¬̇ φ →̇ φ
@@ -325,8 +383,7 @@ DNE = ImpI $ Contra $ ImpE′ Ctx0
 ∃̇ φ = ¬̇ ∀̇ ¬̇ φ
 ```
 
-**<u>规则</u>** 存在量词的引入: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>规则</u>** 存在量词的引入.
 
 ```agda
 ExI : ∀ t → Γ ⊢ φ [ t ]₀ → Γ ⊢ ∃̇ φ
@@ -335,8 +392,7 @@ ExI _ H = ImpI $ Cut _
   (App $ Wkn0 H)
 ```
 
-**<u>规则</u>** 存在量词的消去: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>规则</u>** 存在量词的消去.
 
 ```agda
 ExE : Γ ⊢ ∃̇ φ → φ ∷ ↑ Γ ⊢ ↑ᵩ ψ → Γ ⊢ ψ
@@ -345,16 +401,14 @@ ExE {φ} H₁ H₂ = Contra $ Cut (∀̇ ¬̇ φ)
   (ImpE′ $ Wkn0 H₁)
 ```
 
-**<u>重言式</u>** TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>重言式</u>** “并不存在否”蕴含“所有都是”.
 
 ```agda
 NotExNotAll : ⊩ ¬̇ ∃̇ ¬̇ φ →̇ ∀̇ φ
 NotExNotAll {φ} = ImpCut (∀̇ ¬̇ ¬̇ φ) DNE (AllDistrbImp $ AllI DNE)
 ```
 
-**<u>重言式</u>** 饮者悖论: TODO.  
-**<u>证明</u>** TODO. ∎
+**<u>重言式</u>** 饮者悖论: 存在一个人, 如果他喝酒, 那么所有人都喝酒.
 
 ```agda
 DP : ⊩ ∃̇ (φ →̇ ↑ᵩ (∀̇ φ))
@@ -389,4 +443,3 @@ ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wk
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
- 
