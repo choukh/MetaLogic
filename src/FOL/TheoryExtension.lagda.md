@@ -17,6 +17,7 @@ open import FOL.Syntax.Base ℒ hiding (Γ)
 open import FOL.Syntax.Discrete ℒ
 open import FOL.Syntax.Enumeration ℒ
 open import FOL.Syntax.FreshVariables ℒ
+open import FOL.Syntax.SubstitutionFacts ℒ
 open import FOL.Syntax.AdmissibleRule ℒ
 
 private variable
@@ -167,17 +168,20 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
   ℋ₊-con {n} = 𝟙.map aux where
     aux : ℋᵢ (suc n) ⊢ᵀ ⊥̇ → ℋᵢ n ⊢ᵀ ⊥̇
-    aux ⊢⊥̇ = {!   !} , {!   !} , {!   !} where
+    aux ⊢⊥̇ = Γ , Γ⊆ , Γ⊢⊥ where
       H : ℋᵢ n ⊢ᵀ ¬̇ Ax n
       H = ImpIᵀ {ℋᵢ n} ⊢⊥̇
       Γ = H .fst
       Γ⊆ = H .snd .fst
       Γ⊢ = H .snd .snd
+      eq : (¬̇ (Ψ n →̇ ↑ᵩ (∀̇ Ψ n))) [ # n ]₀ ≡ ¬̇ Ax n
+      eq = cong (_→̇ ⊥̇) $ cong ((Ψ n) [ # n ]₀ →̇_) ↑ᵩ[]₀
       Γ⊢′ : Γ ⊢ (¬̇ (Ψ n →̇ ↑ᵩ (∀̇ Ψ n))) [ # n ]₀
-      Γ⊢′ = subst (Γ ⊢_) {!   !} Γ⊢
+      Γ⊢′ = subst (Γ ⊢_) eq Γ⊢
       ↑Γ⊢ : ↑ Γ ⊢ ¬̇ (Ψ n →̇ ↑ᵩ (∀̇ Ψ n))
-      ↑Γ⊢ = nameless-conversion {!   !} {!   !} .⇐ Γ⊢′
-      --ImpE′ ↑Γ⊢
+      ↑Γ⊢ = nameless-conversion {!  Γ⊆ !} {!   !} .⇐ Γ⊢′
+      Γ⊢⊥ : Γ ⊢ ⊥̇
+      Γ⊢⊥ = ExE DP (ImpE′ ↑Γ⊢)
 
   open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
     renaming ( 𝒯ω to ℋω
