@@ -240,19 +240,39 @@ ImpCut {Γ} {φ} {ξ} ψ H₁ H₂ =
 借助“未使用变元”的概念, 我们可以表述所谓**局部无名 (locally nameless)** 变换, 并且利用替换弱化规则, 我们可以证明它.
 
 **<u>规则</u>** 局部无名变换: 如果 `n` 在 `Γ` 以及 `∀̇ φ` 中未使用, 那么 `↑ Γ ⊢ φ` 与 `Γ ⊢ φ [ # n ]₀` 逻辑等价.  
-**<u>证明</u>** TODO. ∎
+**<u>证明</u>** 左边到右边, 如以下演绎得证.
 
 ```agda
 nameless-conversion : fresh n Γ → freshᵩ n (∀̇ φ) → ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # n ]₀
 nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
-  ⇒: AllE ∘ AllI
-  ⇐: λ Γ⊢φ[n] → subst2 (_⊢_) eq1 eq2 (SubstWkn (ζ n) Γ⊢φ[n])
+  ⇒: (λ H →         ∅─⟨ H ⟩
+    ↑ Γ ⊢ φ         ─⟨ AllI ⟩
+    Γ ⊢ ∀̇ φ         ─⟨ AllE ⟩
+    Γ ⊢ φ [ # n ]₀  )
+```
+
+右边到左边, 要证 `Γ ⊢ φ [ # n ]₀` 蕴含 `↑ Γ ⊢ φ`. 整体思路是找到一个替换 `ζ n`, 同时作用于 `Γ ⊢ φ [ # n ]₀` 的两边, 得到的 `⊢` 式由 `SubstWkn` 也成立, 并且正好等于 `↑ Γ ⊢ φ`.
+
+```agda
+  ⇐: (λ Γ⊢φ[n] → subst2 (_⊢_) eq1 eq2 (SubstWkn (ζ n) Γ⊢φ[n]))
   where
+```
+
+`ζ n` 的定义如下: 对任意 `k : ℕ`, 如果它等于 `n`, 那么将它替换为 `# 0`, 否则替换为 `# (suc k)`. 其实际效果简单理解就是将 `# n` 指定为了本来由 `# 0` 承担的角色, 术语叫绑定子 (binder). 所以 `ζ` 也叫绑定子切换函数. 如下代码注释给出了一个实例: 将 `# 4` 切换为绑定子.
+
+```agda
   -- switch binder to n
   -- k   = 0 1 2 3 4 5 6 ...
   -- ζ 4 = 1 2 3 4 0 6 7 ...
   ζ : ℕ → Subst
   ζ n = λ k → if does (k ≟ n) then # 0 else # (suc k)
+```
+
+为了证明 `Γ ⊢ φ [ # n ]₀` 两边同时做 `ζ n` 后与 `↑ Γ ⊢ φ` 相等, 我们需要先证明 `ζ` 的两个性质.
+
+`ζ` 的性质一: 如果 `n` 是 `φ` 的新变元, 那么 `φ [ ζ n ]ᵩ` 等于 `↑ᵩ φ`. 其证明可以从如下代码注释去理解, 其中 `# 4` 是新变元.
+
+```agda
   -- k        = 0 1 2 3 | 4
   -- [ ζ 4 ]ᵩ = 1 2 3 4 | 0
   ζ-lift : ∀ n φ → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ᵩ φ
@@ -261,6 +281,11 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
     H m m≢n with m ≡ᵇ n in m≡ᵇn
     ... | true = exfalso $ m≢n $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 m≡ᵇn tt
     ... | false = refl
+```
+
+`ζ` 的性质二: 如果 `suc n` 是 `φ` 的新变元, 那么 `φ` 的 `# n` 应用再做 `ζ n` 等于 `φ`. 其证明可以从如下代码注释去理解, 其中 `# 4` 是新变元.
+
+```agda
   -- k                 = 0 1 2 3 | 4
   -- [ # 3 ]₀          = 3 0 1 2 | 4
   -- [ # 3 ]₀ [ ζ 3 ]ᵩ = 0 1 2 3 | 4
@@ -277,13 +302,23 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
     H (suc m) sm≢sn with m ≡ᵇ n in m≡ᵇn
     ... | true = exfalso $ sm≢sn $ cong suc $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 m≡ᵇn tt
     ... | false = refl
+```
+
+最后, 使用`ζ` 的性质一以及 `map` 的外延性可证 `map (_[ ζ n ]ᵩ) Γ ≡ ↑ Γ`.
+
+```agda
   eq1 : map (_[ ζ n ]ᵩ) Γ ≡ ↑ Γ
   eq1 = map-ext (λ φ φ∈Γ → ζ-lift n φ (freshΓ φ∈Γ))
-  eq2 : (φ [ # n ]₀) [ ζ n ]ᵩ ≡ φ
+```
+
+使用本引理的前提消去 `ζ` 的性质二的前件, 即证 `φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ`. ∎
+
+```agda
+  eq2 : φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
   eq2 = ζ-id n φ freshᵩ-suc
 ```
 
-我们可以实际使用对 `∀̇ φ` 和 `Γ` 来说都未使用的变元来消掉上述引理的两个前件.
+**<u>规则</u>** 局部无名变换 (使用对 `∀̇ φ` 和 `Γ` 来说都未使用的变元消掉上述规则的两个前件后的规则).
 
 ```agda
 Nameless : ↑ Γ ⊢ φ ↔ Γ ⊢ φ [ # $ freshVar $ ∀̇ φ ∷ Γ ]₀
@@ -435,12 +470,11 @@ ExE {Γ} {φ} {ψ} H₁ H₂ =     ∅─⟨ Cut (∀̇ ¬̇ φ) H₃ H₄ ⟩
 
 ```agda
 ExEI : φ ∷ ↑ Γ ⊢ ψ → ∃̇ φ ∷ Γ ⊢ ∃̇ ψ
-ExEI {φ} {Γ} {ψ} H = ExE Ctx0 H′ where
-  H′ =                                      ∅─⟨ H ⟩
-    φ ∷ ↑ Γ ⊢ ψ                             ─⟨ subst (_ ⊢_) ↑ₛ[]₀ ⟩
-    φ ∷ ↑ Γ ⊢ ψ [ ↑ₛ (# ∘ suc) ]ᵩ [ # 0 ]₀  ─⟨ ExI (# 0) ⟩
-    φ ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)                      ─⟨ Wkn1 ⟩
-    φ ∷ ↑ᵩ (∃̇ φ) ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)
+ExEI {φ} {Γ} {ψ} H = ExE Ctx0 $           ∅─⟨ H ⟩
+  φ ∷ ↑ Γ ⊢ ψ                             ─⟨ subst (_ ⊢_) ↑ₛ[]₀ ⟩
+  φ ∷ ↑ Γ ⊢ ψ [ ↑ₛ (# ∘ suc) ]ᵩ [ # 0 ]₀  ─⟨ ExI (# 0) ⟩
+  φ ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)                      ─⟨ Wkn1 ⟩
+  φ ∷ ↑ᵩ (∃̇ φ) ∷ ↑ Γ ⊢ ↑ᵩ (∃̇ ψ)
 ```
 
 **<u>重言式</u>** “不存在否”蕴含“所有都是”.
@@ -476,12 +510,16 @@ DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
 
 ## 理论版规则
 
-TODO
+对于 `⊢ᵀ` 的证明, 我们主要转化为证明 `⊢`, 一些常用的转化总结如下.
+
+**<u>规则</u>** `Ctx` 的理论版.
 
 ```agda
 Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊢ᵀ φ
 Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx0
 ```
+
+**<u>规则</u>** `ImpI` 的理论版.
 
 ```agda
 ImpIᵀ : (𝒯 ⨭ φ) ⊢ᵀ ψ → 𝒯 ⊢ᵀ φ →̇ ψ
@@ -500,4 +538,3 @@ ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wk
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
- 
