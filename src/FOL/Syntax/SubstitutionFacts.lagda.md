@@ -15,7 +15,7 @@ open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 
 private variable
-  n : ℕ
+  n m : ℕ
   σ τ : Subst
 ```
 
@@ -209,7 +209,7 @@ private variable
 
 ## 含新变元的替换
 
-**<u>引理</u>** 如果对任意 `n`, 要么 `n` 对 `t` 是新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `t [ σ ]ₜ ≡ t [ τ ]ₜ`.
+**<u>引理</u>** 如果对任意 `n`, 要么 `n` 是 `t` 的新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `t [ σ ]ₜ ≡ t [ τ ]ₜ`.
 
 ```agda
 []ₜ-ext-freshₜ-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
@@ -225,7 +225,7 @@ private variable
     λ t t∈⃗ → IH t t∈⃗ λ n Pn → fresh$̇-elim (Hfresh n Pn) t t∈⃗
 ```
 
-**<u>引理</u>** 如果对任意 `n`, 要么 `n` 对 `φ` 是新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
+**<u>引理</u>** 如果对任意 `n`, 要么 `n` 是 `φ` 的新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
 
 ```agda
 []ᵩ-ext-freshᵩ-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
@@ -251,11 +251,47 @@ private variable
   H3 (suc n) Pn = fresh∀̇-elim (Hfresh n Pn)
 ```
 
-**<u>引理</u>** 如果 `n` 对 `φ` 是新变元, 且 `σ` 与 `τ` 在 `n` 之外逐点相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
+**<u>引理</u>** 如果 `n` 是 `φ` 的新变元, 且 `σ` 与 `τ` 在 `n` 之外逐点相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
 
 ```agda
 []ᵩ-ext-freshᵩ : freshᵩ n φ → (∀ m → m ≢ n → σ m ≡ τ m) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
 []ᵩ-ext-freshᵩ {n} {φ} Hfresh Hext = []ᵩ-ext-freshᵩ-dec {P = _≡ n} (λ _ → it) Hext φ λ { _ refl → Hfresh }
+```
+
+**<u>引理</u>** 如果对任意 `n : ℕ` 要么 `n` 是 `t` 的新变元要么 `m` 是 `σ n` 的新变元, 那么 `m` 是 `t [ σ ]ₜ` 的新变元.
+
+```agda
+[]ₜ-freshₜ : ∀ t → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)
+[]ₜ-freshₜ {m} {σ} = term-elim H1 H2 where
+  H1 : ∀ k → (∀ n → freshₜ n (# k) ⊎ freshₜ m (σ n)) → freshₜ m (# k [ σ ]ₜ)
+  H1 k H with H k
+  ... | inj₁ (fresh# k≢k) = exfalso (k≢k refl)
+  ... | inj₂ H = H
+  H2 : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)) →
+      (∀ n → freshₜ n (f $̇ t⃗) ⊎ freshₜ m (σ n)) → freshₜ m ((f $̇ t⃗) [ σ ]ₜ)
+  H2 f t⃗ IH H rewrite []ₜ⃗≡map⃗ t⃗ σ = fresh$̇ (map⃗⊆P H3) where
+    H3 : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
+    H3 t t∈⃗ = IH t t∈⃗ H4 where
+      H4 : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
+      H4 n with H n
+      ... | inj₁ (fresh$̇ H) = inj₁ (H t t∈⃗)
+      ... | inj₂ H = inj₂ H
+```
+
+**<u>引理</u>** 如果对任意 `n : ℕ` 要么 `n` 是 `φ` 的新变元要么 `m` 是 `σ n` 的新变元, 那么 `m` 是 `φ [ σ ]ᵩ` 的新变元.
+
+```agda
+[]ₜ-freshᵩ : (∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)) → freshᵩ m (φ [ σ ]ᵩ)
+[]ₜ-freshᵩ {(⊥̇)}   H = fresh⊥̇
+[]ₜ-freshᵩ {φ →̇ ψ} H = fresh→̇ ([]ₜ-freshᵩ {! H  !}) ([]ₜ-freshᵩ {!   !})
+[]ₜ-freshᵩ {∀̇ φ}   H = fresh∀̇ ([]ₜ-freshᵩ {!   !})
+[]ₜ-freshᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H1) where
+  H1 : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
+  H1 t t∈⃗ = []ₜ-freshₜ t H2 where
+    H2 : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
+    H2 n with H n
+    ... | inj₁ (fresh$̇ H) = inj₁ (H t t∈⃗)
+    ... | inj₂ H = inj₂ H
 ```
 
 ---

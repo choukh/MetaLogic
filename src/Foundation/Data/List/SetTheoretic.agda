@@ -60,8 +60,8 @@ map-ext {xs = x ∷ xs} H = cong2 _∷_ (H x $ here refl) (map-ext (λ y y∈xs 
 ∈map-elim : y ∈ map f xs → Σ x ， x ∈ xs × y ≡ f x
 ∈map-elim {f} = Iso←ⓢ (∈map-iff f) .inv
 
-map⊆P-intro : (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
-map⊆P-intro {P} H y y∈map with ∈map-elim y∈map
+map⊆P : (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
+map⊆P {P} H y y∈ with ∈map-elim y∈
 ... | x , x∈xs , y≡fx = subst P y≡fx $ H x x∈xs
 
 infixr 6 _[×]_
