@@ -19,9 +19,10 @@ open import Data.Nat.Properties public
   using ()
   renaming (z≤′n to z≤n; s≤′s to s≤s)
 
-import Data.Nat as ℕ
-open import Data.Nat.Properties as ℕ
+open import Data.Nat.Properties as ℕ public
   using (≤⇒≤′; ≤′⇒≤)
+
+import Data.Nat as ℕ
 
 infix 5 _≰_
 

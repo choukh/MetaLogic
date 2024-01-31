@@ -141,59 +141,100 @@ record GeneralizedExtension : 𝕋₁ where
 
 ```agda
   𝒯ω-closed : (∀ n → closedTheory (𝒯ᵢ n)) → closedTheory 𝒯ω
-  𝒯ω-closed H φ = 𝟙.rec (isPredClosed φ) λ { (m , φ∈𝒯ₘ) → H m φ φ∈𝒯ₘ }
+  𝒯ω-closed H = 𝟙.rec isPropClosed λ { (m , φ∈𝒯ₘ) → H m φ∈𝒯ₘ }
 ```
 
 ### Henkin扩张
 
 这里讲的Henkin扩张采用 [Herbelin 和 Ilik](https://pauillac.inria.fr/~herbelin/articles/godel-completeness-draft16.pdf) 对原版Henkin扩张的构造主义改良版本.
 
+Henkin扩张的输入是一个闭理论. 由于 `Formula` 是一个集合, 我们可以对公式的集合合法使用添加元素 `_⨭_` 操作.
+
 ```agda
 module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   open SetOperation (discreteSet {A = Formula})
+```
 
+```agda
   isℋ : Theory → 𝕋₁
   isℋ 𝒯 = ∀ 𝒯′ φ → 𝒯 ⊆ 𝒯′ → (∀ t → ∥ 𝒯′ ⊢ᵀ φ [ t ]₀ ∥₁) → ∥ 𝒯′ ⊢ᵀ ∀̇ φ ∥₁
+```
 
+```agda
   Ax : ℕ → Formula
   Ax n = (Ψ n) [ # n ]₀ →̇ ∀̇ (Ψ n)
+```
 
+```agda
   ℋᵢ : ℕ → Theory
   ℋᵢ zero = 𝒯ⁱ
   ℋᵢ (suc n) = ℋᵢ n ⨭ Ax n
+```
 
+```agda
   ℋ₊-sub : ℋᵢ n ⊆ ℋᵢ (suc n)
   ℋ₊-sub {n} = ⊆⨭ (ℋᵢ n)
+```
 
+```agda
+  ℋᵢ-fresh : n ≤ m → φ ∈ ℋᵢ n → freshᵩ m φ
+  ℋᵢ-fresh {n = zero} _ φ∈ = 𝒯ⁱ-closed φ∈ (≤′⇒≤ z≤n)
+  ℋᵢ-fresh {n = suc n} {m} sn≤m = 𝟙.rec isPropFreshᵩ
+    λ { (inj₁ φ∈) → ℋᵢ-fresh n≤m φ∈
+      ; (inj₂ refl) → fresh→̇ {!   !} (fresh∀̇ (Ψ-fresh n≤sm))}
+    where
+    n≤m : n ≤ m
+    n≤m = ≤-trans (≤-step ≤-refl) sn≤m
+    n≤sm : n ≤ suc m
+    n≤sm = ≤-trans (≤-step ≤-refl) (s≤s n≤m)
+```
+
+```agda
   ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
   ℋ₊-con {n} = 𝟙.map aux where
     aux : ℋᵢ (suc n) ⊢ᵀ ⊥̇ → ℋᵢ n ⊢ᵀ ⊥̇
     aux ⊢⊥̇ = Γ , Γ⊆ , Γ⊢⊥ where
+```
+
+```agda
       H : ℋᵢ n ⊢ᵀ ¬̇ Ax n
       H = ImpIᵀ {ℋᵢ n} ⊢⊥̇
       Γ = H .fst
       Γ⊆ = H .snd .fst
       Γ⊢ = H .snd .snd
+```
+
+```agda
       eq : (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)) [ # n ]₀ ≡ ¬̇ Ax n
       eq = cong (_→̇ ⊥̇) $ cong ((Ψ n) [ # n ]₀ →̇_) ↑[]₀
       Γ⊢′ : Γ ⊢ (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)) [ # n ]₀
       Γ⊢′ = subst (Γ ⊢_) eq Γ⊢
+```
+
+```agda
       ↑Γ⊢ : ⇞ Γ ⊢ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)
-      ↑Γ⊢ = nameless-conversion fresh1 {!   !} .⇐ Γ⊢′ where
-        fresh1 : fresh n Γ
-        fresh1 φ∈Γ = {!   !}
-        fresh2 : freshᵩ n (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
-        fresh2 = {!   !}
+      ↑Γ⊢ = nameless-conversion H1 H2 .⇐ Γ⊢′ where
+        H1 : fresh n Γ
+        H1 φ∈ = ℋᵢ-fresh ≤-refl (Γ⊆ φ∈)
+        H2 : freshᵩ n (∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
+        H2 = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ {!   !})) fresh⊥̇
+```
+
+```agda
       Γ⊢⊥ : Γ ⊢ ⊥̇
       Γ⊢⊥ = ExE DP (ImpE′ ↑Γ⊢)
+```
 
+```agda
   open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
     renaming ( 𝒯ω to ℋω
              ; 𝒯ω-sub to ℋω-sub
              ; 𝒯ω-con to ℋω-con
              ; 𝒯ω-closed to ℋω-closed
              )
+```
 
+```agda
   ℋω-isℋ-Ψ : ∀ 𝒯 → ℋω ⊆ 𝒯 → 𝒯 ⊢ᵀ (Ψ n [ # n ]₀) → 𝒯 ⊢ᵀ (∀̇ (Ψ n))
   ℋω-isℋ-Ψ {n} 𝒯 ℋω⊆𝒯 (Γ , Γ⊆𝒯 , Γ⊢) = Ax n ∷ Γ , ∷⊆𝒯 , ∷⊢∀̇ where
     ∷⊆𝒯 : (Ax n ∷ Γ) ᴸ⊆ᴾ 𝒯
@@ -201,7 +242,9 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
     ∷⊆𝒯 (there φ∈Γ) = Γ⊆𝒯 φ∈Γ
     ∷⊢∀̇ : Ax n ∷ Γ ⊢ ∀̇ (Ψ n)
     ∷⊢∀̇ = ImpE (Ctx (here refl)) (Wkn there Γ⊢)
+```
 
+```agda
   ℋω-isℋ : isℋ ℋω
   ℋω-isℋ 𝒯 φ ℋω⊆𝒯 H∀ = 𝟙.rec 𝟙.squash H (Ψ-wit φ) where
     H : Σ n ， Ψ n ≡ φ → ∥ 𝒯 ⊢ᵀ (∀̇ φ) ∥₁

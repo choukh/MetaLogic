@@ -206,7 +206,7 @@ close-closed φ {m} _ with Σfreshᵩ φ
 
 ```agda
 closedTheory : Theory → 𝕋
-closedTheory 𝒯 = ∀ φ → φ ∈ 𝒯 → closed φ
+closedTheory 𝒯 = ∀ {φ} → φ ∈ 𝒯 → closed φ
 
 ClosedTheory : 𝕋₁
 ClosedTheory = Σ Theory closedTheory
@@ -223,21 +223,20 @@ isPropFreshₜ = term-elim
   (λ { _ (fresh# p) (fresh# q) → cong fresh# $ isProp→ isProp⊥ p q })
   (λ { f t⃗ IH (fresh$̇ p) (fresh$̇ q) → cong fresh$̇ $ isPropΠ2 IH p q })
 
-isPropFresh : ∀ {φ} → isProp (freshᵩ n φ)
-isPropFresh {φ = ⊥̇} fresh⊥̇ fresh⊥̇ = refl
-isPropFresh {φ = _ →̇ _} (fresh→̇ p₁ p₂) (fresh→̇ q₁ q₂) = cong2 fresh→̇ (isPropFresh p₁ q₁) (isPropFresh p₂ q₂)
-isPropFresh {φ = ∀̇ _} (fresh∀̇ p) (fresh∀̇ q) = cong fresh∀̇ (isPropFresh p q)
-isPropFresh {φ = _ $̇ _} (fresh$̇ p) (fresh$̇ q) = cong fresh$̇ (isPropΠ2 (λ t _ → isPropFreshₜ t) p q)
+isPropFreshᵩ : ∀ {φ} → isProp (freshᵩ n φ)
+isPropFreshᵩ {φ = ⊥̇} fresh⊥̇ fresh⊥̇ = refl
+isPropFreshᵩ {φ = _ →̇ _} (fresh→̇ p₁ p₂) (fresh→̇ q₁ q₂) = cong2 fresh→̇ (isPropFreshᵩ p₁ q₁) (isPropFreshᵩ p₂ q₂)
+isPropFreshᵩ {φ = ∀̇ _} (fresh∀̇ p) (fresh∀̇ q) = cong fresh∀̇ (isPropFreshᵩ p q)
+isPropFreshᵩ {φ = _ $̇ _} (fresh$̇ p) (fresh$̇ q) = cong fresh$̇ (isPropΠ2 (λ t _ → isPropFreshₜ t) p q)
 
-isPredClosed : isPred closed
-isPredClosed _ = isPropΠ̅ λ _ → isProp→ isPropFresh
+isPropClosed : isProp (closed φ)
+isPropClosed = isPropΠ̅ λ _ → isProp→ isPropFreshᵩ
 
-isPredClosedTheory : isPred closedTheory
-isPredClosedTheory _ = isPropΠ2 λ _ _ → isPredClosed _
+isPropClosedTheory : isProp (closedTheory 𝒯)
+isPropClosedTheory = isPropΠ̅ λ _ → isPropΠ λ _ → isPropClosed
 ```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/FreshVariables.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.FreshVariables.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.fresh)  
 > 交流Q群: 893531731
-  
