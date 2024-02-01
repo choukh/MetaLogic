@@ -15,12 +15,9 @@ open import Data.Nat public
     _⊔_ to max
   )
 
-open import Data.Nat.Properties public
-  using ()
-  renaming (z≤′n to z≤n; s≤′s to s≤s)
-
 open import Data.Nat.Properties as ℕ public
   using (≤⇒≤′; ≤′⇒≤)
+  renaming (z≤′n to z≤n; s≤′s to s≤s)
 
 import Data.Nat as ℕ
 
@@ -61,6 +58,9 @@ private
 ------------------------------------------------------------------------
 -- Relationships between _≤_ nad _<_
 
+<⇒≤ : m < n → m ≤ n
+<⇒≤ = map ℕ.<⇒≤
+
 ≤-<-trans : m ≤ n → n < o → m < o
 ≤-<-trans = map2 ℕ.≤-<-trans
 
@@ -69,6 +69,11 @@ private
 
 ≤-<-connex : ∀ m n → m ≤ n ⊎ m > n
 ≤-<-connex m n with ℕ.≤-<-connex m n
+... | inj₁ x = inj₁ (≤⇒≤′ x)
+... | inj₂ y = inj₂ (≤⇒≤′ y)
+
+<-≤-connex : ∀ m n → m < n ⊎ m ≥ n
+<-≤-connex m n with ℕ.<-≤-connex m n
 ... | inj₁ x = inj₁ (≤⇒≤′ x)
 ... | inj₂ y = inj₂ (≤⇒≤′ y)
 

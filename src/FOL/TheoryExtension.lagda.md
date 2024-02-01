@@ -181,12 +181,17 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   ℋᵢ-fresh {n = zero} _ φ∈ = 𝒯ⁱ-closed φ∈ (≤′⇒≤ z≤n)
   ℋᵢ-fresh {n = suc n} {m} sn≤m = 𝟙.rec isPropFreshᵩ
     λ { (inj₁ φ∈) → ℋᵢ-fresh n≤m φ∈
-      ; (inj₂ refl) → fresh→̇ {!   !} (fresh∀̇ (Ψ-fresh n≤sm))}
+      ; (inj₂ refl) → fresh→̇ (fresh[]ᵩ H) (fresh∀̇ (Ψ-fresh n≤sm))}
     where
     n≤m : n ≤ m
     n≤m = ≤-trans (≤-step ≤-refl) sn≤m
     n≤sm : n ≤ suc m
     n≤sm = ≤-trans (≤-step ≤-refl) (s≤s n≤m)
+    H : ∀ k → freshᵩ k (Ψ n) ⊎ freshₜ m ((# n ∷ₙ #) k)
+    H zero = inj₂ $ fresh# λ { refl → 1+n≰n sn≤m }
+    H (suc k) with <-≤-connex k m
+    ... | inj₁ H = inj₂ $ fresh# λ { refl → 1+n≰n H }
+    ... | inj₂ H = inj₁ $ Ψ-fresh (≤-trans n≤sm (s≤s H))
 ```
 
 ```agda
@@ -217,7 +222,12 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
         H1 : fresh n Γ
         H1 φ∈ = ℋᵢ-fresh ≤-refl (Γ⊆ φ∈)
         H2 : freshᵩ n (∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
-        H2 = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ {!   !})) fresh⊥̇
+        H2 = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ $ fresh[]ᵩ H3)) fresh⊥̇ where
+          H3 : ∀ k → freshᵩ k (Ψ n) ⊎ freshₜ (suc (suc n)) (↑ₛ (# ∘ suc) k)
+          H3 zero = inj₂ $ fresh# λ ()
+          H3 (suc k) with <-≤-connex k n
+          ... | inj₁ H = inj₂ $ fresh# λ { refl → 1+n≰n H }
+          ... | inj₂ H = inj₁ $ Ψ-fresh (≤-trans H (≤-step ≤-refl))
 ```
 
 ```agda

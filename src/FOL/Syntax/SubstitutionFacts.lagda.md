@@ -261,8 +261,8 @@ private variable
 **<u>引理</u>** 如果对任意 `n : ℕ` 要么 `n` 是 `t` 的新变元要么 `m` 是 `σ n` 的新变元, 那么 `m` 是 `t [ σ ]ₜ` 的新变元.
 
 ```agda
-[]ₜ-freshₜ : ∀ t → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)
-[]ₜ-freshₜ {m} {σ} = term-elim H1 H2 where
+fresh[]ₜ : ∀ t → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)
+fresh[]ₜ {m} {σ} = term-elim H1 H2 where
   H1 : ∀ k → (∀ n → freshₜ n (# k) ⊎ freshₜ m (σ n)) → freshₜ m (# k [ σ ]ₜ)
   H1 k H with H k
   ... | inj₁ (fresh# k≢k) = exfalso (k≢k refl)
@@ -281,13 +281,30 @@ private variable
 **<u>引理</u>** 如果对任意 `n : ℕ` 要么 `n` 是 `φ` 的新变元要么 `m` 是 `σ n` 的新变元, 那么 `m` 是 `φ [ σ ]ᵩ` 的新变元.
 
 ```agda
-[]ₜ-freshᵩ : (∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)) → freshᵩ m (φ [ σ ]ᵩ)
-[]ₜ-freshᵩ {(⊥̇)}   H = fresh⊥̇
-[]ₜ-freshᵩ {φ →̇ ψ} H = fresh→̇ ([]ₜ-freshᵩ {! H  !}) ([]ₜ-freshᵩ {!   !})
-[]ₜ-freshᵩ {∀̇ φ}   H = fresh∀̇ ([]ₜ-freshᵩ {!   !})
-[]ₜ-freshᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H1) where
+fresh[]ᵩ : (∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)) → freshᵩ m (φ [ σ ]ᵩ)
+fresh[]ᵩ {(⊥̇)} H = fresh⊥̇
+fresh[]ᵩ {φ →̇ ψ} {m} {σ} H = fresh→̇ (fresh[]ᵩ H1) (fresh[]ᵩ H2) where
+  H1 : ∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)
+  H1 n with H n
+  ... | inj₁ (fresh→̇ H _) = inj₁ H
+  ... | inj₂ H = inj₂ H
+  H2 : ∀ n → freshᵩ n ψ ⊎ freshₜ m (σ n)
+  H2 n with H n
+  ... | inj₁ (fresh→̇ _ H) = inj₁ H
+  ... | inj₂ H = inj₂ H
+fresh[]ᵩ {∀̇ φ} {m} {σ} H = fresh∀̇ (fresh[]ᵩ H1) where
+  H1 : ∀ n → freshᵩ n φ ⊎ freshₜ (suc m) (↑ₛ σ n)
+  H1 zero = inj₂ $ fresh# λ ()
+  H1 (suc n) with H n
+  ... | inj₁ (fresh∀̇ H) = inj₁ H
+  ... | inj₂ H = inj₂ $ fresh[]ₜ (σ n) H2 where
+    H2 : ∀ k → freshₜ k (σ n) ⊎ freshₜ (suc m) (# (suc k))
+    H2 k with k ≟ m
+    ... | yes refl = inj₁ H
+    ... | no k≢m = inj₂ $ fresh# λ { refl → exfalso (k≢m refl)}
+fresh[]ᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H1) where
   H1 : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
-  H1 t t∈⃗ = []ₜ-freshₜ t H2 where
+  H1 t t∈⃗ = fresh[]ₜ t H2 where
     H2 : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
     H2 n with H n
     ... | inj₁ (fresh$̇ H) = inj₁ (H t t∈⃗)
