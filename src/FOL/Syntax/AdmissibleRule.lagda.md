@@ -491,7 +491,7 @@ NotExNotAll {φ} {Γ} = ImpCut (∀̇ ¬̇ ¬̇ φ) H₁ (AllDistrbImp H₂)
     Γ ⊢ ∀̇ (¬̇ ¬̇ φ →̇ φ)
 ```
 
-**<u>重言式</u>** 饮者悖论: 存在一个人, 如果他喝酒, 那么所有人都喝酒.
+**<u>重言式</u>** 饮者“悖论”: 存在一个人, 如果他喝酒, 那么所有人都喝酒.
 
 ```agda
 DP : ⊩ ∃̇ (φ →̇ ↑ ∀̇ φ)
@@ -523,15 +523,15 @@ Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx0
 
 ```agda
 ImpIᵀ : (𝒯 ⨭ φ) ⊢ᵀ ψ → 𝒯 ⊢ᵀ φ →̇ ψ
-ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H1 , ImpI (Wkn H2 Γ⊢) where
-  H1 : Γ ∖[ φ ] ᴸ⊆ᴾ 𝒯
-  H1 {x} x∈ with ∈∖[]-elim x∈
+ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H₁ , ImpI (Wkn H₂ Γ⊢) where
+  H₁ : Γ ∖[ φ ] ᴸ⊆ᴾ 𝒯
+  H₁ {x} x∈ with ∈∖[]-elim x∈
   ... | x∈Γ , x≢φ = 𝟙.rec (isProp∈ {x = x} {𝒯}) H (Γ⊆𝒯⨭φ x∈Γ) where
     H : x ∈ 𝒯 ⊎ x ∈ ｛ φ ｝ → x ∈ 𝒯
     H (inj₁ p) = p
     H (inj₂ refl) = exfalso (x≢φ refl)
-  H2 : Γ ⊆ᴸ φ ∷ Γ ∖[ φ ]
-  H2 = ⊆ᴸ-trans {j = φ ∷ Γ} there ∷⊆∷∖[]
+  H₂ : Γ ⊆ᴸ φ ∷ Γ ∖[ φ ]
+  H₂ = ⊆ᴸ-trans {j = φ ∷ Γ} there ∷⊆∷∖[]
 ```
 
 ---
