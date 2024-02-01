@@ -55,14 +55,14 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
 完备化扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
 
-1. Henkin扩张
+1. 极大全称扩张
 2. 极大一致扩张
 
 它们可以抽象出一个共通的基础构造: 理论的无穷扩张. 我们先讲这个.
 
 ### 理论的无穷扩张
 
-Henkin扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做理论的无穷扩张.
+极大全称扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做理论的无穷扩张.
 
 **<u>定义</u>** 理论的无穷扩张是理论的一个无穷序列, 其中每一项都是上一项的一致扩张.
 
@@ -144,44 +144,71 @@ record GeneralizedExtension : 𝕋₁ where
   𝒯ω-closed H = 𝟙.rec isPropClosed λ { (m , φ∈𝒯ₘ) → H m φ∈𝒯ₘ }
 ```
 
-### Henkin扩张
+### 极大全称扩张
 
-这里讲的Henkin扩张采用 [Herbelin 和 Ilik](https://pauillac.inria.fr/~herbelin/articles/godel-completeness-draft16.pdf) 对原版Henkin扩张的构造主义改良版本.
+我们这里讲的极大全称扩张是 [Herbelin 和 Ilik](https://arxiv.org/abs/2401.13304) 对所谓亨金扩张的构造主义改良版本. 这里不要求先掌握原版亨金扩张, 可以直接往下看.
 
-Henkin扩张的输入是一个闭理论. 由于 `Formula` 是一个集合, 我们可以对公式的集合合法使用添加元素 `_⨭_` 操作.
+极大全称扩张的输入是一个闭理论, 我们将它参数化, 并且导入对集合添加元素的操作 `_⨭_`. 由于 `Formula` 是一个集合, 我们可以对公式的集合 (理论) 合法地使用 `_⨭_`.
 
 ```agda
-module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
+module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   open SetOperation (discreteSet {A = Formula})
 ```
 
+极大全称扩张的目的是使得输入的闭理论极大全称化. 当然, 我们的最终目的是完备化, 怎么从极大全称化推出完备化会在本文最后讲解.
+
+**<u>定义</u>** 极大全称化: 我们说一个理论 `𝒯` 是极大全称化的, 当且仅当对 `𝒯` 的任意扩张 `𝒯′` 和任意公式 `φ`, 如果对任意项 `t`, `φ [ t ]₀ ` 都是 `𝒯′` 的定理, 那么 `∀̇ φ` 是 `𝒯′` 的定理.
+
 ```agda
-  isℋ : Theory → 𝕋₁
-  isℋ 𝒯 = ∀ 𝒯′ φ → 𝒯 ⊆ 𝒯′ → (∀ t → ∥ 𝒯′ ⊢ᵀ φ [ t ]₀ ∥₁) → ∥ 𝒯′ ⊢ᵀ ∀̇ φ ∥₁
+  isMaxAll : Theory → 𝕋₁
+  isMaxAll 𝒯 = ∀ 𝒯′ φ → 𝒯 ⊆ 𝒯′ → (∀ t → ∥ 𝒯′ ⊢ᵀ φ [ t ]₀ ∥₁) → ∥ 𝒯′ ⊢ᵀ ∀̇ φ ∥₁
 ```
+
+从该定义不难看出, 所谓极大全称化, 说白了就是使所有在元层面看起来成立的全称量化事实都成为理论的内定理. 它的实现也相当直接, 就是将所有这样的事实推理全部都用对象语言写成蕴含式, 并添加到原理论中. 这些被添加的蕴含式叫做**全称公理**, 对每个公式都有一条, 如以下代码所示. 其中 `Ψ` 是公式的枚举函数, 其构造使得 `# n` 在 `Ψ n` 中未使用. 回顾可容许规则 `AllI′` 不难看出此公理也是可容许的 (相对一致的), 其严格证明会在后面给出.
 
 ```agda
   Ax : ℕ → Formula
-  Ax n = (Ψ n) [ # n ]₀ →̇ ∀̇ (Ψ n)
+  Ax n = Ψ n [ # n ]₀ →̇ ∀̇ Ψ n
 ```
 
-```agda
-  ℋᵢ : ℕ → Theory
-  ℋᵢ zero = 𝒯ⁱ
-  ℋᵢ (suc n) = ℋᵢ n ⨭ Ax n
-```
+由于公式有可数无穷个, 此扩张也需要可数无穷步. 其中第 `0` 步是原理论, 第 `suc n` 步是第 `n` 步的理论添加上 `Ψ n` 的全称公理 `Ax n`. 每一步所得到的理论记作 `𝒜 n`.
 
 ```agda
-  ℋ₊-sub : ℋᵢ n ⊆ ℋᵢ (suc n)
-  ℋ₊-sub {n} = ⊆⨭ (ℋᵢ n)
+  𝒜 : ℕ → Theory
+  𝒜 zero = 𝒯ⁱ
+  𝒜 (suc n) = 𝒜 n ⨭ Ax n
 ```
 
+接下来我们希望套用上一小节建立的无穷扩张框架, 说明 `𝒜` 的极限是原理论的一致扩张. 为此, 需要证明 `𝒜` 的每一步都是上一步的一致扩张.
+
+**<u>引理</u>** `𝒜` 的每一步都是上一步的扩张.  
+**<u>证明</u>** 依定义即得. ∎
+
 ```agda
-  ℋᵢ-fresh : n ≤ m → φ ∈ ℋᵢ n → freshᵩ m φ
-  ℋᵢ-fresh {n = zero} _ φ∈ = 𝒯ⁱ-closed φ∈ (≤′⇒≤ z≤n)
-  ℋᵢ-fresh {n = suc n} {m} sn≤m = 𝟙.rec isPropFreshᵩ
-    λ { (inj₁ φ∈) → ℋᵢ-fresh n≤m φ∈
-      ; (inj₂ refl) → fresh→̇ (fresh[]ᵩ H) (fresh∀̇ (Ψ-fresh n≤sm))}
+  𝒜-sub : 𝒜 n ⊆ 𝒜 (suc n)
+  𝒜-sub {n} = ⊆⨭ (𝒜 n)
+```
+
+**<u>引理</u>** 对任意 `φ ∈ 𝒜 n`, 任意 `m ≥ n` 都是 `φ` 的新变元.  
+**<u>证明</u>** 对 `n` 归纳.
+
+- `n` 为零时, `𝒜 0` 就是原理论 `𝒯ⁱ`. 由于 `𝒯ⁱ` 是闭理论, 所以任意 `m ≥ 0` 都是任意 `φ ∈ 𝒯ⁱ` 的新变元.
+- `n` 为后继时, 有 `φ ∈ 𝒜 n ⨭ Ax n`, 分两种情况:
+  - `φ` 是 `𝒜 n` 的成员, 那么由归纳假设, 任意 `m ≥ n` 都是 `φ` 的新变元.
+  - `φ` 是 `Ax n`, 要证 `m` 是 `Ψ n [ # n ]₀ →̇ ∀̇ Ψ n` 的新变元, 需要分别说明 `m` 是蕴含式左右两边的新变元.
+    - 对于右边, 只要证 `suc m` 是 `Ψ n` 的新变元, 由 `suc m ≥ n` 即证.
+    - 对于左边, 要证对任意 `k`, 要么 `k` 是 `Ψ n` 的新变元, 要么 `m` 是项 `(# n ∷ₙ #) k` 的新变元. 讨论 `k`.
+      - `k` 为零时, `(# n ∷ₙ #) k` 即为 `# n`. 由于 `n ≢ m`, `m` 是 `# n` 的新变元.
+      - `k` 为后继 `suc k` 时, `(# n ∷ₙ #) k` 即为 `# k`. 讨论 `k` 与 `m` 的大小关系.
+        - 若 `k < m`, 则 `k ≢ m`, 所以 `m` 是 `# k` 的新变元.
+        - 若 `k ≥ m`, 则 `suc k ≥ suc m ≥ n`, 所以 `suc k` 是 `Ψ n` 的新变元.
+
+```agda
+  𝒜-fresh : n ≤ m → φ ∈ 𝒜 n → freshᵩ m φ
+  𝒜-fresh {n = zero} _ φ∈ = 𝒯ⁱ-closed φ∈ (≤′⇒≤ z≤n)
+  𝒜-fresh {n = suc n} {m} sn≤m = 𝟙.rec isPropFreshᵩ
+    λ { (inj₁ φ∈) → 𝒜-fresh n≤m φ∈
+      ; (inj₂ refl) → fresh→̇ (fresh[]ᵩ H) (fresh∀̇ (Ψ-fresh n≤sm)) }
     where
     n≤m : n ≤ m
     n≤m = ≤-trans (≤-step ≤-refl) sn≤m
@@ -194,16 +221,19 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
     ... | inj₂ H = inj₁ $ Ψ-fresh (≤-trans n≤sm (s≤s H))
 ```
 
+**<u>引理</u>** `𝒜` 的每一步都与上一步相对一致.  
+**<u>证明</u>** 
+
 ```agda
-  ℋ₊-con : Con (ℋᵢ (suc n)) to (ℋᵢ n)
-  ℋ₊-con {n} = 𝟙.map aux where
-    aux : ℋᵢ (suc n) ⊢ᵀ ⊥̇ → ℋᵢ n ⊢ᵀ ⊥̇
+  𝒜-con : Con (𝒜 (suc n)) to (𝒜 n)
+  𝒜-con {n} = 𝟙.map aux where
+    aux : 𝒜 (suc n) ⊢ᵀ ⊥̇ → 𝒜 n ⊢ᵀ ⊥̇
     aux ⊢⊥̇ = Γ , Γ⊆ , Γ⊢⊥ where
 ```
 
 ```agda
-      H : ℋᵢ n ⊢ᵀ ¬̇ Ax n
-      H = ImpIᵀ {ℋᵢ n} ⊢⊥̇
+      H : 𝒜 n ⊢ᵀ ¬̇ Ax n
+      H = ImpIᵀ {𝒜 n} ⊢⊥̇
       Γ = H .fst
       Γ⊆ = H .snd .fst
       Γ⊢ = H .snd .snd
@@ -211,7 +241,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
 ```agda
       eq : (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)) [ # n ]₀ ≡ ¬̇ Ax n
-      eq = cong (_→̇ ⊥̇) $ cong ((Ψ n) [ # n ]₀ →̇_) ↑[]₀
+      eq = cong (_→̇ ⊥̇) $ cong (Ψ n [ # n ]₀ →̇_) ↑[]₀
       Γ⊢′ : Γ ⊢ (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)) [ # n ]₀
       Γ⊢′ = subst (Γ ⊢_) eq Γ⊢
 ```
@@ -220,7 +250,7 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       ↑Γ⊢ : ⇞ Γ ⊢ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)
       ↑Γ⊢ = nameless-conversion H1 H2 .⇐ Γ⊢′ where
         H1 : fresh n Γ
-        H1 φ∈ = ℋᵢ-fresh ≤-refl (Γ⊆ φ∈)
+        H1 φ∈ = 𝒜-fresh ≤-refl (Γ⊆ φ∈)
         H2 : freshᵩ n (∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
         H2 = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ $ fresh[]ᵩ H3)) fresh⊥̇ where
           H3 : ∀ k → freshᵩ k (Ψ n) ⊎ freshₜ (suc (suc n)) (↑ₛ (# ∘ suc) k)
@@ -231,34 +261,36 @@ module HenkinExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 ```
 
 ```agda
-      Γ⊢⊥ : Γ ⊢ ⊥̇
-      Γ⊢⊥ = ExE DP (ImpE′ ↑Γ⊢)
+      Γ⊢⊥ =                       ∅─⟨ ↑Γ⊢ ⟩
+        ⇞ Γ ⊢ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)   ─⟨ ImpE′ ⟩
+        Ψ n →̇ ↑ ∀̇ Ψ n ∷ ⇞ Γ ⊢ ⊥̇   ─⟨ ExE DP ⟩
+        Γ ⊢ ⊥̇
 ```
 
 ```agda
-  open GeneralizedExtension (mkGenExt ℋᵢ ℋ₊-sub ℋ₊-con) public
-    renaming ( 𝒯ω to ℋω
-             ; 𝒯ω-sub to ℋω-sub
-             ; 𝒯ω-con to ℋω-con
-             ; 𝒯ω-closed to ℋω-closed
+  open GeneralizedExtension (mkGenExt 𝒜 𝒜-sub 𝒜-con) public
+    renaming ( 𝒯ω to 𝒜ω
+             ; 𝒯ω-sub to 𝒜ω-sub
+             ; 𝒯ω-con to 𝒜ω-con
+             ; 𝒯ω-closed to 𝒜ω-closed
              )
 ```
 
 ```agda
-  ℋω-isℋ-Ψ : ∀ 𝒯 → ℋω ⊆ 𝒯 → 𝒯 ⊢ᵀ (Ψ n [ # n ]₀) → 𝒯 ⊢ᵀ (∀̇ (Ψ n))
-  ℋω-isℋ-Ψ {n} 𝒯 ℋω⊆𝒯 (Γ , Γ⊆𝒯 , Γ⊢) = Ax n ∷ Γ , ∷⊆𝒯 , ∷⊢∀̇ where
+  𝒜ω-isMaxAll-Ψ : ∀ 𝒯 → 𝒜ω ⊆ 𝒯 → 𝒯 ⊢ᵀ Ψ n [ # n ]₀ → 𝒯 ⊢ᵀ ∀̇ Ψ n
+  𝒜ω-isMaxAll-Ψ {n} 𝒯 𝒜ω⊆𝒯 (Γ , Γ⊆𝒯 , Γ⊢) = Ax n ∷ Γ , ∷⊆𝒯 , ∷⊢∀̇ where
     ∷⊆𝒯 : (Ax n ∷ Γ) ᴸ⊆ᴾ 𝒯
-    ∷⊆𝒯 (here refl) = ℋω⊆𝒯 (ex (suc n) (inr refl))
+    ∷⊆𝒯 (here refl) = 𝒜ω⊆𝒯 (ex (suc n) (inr refl))
     ∷⊆𝒯 (there φ∈Γ) = Γ⊆𝒯 φ∈Γ
-    ∷⊢∀̇ : Ax n ∷ Γ ⊢ ∀̇ (Ψ n)
+    ∷⊢∀̇ : Ax n ∷ Γ ⊢ ∀̇ Ψ n
     ∷⊢∀̇ = ImpE (Ctx (here refl)) (Wkn there Γ⊢)
 ```
 
 ```agda
-  ℋω-isℋ : isℋ ℋω
-  ℋω-isℋ 𝒯 φ ℋω⊆𝒯 H∀ = 𝟙.rec 𝟙.squash H (Ψ-wit φ) where
+  𝒜ω-isMaxAll : isMaxAll 𝒜ω
+  𝒜ω-isMaxAll 𝒯 φ 𝒜ω⊆𝒯 H∀ = 𝟙.rec 𝟙.squash H (Ψ-wit φ) where
     H : Σ n ， Ψ n ≡ φ → ∥ 𝒯 ⊢ᵀ (∀̇ φ) ∥₁
-    H (n , refl) = 𝟙.map (ℋω-isℋ-Ψ 𝒯 ℋω⊆𝒯) (H∀ (# n))
+    H (n , refl) = 𝟙.map (𝒜ω-isMaxAll-Ψ 𝒯 𝒜ω⊆𝒯) (H∀ (# n))
 ```
 
 ### 极大一致扩张
