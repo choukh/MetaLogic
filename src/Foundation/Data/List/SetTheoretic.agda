@@ -25,6 +25,7 @@ open import Data.List.Relation.Binary.Subset.Propositional public
   using (_⊆_; _⊈_)
 open import Data.List.Relation.Binary.Subset.Propositional.Properties public
   using (⊆-trans)
+  renaming (xs⊆xs++ys to ⊆++ˡ; xs⊆ys++xs to ⊆++ʳ)
 
 private variable
   n : ℕ

@@ -4,7 +4,7 @@ url: fol.extension
 
 # 一阶逻辑 ▸ 理论的扩张
 
-扩张理论的目的是使扩张后的理论满足一定的性质, 以证明一阶逻辑的完备性, 这会在下一篇讲解. 本篇先介绍此种扩张 (以下称为完备化扩张) 应具有的性质, 然后讲解该扩张的具体构造.
+扩张理论的目的是使扩张后的理论满足一定的性质, 以证明一阶逻辑的完备性, 这会在下一篇讲解. 本篇先介绍此种扩张 (以下称为完备扩张) 应具有的性质, 然后讲解该扩张的具体构造.
 
 ```agda
 open import Foundation.Essential
@@ -24,15 +24,15 @@ private variable
   m n : ℕ
 ```
 
-## 扩张的输入和输出
+## 完备扩张的定义
 
-完备化扩张的输入要求是一个闭理论, 即由闭公式所组成的理论.
+完备扩张的输入要求是一个闭理论, 即由闭公式所组成的理论.
 
 ```agda
 module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 ```
 
-闭理论 `𝒯ⁱ` 的完备化扩张是一个理论 `𝒯ᵒ`, 满足
+闭理论 `𝒯ⁱ` 的完备扩张是一个理论 `𝒯ᵒ`, 满足
 
 - `𝒯ᵒ` 是 `𝒯ⁱ` 的一致扩张, 即 `𝒯ᵒ` 包含 `𝒯ⁱ` 且 `𝒯ᵒ` 相对于 `𝒯ⁱ` 一致
 - `𝒯ᵒ` 对证明封闭, 即 `𝒯ᵒ` 的任意可证的公式都是 `𝒯ᵒ` 的成员
@@ -40,7 +40,7 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 - `𝒯ᵒ` 中的全称量化式满足分配性: `∀̇ φ` 是 `𝒯ᵒ` 的成员当且仅当对任意项 `t`, `φ [ t ]₀` 是 `𝒯ᵒ` 的成员
 
 ```agda
-  record Output : 𝕋₁ where
+  record CompleteExtension : 𝕋₁ where
     field
       𝒯ᵒ : Theory
       𝒯ᵒ-sub : 𝒯ⁱ ⊆ 𝒯ᵒ
@@ -51,20 +51,18 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       𝒯ᵒ-distrib-over-∀̇ : ∀ φ → ∀̇ φ ∈ 𝒯ᵒ ↔ ∀ t → φ [ t ]₀ ∈ 𝒯ᵒ
 ```
 
-## 扩张的构造
-
-完备化扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
+完备扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
 
 1. 极大全称扩张
 2. 极大一致扩张
 
-它们可以抽象出一个共通的基础构造: 理论的无穷扩张. 我们先讲这个.
+它们可以抽象出一个共通的基础构造: 无穷扩张. 我们先讲这个.
 
-### 理论的无穷扩张
+## 无穷扩张
 
-极大全称扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做理论的无穷扩张.
+极大全称扩张和极大一致扩张都不是一步到位的, 而是需要可数无穷步, 每一步都是上一步的一致扩张, 这样的扩张叫做无穷扩张.
 
-**<u>定义</u>** 理论的无穷扩张是理论的一个无穷序列, 其中每一项都是上一项的一致扩张.
+**<u>定义</u>** 无穷扩张是理论的一个无穷序列, 其中每一项都是上一项的一致扩张.
 
 ```agda
 record GeneralizedExtension : 𝕋₁ where
@@ -144,7 +142,7 @@ record GeneralizedExtension : 𝕋₁ where
   𝒯ω-closed H = 𝟙.rec isPropClosed λ { (m , φ∈𝒯ₘ) → H m φ∈𝒯ₘ }
 ```
 
-### 极大全称扩张
+## 极大全称扩张
 
 我们这里讲的极大全称扩张是 [Herbelin 和 Ilik](https://arxiv.org/abs/2401.13304) 对所谓亨金扩张的构造主义改良版本. 这里不要求先掌握原版亨金扩张, 可以直接往下看.
 
@@ -232,7 +230,7 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
     aux : 𝒜 (suc n) ⊢ᵀ ⊥̇ → 𝒜 n ⊢ᵀ ⊥̇
     aux H₀ = Γ , Γ⊆ , Γ⊢⊥ where
       H : 𝒜 n ⊢ᵀ ¬̇ Ax n
-      H = ImpIᵀ {𝒜 n} H₀
+      H = ImpIᵀ (𝒜 n) H₀
       Γ = H .fst
       Γ⊆ = H .snd .fst
       Γ⊢ = H .snd .snd
@@ -331,7 +329,31 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
     H (n , refl) = 𝟙.map (𝒜ω-isMaxAll-Ψ 𝒯 𝒜ω⊆𝒯) (H∀ (# n))
 ```
 
-### 极大一致扩张
+## 极大一致扩张
+
+极大一致扩张的输入是一个理论, 但不要求闭. 与上一小节同样地, 我们导入集合的添加元素操作 `_⨭_`.
+
+```agda
+module MaxConExtension (𝒯ⁱ : Theory) where
+  open SetOperation (discreteSet {A = Formula})
+```
+
+**<u>定义</u>** 极大一致: 我们说 `𝒯` 极大一致, 当且仅当对 `𝒯` 的任意一致扩张 `𝒯 ⨭ φ`, `φ` 都已经在 `𝒯` 里了.
+
+```agda
+  isMaxCon : Theory → 𝕋
+  isMaxCon 𝒯 = ∀ φ → Con (𝒯 ⨭ φ) to 𝒯 → φ ∈ 𝒯
+```
+
+**<u>引理</u>** 如果 `𝒯` 极大一致, 那么 `𝒯` 对证明封闭, 即能证的都已经在 `𝒯` 里了.
+**<u>证明</u>** 只需证 `𝒯 ⊢ᵀ φ` 蕴含 `Con (𝒯 ⨭ φ) to 𝒯`, 即证 `𝒯 ⊢ᵀ φ → 𝒯 ⨭ φ ⊢ ⊥̇ → 𝒯 ⊢ ⊥̇`, 此即规则 `Cutᵀ`. ∎
+
+```agda
+  closed-under-⊢ : isMaxCon 𝒯 → 𝒯 ⊢ᵀ φ → φ ∈ 𝒯
+  closed-under-⊢ {𝒯} {φ} max H = max _ $ 𝟙.map $ Cutᵀ {𝒯} φ H
+```
+
+## 完备扩张的构造
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
