@@ -353,6 +353,20 @@ module MaxConExtension (𝒯ⁱ : Theory) where
   closed-under-⊢ {𝒯} {φ} max H = max _ $ 𝟙.map $ Cutᵀ {𝒯} φ H
 ```
 
+**<u>定义</u>** 一致单集: `Con (𝒯 ⨭ φ) to 𝒯` 时为 `φ` 的单集, 否则为空集的集合叫做 `φ` 对 `𝒯` 的一致单集, 记作 `｛ φ ｝⟨ 𝒯 ⟩`.
+
+```agda
+  ｛_｝⟨_⟩ : Formula → Theory → Theory
+  ｛ φ ｝⟨ 𝒯 ⟩ = λ ψ → φ ≡ ψ ∧ Con (𝒯 ⨭ φ) to 𝒯 , isProp× (discreteSet _ _) (isProp→ 𝟙.squash)
+```
+
+**<u>定义</u>** 一致添加: `𝒯` 与 `｛ φ ｝⟨ 𝒯 ⟩` 的二元并叫做 `𝒯` 一致添加 `φ`, 记作 `𝒯 ⨭ᶜ φ`.
+
+```agda
+  _⨭ᶜ_ : Theory → Formula → Theory
+  𝒯 ⨭ᶜ φ = 𝒯 ∪ ｛ φ ｝⟨ 𝒯 ⟩
+```
+
 ## 完备扩张的构造
 
 ---

@@ -90,7 +90,7 @@ module SetOperation (Xset : isSet X) where
   -- Singleton set
 
   ｛_｝ : X → 𝒫 X
-  ｛ x ｝ = λ y → (x ≡ y) , Xset x y
+  ｛ x ｝ = λ y → x ≡ y , Xset x y
 
   -- Incusion
 
