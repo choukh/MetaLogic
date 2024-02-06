@@ -141,7 +141,7 @@ freshVar-≥ {φ} {ψ ∷ Γ} φ∈ = foldr-preservesᵒ H _ _ $
 ```
 
 **<u>引理</u>** `freshVar (φ ∷ Γ)` 既是 `φ` 的新变元, 也是 `Γ` 的新变元.  
-**<u>证明</u>** 依定义即得. ∎
+**<u>证明</u>** 依定义. ∎
 
 ```agda
 freshVar∷-freshᵩ : ∀ φ Γ → freshᵩ (freshVar (φ ∷ Γ)) φ
