@@ -4,7 +4,7 @@ open import Foundation.Prelude
 open import Foundation.Data.Empty
 
 open import Data.Sum public
-  using (inj₁; inj₂)
+  using (inj₁; inj₂; map₁; map₂)
   renaming (_⊎_ to infixr 4.1 _⊎_)
 
 open import Cubical.Data.Sum as 🧊

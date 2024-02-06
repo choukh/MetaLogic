@@ -76,9 +76,9 @@ private variable
 []ₜ-∘-≗ : ∀ σ τ θ → _[ τ ]ₜ ∘ σ ≗ θ → _[ τ ]ₜ ∘ _[ σ ]ₜ ≗ _[ θ ]ₜ
 []ₜ-∘-≗ σ τ θ eq = term-elim (λ n → eq n) H where
   H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → t [ σ ]ₜ [ τ ]ₜ ≡ t [ θ ]ₜ) → (f $̇ t⃗) [ σ ]ₜ [ τ ]ₜ ≡ (f $̇ t⃗) [ θ ]ₜ
-  H f t⃗ IH = cong (f $̇_) H2 where
-    H2 : (t⃗ [ σ ]ₜ⃗) [ τ ]ₜ⃗ ≡ t⃗ [ θ ]ₜ⃗
-    H2 rewrite []ₜ⃗≡map⃗ (t⃗ [ σ ]ₜ⃗) τ | []ₜ⃗≡map⃗ t⃗ σ | []ₜ⃗≡map⃗ t⃗ θ =
+  H f t⃗ IH = cong (f $̇_) H₂ where
+    H₂ : (t⃗ [ σ ]ₜ⃗) [ τ ]ₜ⃗ ≡ t⃗ [ θ ]ₜ⃗
+    H₂ rewrite []ₜ⃗≡map⃗ (t⃗ [ σ ]ₜ⃗) τ | []ₜ⃗≡map⃗ t⃗ σ | []ₜ⃗≡map⃗ t⃗ θ =
       map⃗ (_[ τ ]ₜ) (map⃗ (_[ σ ]ₜ) t⃗) ≡˘⟨ map⃗-∘ _ _ _ ⟩
       map⃗ (_[ τ ]ₜ ∘ _[ σ ]ₜ) t⃗       ≡⟨ map⃗-ext IH ⟩
       map⃗ (_[ θ ]ₜ) t⃗                 ∎
@@ -152,9 +152,9 @@ private variable
 []ₜ-ext : σ ≗ τ → _[ σ ]ₜ ≗ _[ τ ]ₜ
 []ₜ-ext {σ} {τ} eq = term-elim eq H where
   H : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → t [ σ ]ₜ ≡ t [ τ ]ₜ) → (f $̇ t⃗) [ σ ]ₜ ≡ (f $̇ t⃗) [ τ ]ₜ
-  H f t⃗ IH = cong (f $̇_) H2 where
-    H2 : t⃗ [ σ ]ₜ⃗ ≡ t⃗ [ τ ]ₜ⃗
-    H2 rewrite []ₜ⃗≡map⃗ t⃗ σ | []ₜ⃗≡map⃗ t⃗ τ = map⃗-ext IH
+  H f t⃗ IH = cong (f $̇_) H₂ where
+    H₂ : t⃗ [ σ ]ₜ⃗ ≡ t⃗ [ τ ]ₜ⃗
+    H₂ rewrite []ₜ⃗≡map⃗ t⃗ σ | []ₜ⃗≡map⃗ t⃗ τ = map⃗-ext IH
 ```
 
 **<u>引理</u>** 替换的提升尊重替换的逐点相等.
@@ -237,18 +237,18 @@ private variable
   ([]ᵩ-ext-freshᵩ-dec decP Hext φ λ n Pn → fst $ fresh→̇-elim $ Hfresh n Pn)
   ([]ᵩ-ext-freshᵩ-dec decP Hext ψ λ n Pn → snd $ fresh→̇-elim $ Hfresh n Pn)
 []ᵩ-ext-freshᵩ-dec {P} {σ} {τ} decP Hext (∀̇ φ) Hfresh = cong ∀̇_ $
-  []ᵩ-ext-freshᵩ-dec {P = P′} H1 H2 φ H3 where
+  []ᵩ-ext-freshᵩ-dec {P = P′} H₁ H₂ φ H₃ where
   P′ : ℕ → 𝕋 _
   P′ zero = ⊥*
   P′ (suc n) = P n
-  H1 : Decℙ P′
-  H1 zero = no λ ()
-  H1 (suc n) = decP n
-  H2 : ∀ n → ¬ P′ n → ↑ₛ σ n ≡ ↑ₛ τ n
-  H2 zero _ = refl
-  H2 (suc n) ¬Pn = (cong (_[ # ∘ suc ]ₜ)) (Hext n ¬Pn)
-  H3 : ∀ n → P′ n → freshᵩ n φ
-  H3 (suc n) Pn = fresh∀̇-elim (Hfresh n Pn)
+  H₁ : Decℙ P′
+  H₁ zero = no λ ()
+  H₁ (suc n) = decP n
+  H₂ : ∀ n → ¬ P′ n → ↑ₛ σ n ≡ ↑ₛ τ n
+  H₂ zero _ = refl
+  H₂ (suc n) ¬Pn = (cong (_[ # ∘ suc ]ₜ)) (Hext n ¬Pn)
+  H₃ : ∀ n → P′ n → freshᵩ n φ
+  H₃ (suc n) Pn = fresh∀̇-elim (Hfresh n Pn)
 ```
 
 **<u>引理</u>** 如果 `n` 是 `φ` 的新变元, 且 `σ` 与 `τ` 在 `n` 之外逐点相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
@@ -262,18 +262,18 @@ private variable
 
 ```agda
 fresh[]ₜ : ∀ t → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)
-fresh[]ₜ {m} {σ} = term-elim H1 H2 where
-  H1 : ∀ k → (∀ n → freshₜ n (# k) ⊎ freshₜ m (σ n)) → freshₜ m (# k [ σ ]ₜ)
-  H1 k H with H k
+fresh[]ₜ {m} {σ} = term-elim H₁ H₂ where
+  H₁ : ∀ k → (∀ n → freshₜ n (# k) ⊎ freshₜ m (σ n)) → freshₜ m (# k [ σ ]ₜ)
+  H₁ k H with H k
   ... | inj₁ (fresh# k≢k) = exfalso (k≢k refl)
   ... | inj₂ H = H
-  H2 : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)) →
+  H₂ : ∀ f t⃗ → (∀ t → t ∈⃗ t⃗ → (∀ n → freshₜ n t ⊎ freshₜ m (σ n)) → freshₜ m (t [ σ ]ₜ)) →
       (∀ n → freshₜ n (f $̇ t⃗) ⊎ freshₜ m (σ n)) → freshₜ m ((f $̇ t⃗) [ σ ]ₜ)
-  H2 f t⃗ IH H rewrite []ₜ⃗≡map⃗ t⃗ σ = fresh$̇ (map⃗⊆P H3) where
-    H3 : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
-    H3 t t∈⃗ = IH t t∈⃗ H4 where
-      H4 : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
-      H4 n with H n
+  H₂ f t⃗ IH H rewrite []ₜ⃗≡map⃗ t⃗ σ = fresh$̇ (map⃗⊆P H₃) where
+    H₃ : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
+    H₃ t t∈⃗ = IH t t∈⃗ H₄ where
+      H₄ : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
+      H₄ n with H n
       ... | inj₁ (fresh$̇ H) = inj₁ (H t t∈⃗)
       ... | inj₂ H = inj₂ H
 ```
@@ -283,30 +283,30 @@ fresh[]ₜ {m} {σ} = term-elim H1 H2 where
 ```agda
 fresh[]ᵩ : (∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)) → freshᵩ m (φ [ σ ]ᵩ)
 fresh[]ᵩ {(⊥̇)} H = fresh⊥̇
-fresh[]ᵩ {φ →̇ ψ} {m} {σ} H = fresh→̇ (fresh[]ᵩ H1) (fresh[]ᵩ H2) where
-  H1 : ∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)
-  H1 n with H n
+fresh[]ᵩ {φ →̇ ψ} {m} {σ} H = fresh→̇ (fresh[]ᵩ H₁) (fresh[]ᵩ H₂) where
+  H₁ : ∀ n → freshᵩ n φ ⊎ freshₜ m (σ n)
+  H₁ n with H n
   ... | inj₁ (fresh→̇ H _) = inj₁ H
   ... | inj₂ H = inj₂ H
-  H2 : ∀ n → freshᵩ n ψ ⊎ freshₜ m (σ n)
-  H2 n with H n
+  H₂ : ∀ n → freshᵩ n ψ ⊎ freshₜ m (σ n)
+  H₂ n with H n
   ... | inj₁ (fresh→̇ _ H) = inj₁ H
   ... | inj₂ H = inj₂ H
-fresh[]ᵩ {∀̇ φ} {m} {σ} H = fresh∀̇ (fresh[]ᵩ H1) where
-  H1 : ∀ n → freshᵩ n φ ⊎ freshₜ (suc m) (↑ₛ σ n)
-  H1 zero = inj₂ $ fresh# λ ()
-  H1 (suc n) with H n
+fresh[]ᵩ {∀̇ φ} {m} {σ} H = fresh∀̇ (fresh[]ᵩ H₁) where
+  H₁ : ∀ n → freshᵩ n φ ⊎ freshₜ (suc m) (↑ₛ σ n)
+  H₁ zero = inj₂ $ fresh# λ ()
+  H₁ (suc n) with H n
   ... | inj₁ (fresh∀̇ H) = inj₁ H
-  ... | inj₂ H = inj₂ $ fresh[]ₜ (σ n) H2 where
-    H2 : ∀ k → freshₜ k (σ n) ⊎ freshₜ (suc m) (# (suc k))
-    H2 k with k ≟ m
+  ... | inj₂ H = inj₂ $ fresh[]ₜ (σ n) H₂ where
+    H₂ : ∀ k → freshₜ k (σ n) ⊎ freshₜ (suc m) (# (suc k))
+    H₂ k with k ≟ m
     ... | yes refl = inj₁ H
     ... | no k≢m = inj₂ $ fresh# λ { refl → exfalso (k≢m refl)}
-fresh[]ᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H1) where
-  H1 : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
-  H1 t t∈⃗ = fresh[]ₜ t H2 where
-    H2 : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
-    H2 n with H n
+fresh[]ᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H₁) where
+  H₁ : ∀ t → t ∈⃗ t⃗ → freshₜ m (t [ σ ]ₜ)
+  H₁ t t∈⃗ = fresh[]ₜ t H₂ where
+    H₂ : ∀ n → freshₜ n t ⊎ freshₜ m (σ n)
+    H₂ n with H n
     ... | inj₁ (fresh$̇ H) = inj₁ (H t t∈⃗)
     ... | inj₂ H = inj₂ H
 ```

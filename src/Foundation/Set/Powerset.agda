@@ -97,6 +97,3 @@ module SetOperation (Xset : isSet X) where
   infixl 6 _⨭_
   _⨭_ : (A : 𝒫 X) (x : X) → 𝒫 X
   A ⨭ x = A ∪ ｛ x ｝
-
-  ⊆⨭ : ∀ A → A ⊆ A ⨭ x
-  ⊆⨭ _ x∈A = inl x∈A

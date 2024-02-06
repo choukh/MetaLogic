@@ -177,14 +177,14 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
   𝒜 (suc n) = 𝒜 n ⨭ Ax n
 ```
 
-接下来我们希望套用上一小节建立的无穷扩张框架, 说明 `𝒜` 的极限是原理论的一致扩张. 为此, 需要证明 `𝒜` 的每一步都是上一步的一致扩张.
+接下来我们希望使用上一小节建立的无穷扩张引理, 说明 `𝒜` 的极限是原理论的一致扩张. 为此, 需要证明 `𝒜` 的每一步都是上一步的一致扩张.
 
 **<u>引理</u>** `𝒜` 的每一步都是上一步的扩张.  
 **<u>证明</u>** 依定义即得. ∎
 
 ```agda
   𝒜-sub : 𝒜 n ⊆ 𝒜 (suc n)
-  𝒜-sub {n} = ⊆⨭ (𝒜 n)
+  𝒜-sub = inl
 ```
 
 **<u>引理</u>** 对任意 `φ ∈ 𝒜 n`, 任意 `m ≥ n` 都是 `φ` 的新变元.  
@@ -250,7 +250,7 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
       Γ⊢′ : Γ ⊢ (¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)) [ # n ]₀
       Γ⊢′ = subst (Γ ⊢_) eq Γ⊢
       ↑Γ⊢ : ⇞ Γ ⊢ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)
-      ↑Γ⊢ = nameless-conversion H1 H2 .⇐ Γ⊢′ where
+      ↑Γ⊢ = nameless-conversion H₁ H₂ .⇐ Γ⊢′ where
 ```
 
 此处的局部无名变换要求:
@@ -259,13 +259,13 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 2. `n` 是 `∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n)` 的新变元, 用与 `𝒜-fresh` 的证明类似的方法可证.
 
 ```agda
-        H1 : fresh n Γ
-        H1 φ∈ = 𝒜-fresh ≤-refl (Γ⊆ φ∈)
-        H2 : freshᵩ n (∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
-        H2 = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ $ fresh[]ᵩ H3)) fresh⊥̇ where
-          H3 : ∀ k → freshᵩ k (Ψ n) ⊎ freshₜ (suc (suc n)) (↑ₛ (# ∘ suc) k)
-          H3 zero = inj₂ $ fresh# λ ()
-          H3 (suc k) with <-≤-connex k n
+        H₁ : fresh n Γ
+        H₁ φ∈ = 𝒜-fresh ≤-refl (Γ⊆ φ∈)
+        H₂ : freshᵩ n (∀̇ ¬̇ (Ψ n →̇ ↑ ∀̇ Ψ n))
+        H₂ = fresh∀̇ $ fresh→̇ (fresh→̇ (Ψ-fresh (≤-step ≤-refl)) (fresh∀̇ $ fresh[]ᵩ H₃)) fresh⊥̇ where
+          H₃ : ∀ k → freshᵩ k (Ψ n) ⊎ freshₜ (suc (suc n)) (↑ₛ (# ∘ suc) k)
+          H₃ zero = inj₂ $ fresh# λ ()
+          H₃ (suc k) with <-≤-connex k n
           ... | inj₁ H = inj₂ $ fresh# λ { refl → 1+n≰n H }
           ... | inj₂ H = inj₁ $ Ψ-fresh (≤-trans H (≤-step ≤-refl))
 ```
@@ -324,7 +324,7 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 
 ```agda
   𝒜ω-isMaxAll : isMaxAll 𝒜ω
-  𝒜ω-isMaxAll 𝒯 φ 𝒜ω⊆𝒯 H∀ = 𝟙.rec 𝟙.squash H (Ψ-wit φ) where
+  𝒜ω-isMaxAll 𝒯 φ 𝒜ω⊆𝒯 H∀ = 𝟙.rec→1 H (Ψ-wit φ) where
     H : Σ n ， Ψ n ≡ φ → ∥ 𝒯 ⊢ᵀ (∀̇ φ) ∥₁
     H (n , refl) = 𝟙.map (𝒜ω-isMaxAll-Ψ 𝒯 𝒜ω⊆𝒯) (H∀ (# n))
 ```
@@ -365,6 +365,72 @@ module MaxConExtension (𝒯ⁱ : Theory) where
 ```agda
   _⨭ᶜ_ : Theory → Formula → Theory
   𝒯 ⨭ᶜ φ = 𝒯 ∪ ｛ φ ｝⟨ 𝒯 ⟩
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+  ∈⨭ᶜ-elim : φ ∈ 𝒯 ⨭ᶜ ψ → φ ∈ 𝒯 ⨭ ψ
+  ∈⨭ᶜ-elim = 𝟙.map $ map₂ fst
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+  ⨭ᶜ-sub : ∀ Γ 𝒯 φ → Γ ᴸ⊆ᴾ 𝒯 ⨭ᶜ φ → (Γ ᴸ⊆ᴾ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+  ⨭ᶜ-sub [] _ _ sub = inl λ ()
+  ⨭ᶜ-sub (ψ ∷ Γ) 𝒯 φ sub = 𝟙.rec→1 aux (sub (here refl)) where
+    aux : ψ ∈ 𝒯 ⊎ ψ ∈ ｛ φ ｝⟨ 𝒯 ⟩ → (ψ ∷ Γ ᴸ⊆ᴾ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+    aux (inj₂ (_ , con)) = inr con
+    aux (inj₁ ψ∈𝒯) = aux₂ $ ⨭ᶜ-sub Γ 𝒯 φ (sub ∘ there) where
+      aux₂ : (Γ ᴸ⊆ᴾ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯 → (ψ ∷ Γ ᴸ⊆ᴾ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+      aux₂ = 𝟙.map $ map₁ λ { _ (here refl) → ψ∈𝒯
+                            ; sub (there ∈Γ) → sub ∈Γ }
+```
+
+**<u>引理</u>** TODO.  
+**<u>证明</u>** TODO. ∎
+
+```agda
+  ⨭ᶜ-Con : 𝒯 ⨭ᶜ φ ⊢ᵀ ψ → (𝒯 ⊢ᵀ ψ) ∨ Con (𝒯 ⨭ φ) to 𝒯
+  ⨭ᶜ-Con {𝒯} {φ} {ψ} (Γ , Γ⊆ , Γ⊢) = 𝟙.map aux (⨭ᶜ-sub Γ 𝒯 φ Γ⊆) where
+    aux : (Γ ᴸ⊆ᴾ 𝒯) ⊎ (Con 𝒯 ⨭ φ to 𝒯) → (𝒯 ⊢ᵀ ψ) ⊎ (Con 𝒯 ⨭ φ to 𝒯)
+    aux = map₁ λ Γ⊆ → Γ , Γ⊆ , Γ⊢
+```
+
+**<u>定义</u>** 一致扩张 `𝒞 n`: 从 `𝒯ⁱ` 开始, 一致添加所有 `k ≤ n` 的 `Ψ k`.
+
+```agda
+  𝒞 : ℕ → Theory
+  𝒞 zero = 𝒯ⁱ
+  𝒞 (suc n) = 𝒞 n ⨭ᶜ Ψ n
+```
+
+跟极大全称扩张一样, 我们使用无穷扩张的引理, 说明 `𝒞` 的极限是原理论的一致扩张. 为此, 需要证明 `𝒞` 的每一步都是上一步的一致扩张.
+
+**<u>引理</u>** `𝒞` 的每一步都是上一步的扩张.  
+**<u>证明</u>** 依定义即得. ∎
+
+```agda
+  𝒞-sub : 𝒞 n ⊆ 𝒞 (suc n)
+  𝒞-sub {n} = inl
+```
+
+**<u>引理</u>** `𝒞` 的每一步都与上一步相对一致.  
+**<u>证明</u>** 只要证 `𝒞 (suc n) ⊢ᵀ ⊥̇` 可以转化为 `𝒞 n ⊢ᵀ ⊥̇`. TODO. ∎
+
+```agda
+  𝒞-con : Con (𝒞 (suc n)) to (𝒞 n)
+  𝒞-con {n} = 𝟙.rec→1 aux where
+    aux : 𝒞 n ⨭ᶜ Ψ n ⊢ᵀ ⊥̇ → ∥ 𝒞 n ⊢ᵀ ⊥̇ ∥₁
+    aux H@(Γ , Γ⊆ , Γ⊢) = 𝟙.rec→1 aux₂ (⨭ᶜ-Con {𝒯 = 𝒞 n} H) where
+      aux₂ : (𝒞 n ⊢ᵀ ⊥̇) ⊎ (Con 𝒞 n ⨭ Ψ n to 𝒞 n) → ∥ 𝒞 n ⊢ᵀ ⊥̇ ∥₁
+      aux₂ (inj₁ 𝒞ₙ⊢⊥̇) = ∣ 𝒞ₙ⊢⊥̇ ∣₁
+      aux₂ (inj₂ con) = con ∣ Γ , sub , Γ⊢ ∣₁ where
+        sub : Γ ᴸ⊆ᴾ 𝒞 n ⨭ Ψ n
+        sub φ∈Γ = ∈⨭ᶜ-elim {𝒯 = 𝒞 n} (Γ⊆ φ∈Γ)
 ```
 
 ## 完备扩张的构造
