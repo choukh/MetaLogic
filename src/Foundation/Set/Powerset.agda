@@ -1,3 +1,4 @@
+{-# OPTIONS --lossy-unification #-}
 module Foundation.Set.Powerset where
 
 open import Foundation.Prelude
@@ -7,6 +8,7 @@ open import Foundation.Prop.Iff
 open import Foundation.Prop.Truncation
 open import Foundation.Prop.Universe
 open import Foundation.Data.Sigma
+open import Foundation.Data.Sum
 open import Foundation.Relation.Nullary.Negation
 
 import Cubical.Foundations.Powerset as 🧊
@@ -97,3 +99,9 @@ module SetOperation (Xset : isSet X) where
   infixl 6 _⨭_
   _⨭_ : (A : 𝒫 X) (x : X) → 𝒫 X
   A ⨭ x = A ∪ ｛ x ｝
+
+  ⨭⊆⨭ : A ⊆ B → A ⨭ x ⊆ B ⨭ x
+  ⨭⊆⨭ A⊆B = 𝟙.rec isProp∈
+    λ { (inj₁ H) → inl (A⊆B H)
+      ; (inj₂ H) → inr H
+      }

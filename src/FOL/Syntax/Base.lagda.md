@@ -303,6 +303,14 @@ relative-consistency : ∀ {𝒯₁ 𝒯₂} → Con 𝒯₁ to 𝒯₂ → Con 
 relative-consistency H₁₂ ¬H₂ H₁ = 𝟙.rec isProp⊥ ¬H₂ (H₁₂ ∣ H₁ ∣₁)
 ```
 
+**<u>事实</u>** 相对一致的传递性: 如果 `𝒯₁` 与 `𝒯₂` 相对一致, 且 `𝒯₂` 与 `𝒯₃` 相对一致, 那么 `𝒯₁` 与 `𝒯₃` 相对一致.  
+**<u>证明</u>** 依定义. ∎
+
+```agda
+Con-trans : ∀ {𝒯₁ 𝒯₂ 𝒯₃} → Con 𝒯₁ to 𝒯₂ → Con 𝒯₂ to 𝒯₃ → Con 𝒯₁ to 𝒯₃
+Con-trans con₁ con₂ = con₂ ∘ con₁
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.base)  
