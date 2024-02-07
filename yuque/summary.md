@@ -24,5 +24,5 @@
     - [1.2.0 语义蕴含](fol.semantics.base)
     - [1.2.1ᐨ 取值的性质](fol.semantics.evaluation)
   - [1.3 可靠性](fol.soundness)
-  - [1.4ᐞ 理论的扩张](fol.extension)
+  - [1.4 理论的扩张](fol.extension)
   - [1.5ᐞ 完备性](fol.completeness)
