@@ -60,13 +60,7 @@ D∀̇ : Theory → 𝕋
 D∀̇ 𝒯 = ∀ {φ} → ∀̇ φ ∈ 𝒯 ↔ ∀ t → φ [ t ]₀ ∈ 𝒯
 ```
 
-完备扩张的输入要求是一个闭理论, 即由闭公式所组成的理论.
-
-```agda
-module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
-```
-
-闭理论 `𝒯ⁱ` 的完备扩张是一个理论 `𝒯ᵒ`, 满足
+理论 `𝒯ⁱ` 的完备扩张是一个理论 `𝒯ᵒ`, 满足
 
 - `𝒯ᵒ` 是 `𝒯ⁱ` 的一致扩张, 即 `𝒯ᵒ` 包含 `𝒯ⁱ` 且 `𝒯ᵒ` 相对于 `𝒯ⁱ` 一致.
 - `𝒯ᵒ` 对证明封闭.
@@ -74,14 +68,14 @@ module _ ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 - `𝒯ᵒ` 具有全称分配性.
 
 ```agda
-  record CompleteExtension : 𝕋₁ where
-    field
-      𝒯ᵒ : Theory
-      𝒯ᵒ-sub : 𝒯ⁱ ⊆ 𝒯ᵒ
-      𝒯ᵒ-con : Con 𝒯ᵒ to 𝒯ⁱ
-      𝒯ᵒ-C⊢ : C⊢ 𝒯ᵒ
-      𝒯ᵒ-D→̇ : D→̇ 𝒯ᵒ
-      𝒯ᵒ-D∀̇ : D∀̇ 𝒯ᵒ
+record CompleteExtension (𝒯ⁱ : Theory) : 𝕋₁ where
+  field
+    𝒯ᵒ : Theory
+    𝒯ᵒ-sub : 𝒯ⁱ ⊆ 𝒯ᵒ
+    𝒯ᵒ-con : Con 𝒯ᵒ to 𝒯ⁱ
+    𝒯ᵒ-C⊢ : C⊢ 𝒯ᵒ
+    𝒯ᵒ-D→̇ : D→̇ 𝒯ᵒ
+    𝒯ᵒ-D∀̇ : D∀̇ 𝒯ᵒ
 ```
 
 完备扩张其实不是一轮扩张, 而是由两轮扩张构成, 按顺序分别叫做
@@ -558,14 +552,14 @@ module MaxConExtension (𝒯ⁱ : Theory) where
 
 ## 完备扩张的构造
 
-至此, 不难看出, 只要将极大全称扩张与极大一致扩张串联起来, 就可以满足我们想要的完备扩张的全部性质.
+至此, 不难看出, 只要将极大全称扩张与极大一致扩张串联起来, 就可以满足我们想要的完备扩张的全部性质. 只是要注意其输入要求是一个闭理论.
 
 ```agda
-module _ (𝒯ᶜ@(𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
+module _ (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   open MaxAllExtension 𝒯ᶜ using (𝒜ω; 𝒜ω-sub; 𝒜ω-con; 𝒜ω-isMaxAll)
   open MaxConExtension 𝒜ω using (𝒞ω; 𝒞ω-sub; 𝒞ω-con; 𝒞ω-C⊢; 𝒞ω-D→̇; 𝒞ω-D∀̇)
 
-  mkCompleteExtension : CompleteExtension 𝒯ᶜ
+  mkCompleteExtension : CompleteExtension 𝒯ⁱ
   mkCompleteExtension = record
     { 𝒯ᵒ = 𝒞ω
     ; 𝒯ᵒ-sub = ⊆-trans (𝒜ω-sub {0}) (𝒞ω-sub {0})
