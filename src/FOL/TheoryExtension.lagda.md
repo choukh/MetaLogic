@@ -556,9 +556,25 @@ module MaxConExtension (𝒯ⁱ : Theory) where
     H = maxAll 𝒞ω φ (𝒞ω-sub {0}) (λ t → ∣ Ctxᵀ $ H∀ t ∣₁)
 ```
 
-至此, 不难看出, 只要将极大全称扩张与极大一致扩张串联起来, 就可以满足我们想要的完备化扩张的全部性质.
-
 ## 完备扩张的构造
+
+至此, 不难看出, 只要将极大全称扩张与极大一致扩张串联起来, 就可以满足我们想要的完备扩张的全部性质.
+
+```agda
+module _ (𝒯ᶜ@(𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
+  open MaxAllExtension 𝒯ᶜ using (𝒜ω; 𝒜ω-sub; 𝒜ω-con; 𝒜ω-isMaxAll)
+  open MaxConExtension 𝒜ω using (𝒞ω; 𝒞ω-sub; 𝒞ω-con; 𝒞ω-C⊢; 𝒞ω-D→̇; 𝒞ω-D∀̇)
+
+  mkCompleteExtension : CompleteExtension 𝒯ᶜ
+  mkCompleteExtension = record
+    { 𝒯ᵒ = 𝒞ω
+    ; 𝒯ᵒ-sub = ⊆-trans (𝒜ω-sub {0}) (𝒞ω-sub {0})
+    ; 𝒯ᵒ-con = Con-trans 𝒞ω-con 𝒜ω-con
+    ; 𝒯ᵒ-C⊢ = 𝒞ω-C⊢
+    ; 𝒯ᵒ-D→̇ = 𝒞ω-D→̇
+    ; 𝒯ᵒ-D∀̇ = 𝒞ω-D∀̇ 𝒜ω-isMaxAll
+    }
+```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
