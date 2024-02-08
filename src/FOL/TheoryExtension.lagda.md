@@ -19,7 +19,7 @@ open import FOL.Syntax.Discrete ℒ
 open import FOL.Syntax.Enumeration ℒ
 open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
-open import FOL.Syntax.AdmissibleRule ℒ
+open import FOL.Syntax.AdmissibleRules ℒ
 
 private variable
   m n : ℕ
@@ -559,8 +559,8 @@ module _ (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   open MaxAllExtension 𝒯ᶜ using (𝒜ω; 𝒜ω-sub; 𝒜ω-con; 𝒜ω-isMaxAll)
   open MaxConExtension 𝒜ω using (𝒞ω; 𝒞ω-sub; 𝒞ω-con; 𝒞ω-C⊢; 𝒞ω-D→̇; 𝒞ω-D∀̇)
 
-  mkCompleteExtension : CompleteExtension 𝒯ⁱ
-  mkCompleteExtension = record
+  mkComExt : CompleteExtension 𝒯ⁱ
+  mkComExt = record
     { 𝒯ᵒ = 𝒞ω
     ; 𝒯ᵒ-sub = ⊆-trans (𝒜ω-sub {0}) (𝒞ω-sub {0})
     ; 𝒯ᵒ-con = Con-trans 𝒞ω-con 𝒜ω-con

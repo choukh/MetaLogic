@@ -12,7 +12,7 @@ open import Foundation.Essential
 open import Foundation.Relation.Nullary.Discrete.List
 
 open import FOL.Language
-module FOL.Syntax.AdmissibleRule (ℒ : Language) where
+module FOL.Syntax.AdmissibleRules (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
@@ -576,6 +576,13 @@ ImpEᵀ {𝒯} (Γ , Γ⊆ , Γ⊢) (Δ , Δ⊆ , Δ⊢) = Γ ++ Δ , sub , ImpE
   ... | inj₂ ∈Δ = Δ⊆ ∈Δ
 ```
 
+**<u>规则</u>** `Peirce` 的理论版.
+
+```agda
+Peirceᵀ : 𝒯 ⊢ᵀ ((φ →̇ ψ) →̇ φ) →̇ φ
+Peirceᵀ = [] , (λ ()) , Peirce _ _
+```
+
 **<u>规则</u>** `Cut` 的理论版.
 
 ```agda
@@ -601,5 +608,5 @@ Con-inherit {𝒯₁} {𝒯₂} {𝒯₃} {𝒯₄} 𝒯₁⊆𝒯₂ 𝒯₃⊆
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRule.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRule.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRules.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRules.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731

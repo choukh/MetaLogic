@@ -19,11 +19,11 @@ instance _ = ℒ
 
 为了给出函数符号和关系符号的解释, 首先需要确定一个论域 (`D : 𝕋 ℓ`), 它包含了变元将要指代的那些数学对象.
 
-**<u>定义</u>** 全体变元 `ℕ` 到论域 `D` 的映射 `ℕ → D` 叫做变元赋值表 (`Valuation`).
+**<u>定义</u>** 全体变元 `ℕ` 到论域 `D` 的映射 `ℕ → D` 叫做变元赋值表 (`Assignment`).
 
 ```agda
-Valuation : (D : 𝕋 ℓ) → 𝕋 _
-Valuation D = ℕ → D
+Assignment : (D : 𝕋 ℓ) → 𝕋 _
+Assignment D = ℕ → D
 ```
 
 **<u>定义</u>** 给定论域 `D`, 到其之上的符号解释 (`Interpretation`) 是一个三元组
@@ -51,8 +51,8 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 给定一个解释, 函数和关系的意义就确定下来了. 继续给定赋值表, 配合函数符号的解释 `fᴵ`, 所有项的取值也会固定下来. 项 `t` 在赋值表 `𝓋` 下的取值, 记作 `𝓋 ⊨ₜ t`, 是论域中的一个对象; 而项的向量 `t⃗` 的取值, 记作 `𝓋 ⊨ₜ⃗ t⃗`, 是由论域中对象组成的一个向量. 与项的替换类似地, 这两者也需要互递归定义.
 
 ```agda
-  _⊨ₜ_ : Valuation D → Term → D
-  _⊨ₜ⃗_ : ∀ {n} → Valuation D → 𝕍 Term n → 𝕍 D n
+  _⊨ₜ_ : Assignment D → Term → D
+  _⊨ₜ⃗_ : ∀ {n} → Assignment D → 𝕍 Term n → 𝕍 D n
 ```
 
 **<u>互递归定义</u>** 项 `t` 在赋值表 `𝓋` 下的取值
@@ -90,7 +90,7 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 - 如果 `φ` = `R $̇ t⃗`, 则使用关系符号的解释得到论域上的关系 `Rᴵ R`, 再应用于 `map⃗ (𝓋 ⊨ₜ_) t⃗`.
 
 ```agda
-  _⊨ᵩ_ : Valuation D → Formula → 𝕋 _
+  _⊨ᵩ_ : Assignment D → Formula → 𝕋 _
   𝓋 ⊨ᵩ ⊥̇ = ⊥ᴵ holds
   𝓋 ⊨ᵩ φ →̇ ψ = 𝓋 ⊨ᵩ φ → 𝓋 ⊨ᵩ ψ
   𝓋 ⊨ᵩ ∀̇ φ = (x : D) → (x ∷ₙ 𝓋) ⊨ᵩ φ
@@ -114,10 +114,10 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 - 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊨ₛᵀ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
 
 ```agda
-  _⊨ₛ_ : Valuation D → Context → 𝕋 _
+  _⊨ₛ_ : Assignment D → Context → 𝕋 _
   𝓋 ⊨ₛ Γ = ∀ φ → φ ∈ᴸ Γ → 𝓋 ⊨ᵩ φ
 
-  _⊨ₛᵀ_ : Valuation D → Theory → 𝕋 _
+  _⊨ₛᵀ_ : Assignment D → Theory → 𝕋 _
   𝓋 ⊨ₛᵀ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
 
@@ -244,15 +244,15 @@ isProp⊨ᵀ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ is
 **<u>定义</u>** 一个结构 (`Structure`) 是一个三元组
 
 1. 论域 `Domain`
-2. 到论域的变元赋值表 `𝓋`
-3. 到论域的符号解释 `ℐ`
+2. 到论域的符号解释 `ℐ`
+3. 到论域的变元赋值表 `𝓋`
 
 ```agda
 record Structure ℓ : 𝕋 (ℓ ⁺) where
   field
-    Domain : 𝕋 ℓ
-    𝓋 : Valuation Domain
+    { Domain } : 𝕋 ℓ
     ⦃ ℐ ⦄ : Interpretation Domain
+    𝓋 : Assignment Domain
 ```
 
 **<u>定义</u>** 我们说结构 `ℳ` 是理论 `𝒯` 的一个 `𝒞` 模型, 记作 `ℳ isA 𝒞 modelOf 𝒯`, 当且仅当 `ℳ` 中的解释 `ℐ` 是一个 `𝒞` 变体, 且`ℳ` 中的赋值 `𝓋` 使得任意 `φ ∈ 𝒯` 有效.

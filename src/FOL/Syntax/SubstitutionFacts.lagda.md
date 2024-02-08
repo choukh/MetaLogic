@@ -16,6 +16,7 @@ open import FOL.Syntax.FreshVariables ℒ
 
 private variable
   n m : ℕ
+  s : Term
   σ τ : Subst
 ```
 
@@ -144,6 +145,18 @@ private variable
   φ                             ∎
 ```
 
+类似地, 对项有
+
+**<u>引理</u>** 项提升后的任意“应用”都等于原项.
+
+```agda
+↑ₜ[]₀ : (↑ₜ t) [ s ∷ₙ # ]ₜ ≡ t
+↑ₜ[]₀ {t} {s} =
+  (↑ₜ t) [ s ∷ₙ # ]ₜ            ≡⟨ []ₜ-∘ t ⟩
+  t [ _[ s ∷ₙ # ]ₜ ∘ # ∘ suc ]ₜ ≡⟨ [#]ₜ ⟩
+  t                             ∎
+```
+
 ## 替换的外延性
 
 **<u>引理</u>** 项替换的外延性: 如果 `σ` 与 `τ` 逐点相等, 那么 `_[ σ ]ₜ` 与 `_[ τ ]ₜ` 逐点相等.
@@ -205,6 +218,20 @@ private variable
   H : # ≗ _[ # 0 ∷ₙ # ]ₜ ∘ (↑ₛ (# ∘ suc))
   H zero = refl
   H (suc n) = refl
+```
+
+**<u>引理</u>** 公式应用与公式替换的一种复合.
+
+```agda
+[]₀∘[↑]ᵩ : _[ t ]₀ ∘ _[ ↑ₛ σ ]ᵩ ≗ _[ t ∷ₙ σ ]ᵩ
+[]₀∘[↑]ᵩ {t} {σ} φ =
+  φ [ ↑ₛ σ ]ᵩ [ t ]₀          ≡⟨ []ᵩ-∘ φ ⟩
+  φ [ _[ t ∷ₙ # ]ₜ ∘ ↑ₛ σ ]ᵩ  ≡˘⟨ []ᵩ-ext eq φ ⟩
+  φ [ t ∷ₙ σ ]ᵩ               ∎
+  where
+  eq : t ∷ₙ σ ≗ _[ t ∷ₙ # ]ₜ ∘ ↑ₛ σ
+  eq zero = refl
+  eq (suc n) = sym ↑ₜ[]₀
 ```
 
 ## 含新变元的替换
@@ -315,3 +342,4 @@ fresh[]ᵩ {R $̇ t⃗} {m} {σ} H = fresh$̇ (map⃗⊆P H₁) where
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/SubstitutionFacts.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.SubstitutionFacts.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.substitution)  
 > 交流Q群: 893531731
+ 
