@@ -215,15 +215,17 @@ _⊨ᵀ⟨_⟩_ : Theory → Variant ℓ → Formula → 𝕋 _
 
 **<u>定义</u>** 标准-语义蕴含
 
-- 我们说语境 `Γ` 语义蕴含 `φ` (也说 `φ` 在 `Γ` 下有效), 记作 `Γ ⊨ φ`, 当且仅当对任意宇宙层级 `ℓ` 都有 `Γ ⊨⟨ Std {ℓ} ⟩ φ`.
-- 我们说理论 `𝒯` 语义蕴含 `φ` (也说 `φ` 在 `𝒯` 下有效), 记作 `𝒯 ⊨ᵀ φ`, 当且仅当对任意宇宙层级 `ℓ` 都有 `𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ`.
+- 我们说语境 `Γ` 语义蕴含 `φ` (也说 `φ` 在 `Γ` 下有效), 记作 `Γ ⊨ φ`, 当且仅当对给定的宇宙层级 `ℓ` 有 `Γ ⊨⟨ Std {ℓ} ⟩ φ`.
+- 我们说理论 `𝒯` 语义蕴含 `φ` (也说 `φ` 在 `𝒯` 下有效), 记作 `𝒯 ⊨ᵀ φ`, 当且仅当对给定的宇宙层级 `ℓ` 有 `𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ`.
 
 ```agda
-_⊨_ : Context → Formula → 𝕋ω
-Γ ⊨ φ = ∀ {ℓ} → Γ ⊨⟨ Std {ℓ} ⟩ φ
+module PolymorphicSemantics ℓ where
 
-_⊨ᵀ_ : Theory → Formula → 𝕋ω
-𝒯 ⊨ᵀ φ = ∀ {ℓ} → 𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ
+  _⊨_ : Context → Formula → 𝕋 _
+  Γ ⊨ φ = Γ ⊨⟨ Std {ℓ} ⟩ φ
+
+  _⊨ᵀ_ : Theory → Formula → 𝕋 _
+  𝒯 ⊨ᵀ φ = 𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ
 ```
 
 **<u>注意</u>** 语义蕴含 (semantic consequence) `_⊨_` 和上一讲的语法蕴含 (syntactic consequence) `_⊢_` 从两个不同的角度刻画了逻辑推理. 此外, 对象语言中的 `_→̇_` 又叫做实质蕴含 (material implication), 我们还有元语言蕴含 `→`, 注意区分这四种蕴含.
@@ -232,11 +234,11 @@ _⊨ᵀ_ : Theory → Formula → 𝕋ω
 **<u>证明</u>** 由 `isProp⊨ᵩ` 显然成立. ∎
 
 ```agda
-isProp⊨ isProp⊨ᵀ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
-isProp⊨ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
-  let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
-isProp⊨ᵀ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
-  let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
+  isProp⊨ isProp⊨ᵀ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
+  isProp⊨ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
+    let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
+  isProp⊨ᵀ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
+    let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 ```
 
 ## 结构与模型

@@ -94,21 +94,26 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ## 标准完备性
 
 ```agda
-SemiCompleteness  = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
-SemiCompletenessᵀ = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
-Completeness      = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
-Completenessᵀ     = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
+module Standard {ℓ} where
+  open PolymorphicSemantics ℓ
+
+  SemiCompleteness  = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
+  SemiCompletenessᵀ = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
+  Completeness      = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
+  Completenessᵀ     = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
+  Stable⊢           = ∀ {Γ} {φ} → stable (Γ ⊢ φ)
+  Stable⊢ᵀ          = ∀ {𝒯} {φ} → stable (𝒯 ⊢ᵀ φ)
 ```
 
 ```agda
-semiCompletenessᵀ : SemiCompletenessᵀ
-semiCompletenessᵀ = {!   !}
+  semiCompletenessᵀ : SemiCompletenessᵀ
+  semiCompletenessᵀ = {!   !}
 ```
 
 ```agda
-completeness↔stability : (𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ → 𝒯 ⊢ᵀ φ) ↔ stable (𝒯 ⊢ᵀ φ)
-completeness↔stability .⇒ = {!  !}
-completeness↔stability .⇐ = {!   !}
+  completeness↔stability : Completenessᵀ ↔ Stable⊢ᵀ
+  completeness↔stability .⇒ = {!  !}
+  completeness↔stability .⇐ = {!   !}
 ```
 
 ## 爆炸完备性

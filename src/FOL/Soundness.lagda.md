@@ -113,16 +113,19 @@ soundness⟨ 𝒞 ⟩ Γ⊢ (Peirce φ ψ) c 𝓋 _ = Γ⊢ c .fst 𝓋 φ ψ
 **<u>证明</u>** 即证 `Std`-可靠性. 由于爆炸变体包含于标准变体, 由 `𝒞`-可靠性得证. ∎
 
 ```agda
-soundness : Γ ⊢ φ → Γ ⊨ φ
-soundness Γ⊢φ = soundness⟨ Std ⟩ Exp⊑Std Γ⊢φ
+module Standard {ℓ} where
+  open PolymorphicSemantics ℓ
+
+  soundness : Γ ⊢ φ → Γ ⊨ φ
+  soundness Γ⊢φ = soundness⟨ Std ⟩ Exp⊑Std Γ⊢φ
 ```
 
 **<u>推论</u>** 可靠性 (理论版): 对任意理论 `𝒯` 和公式 `φ`, 如果 `𝒯` 语法蕴含 `φ`, 那么 `𝒯` 语义蕴含 `φ`.  
 **<u>证明</u>** 依定义, 由 `soundness` 即得. ∎
 
 ```
-soundnessᵀ : 𝒯 ⊢ᵀ φ → 𝒯 ⊨ᵀ φ
-soundnessᵀ (Γ , Γ⊆ , Γ⊢) std 𝓋 valid = soundness Γ⊢ std 𝓋 λ φ φ∈Γ → valid φ (Γ⊆ φ∈Γ)
+  soundnessᵀ : 𝒯 ⊢ᵀ φ → 𝒯 ⊨ᵀ φ
+  soundnessᵀ (Γ , Γ⊆ , Γ⊢) std 𝓋 valid = soundness Γ⊢ std 𝓋 λ φ φ∈Γ → valid φ (Γ⊆ φ∈Γ)
 ```
 
 ## 空语境下的一致性
@@ -179,7 +182,7 @@ classical 𝓋 φ ψ pierce with Dec⊨ᵩ 𝓋 φ
 
 ```agda
 consistency : [] ⊬ ⊥̇
-consistency ⊢⊥̇ = soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
+consistency ⊢⊥̇ = Standard.soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
 ```
 
 **<u>注意</u>** 我们自始至终没有在元语言中引入排中律.
