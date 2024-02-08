@@ -23,7 +23,7 @@ open import FOL.TheoryExtension ℒ
 
 ```agda
 module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
-  open CompleteExtension (mkComExt 𝒯ᶜ) using (𝒯ᵒ; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
+  open CompleteExtension (mkComExt 𝒯ᶜ) using (𝒯ᵒ; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
 ```
 
 ```agda
@@ -67,21 +67,49 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
+  ∈→⊨ : ∀ {𝓋} {φ} → φ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ → 𝓋 ⊨ᵩ φ
+  ∈→⊨ = 𝓋↔σ _ _ .⇐
+```
+
+```agda
+  valid : # ⊨ₛᵀ 𝒯ᵒ
+  valid φ φ∈𝒯ᵒ = ∈→⊨ $ subst (_∈ 𝒯ᵒ) [#]ᵩ φ∈𝒯ᵒ
+```
+
+```agda
   cls : Classical
-  cls 𝓋 φ ψ = 𝓋↔σ 𝓋 (((φ →̇ ψ) →̇ φ) →̇ φ) .⇐ $ 𝒯ᵒ-C⊢ $ tauto $ Peirce _ _
+  cls 𝓋 φ ψ = ∈→⊨ $ 𝒯ᵒ-C⊢ $ tauto $ Peirce _ _
 ```
 
 ```agda
   exp : Exp
-  exp = cls , λ 𝓋 R t⃗ → 𝓋↔σ 𝓋 (⊥̇ →̇ (R $̇ t⃗)) .⇐ $ 𝒯ᵒ-C⊢ $ tauto $ Vac0 Ctx0
+  exp = cls , λ 𝓋 R t⃗ → ∈→⊨ $ 𝒯ᵒ-C⊢ $ tauto $ Vac0 Ctx0
 ```
 
 ```agda
   std : Con 𝒯ⁱ → Std
-  std con = cls , λ H → {!   !}
+  std con = cls , λ ⊥̇∈𝒯ᵒ → 𝟙.rec isProp⊥ con $ 𝒯ᵒ-con ∣ Ctxᵀ ⊥̇∈𝒯ᵒ ∣₁
 ```
 
 ## 标准完备性
+
+```agda
+SemiCompleteness  = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
+SemiCompletenessᵀ = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
+Completeness      = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
+Completenessᵀ     = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
+```
+
+```agda
+semiCompletenessᵀ : SemiCompletenessᵀ
+semiCompletenessᵀ = {!   !}
+```
+
+```agda
+completeness↔stability : (𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ → 𝒯 ⊢ᵀ φ) ↔ stable (𝒯 ⊢ᵀ φ)
+completeness↔stability .⇒ = {!  !}
+completeness↔stability .⇐ = {!   !}
+```
 
 ## 爆炸完备性
 

@@ -560,15 +560,16 @@ module _ (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   open MaxAllExtension 𝒯ᶜ using (𝒜ω; 𝒜ω-sub; 𝒜ω-con; 𝒜ω-isMaxAll)
   open MaxConExtension 𝒜ω using (𝒞ω; 𝒞ω-sub; 𝒞ω-con; 𝒞ω-C⊢; 𝒞ω-D→̇; 𝒞ω-D∀̇)
 
-  mkComExt : CompleteExtension 𝒯ⁱ
-  mkComExt = record
-    { 𝒯ᵒ = 𝒞ω
-    ; 𝒯ᵒ-sub = ⊆-trans (𝒜ω-sub {0}) (𝒞ω-sub {0})
-    ; 𝒯ᵒ-con = Con-trans 𝒞ω-con 𝒜ω-con
-    ; 𝒯ᵒ-C⊢ = 𝒞ω-C⊢
-    ; 𝒯ᵒ-D→̇ = 𝒞ω-D→̇
-    ; 𝒯ᵒ-D∀̇ = 𝒞ω-D∀̇ 𝒜ω-isMaxAll
-    }
+  opaque
+    mkComExt : CompleteExtension 𝒯ⁱ
+    mkComExt = record
+      { 𝒯ᵒ = 𝒞ω
+      ; 𝒯ᵒ-sub = ⊆-trans (𝒜ω-sub {0}) (𝒞ω-sub {0})
+      ; 𝒯ᵒ-con = Con-trans 𝒞ω-con 𝒜ω-con
+      ; 𝒯ᵒ-C⊢ = 𝒞ω-C⊢
+      ; 𝒯ᵒ-D→̇ = 𝒞ω-D→̇
+      ; 𝒯ᵒ-D∀̇ = 𝒞ω-D∀̇ 𝒜ω-isMaxAll
+      }
 ```
 
 ---
