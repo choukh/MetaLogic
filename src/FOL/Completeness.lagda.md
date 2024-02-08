@@ -14,6 +14,7 @@ open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
 open import FOL.Syntax.AdmissibleRules ℒ
+open import FOL.Syntax.TheoryRules ℒ
 open import FOL.Semantics.Base ℒ
 open import FOL.TheoryExtension ℒ
 ```
@@ -66,18 +67,18 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
-  classical : Classical
-  classical 𝓋 φ ψ = 𝓋↔σ 𝓋 (((φ →̇ ψ) →̇ φ) →̇ φ) .⇐ (𝒯ᵒ-C⊢ Peirceᵀ)
+  cls : Classical
+  cls 𝓋 φ ψ = 𝓋↔σ 𝓋 (((φ →̇ ψ) →̇ φ) →̇ φ) .⇐ $ 𝒯ᵒ-C⊢ $ tauto $ Peirce _ _
 ```
 
 ```agda
-  exploding⊥ : Exploding⊥
-  exploding⊥ 𝓋 R t⃗ = {!   !}
+  exp : Exp
+  exp = cls , λ 𝓋 R t⃗ → 𝓋↔σ 𝓋 (⊥̇ →̇ (R $̇ t⃗)) .⇐ $ 𝒯ᵒ-C⊢ $ tauto $ Vac0 Ctx0
 ```
 
 ```agda
-  standard⊥ : Con 𝒯ⁱ → Standard⊥
-  standard⊥ con H = {!   !}
+  std : Con 𝒯ⁱ → Std
+  std con = cls , λ H → {!   !}
 ```
 
 ## 标准完备性

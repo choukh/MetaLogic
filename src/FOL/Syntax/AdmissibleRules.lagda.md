@@ -4,22 +4,16 @@ url: fol.syntax.admissible
 
 # 一阶逻辑 ▸ 语法 ▸ 可容许规则
 
-
 若在一个形式系统中添加一个推理规则后, 该系统的定理集合不发生变化, 则称该推理规则在该形式系统中是**可容许的 (admissible)**. 换句话说, 使用该规则可证明的每个公式在没有该规则的情况下已经是可证明的. 因此在某种程度上说, 该规则是冗余的. 但是对于研究这个系统而言, 它们是重要引理.
 
 ```agda
 open import Foundation.Essential
-open import Foundation.Relation.Nullary.Discrete.List
-
 open import FOL.Language
 module FOL.Syntax.AdmissibleRules (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
-
-open import FOL.Syntax.Discrete ℒ
-open SetOperation (discreteSet {A = Formula})
 
 private variable
   n : ℕ
@@ -367,8 +361,15 @@ AllDistrbImp {φ} {ψ} H₁ = ImpI′ H₂
 **<u>规则</u>** 虚空真.
 
 ```agda
-Vac : φ ∷ Γ ⊢ ψ → ¬̇ ψ ∷ Γ ⊢ φ →̇ ξ
-Vac {φ} {Γ} {ψ} {ξ} H =
+Vac0 : φ ∷ Γ ⊢ ⊥̇ → Γ ⊢ φ →̇ ξ
+Vac0 {φ} {Γ} {ξ} H =
+              ∅─⟨ H ⟩
+  φ ∷ Γ ⊢ ⊥̇   ─⟨ FalseE ⟩
+  φ ∷ Γ ⊢ ξ   ─⟨ ImpI ⟩
+  Γ ⊢ φ →̇ ξ
+
+Vac1 : φ ∷ Γ ⊢ ψ → ¬̇ ψ ∷ Γ ⊢ φ →̇ ξ
+Vac1 {φ} {Γ} {ψ} {ξ} H =
                     ∅─⟨ H ⟩
   φ ∷ Γ ⊢ ψ         ─⟨ App ⟩
   ψ →̇ ⊥̇ ∷ φ ∷ Γ ⊢ ⊥̇ ─⟨ FalseE ⟩
@@ -432,7 +433,7 @@ NImpE {Γ} {φ} {ψ} H =   ∅─⟨ ImpE H₁ H₂ ⟩
     Γ ⊢ ¬̇ (φ →̇ ψ)       ─⟨ Wkn0 ⟩
     ¬̇ φ ∷ Γ ⊢ ¬̇ (φ →̇ ψ)
   H₂ =                  ∅─⟨ Ctx0 ⟩
-    φ ∷ Γ ⊢ φ           ─⟨ Vac ⟩
+    φ ∷ Γ ⊢ φ           ─⟨ Vac1 ⟩
     ¬̇ φ ∷ Γ ⊢ φ →̇ ψ
 ```
 
@@ -513,7 +514,7 @@ NotExNotAll {φ} {Γ} = ImpCut (∀̇ ¬̇ ¬̇ φ) H₁ (AllDistrbImp H₂)
 DP : ⊩ ∃̇ (φ →̇ ↑ ∀̇ φ)
 DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
   H₁ =                                  ∅─⟨ Ctx0 ⟩
-    φ ∷ ⇞ Γ ⊢ φ                         ─⟨ Vac ⟩
+    φ ∷ ⇞ Γ ⊢ φ                         ─⟨ Vac1 ⟩
     ¬̇ φ ∷ ⇞ Γ ⊢ φ →̇ ↑ ∀̇ φ               ─⟨ ExEI ⟩
     ∃̇ ¬̇ φ ∷ Γ ⊢ ∃̇ (φ →̇ ↑ ∀̇ φ)
   H₂ =                                  ∅─⟨ NotExNotAll ⟩
@@ -522,88 +523,6 @@ DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
     ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ (↑ ∀̇ φ) [ # 0 ]₀      ─⟨ WknImpI ⟩
     ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ (φ →̇ ↑ ∀̇ φ) [ # 0 ]₀  ─⟨ ExI (# 0) ⟩
     ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∃̇ (φ →̇ ↑ ∀̇ φ)
-```
-
-## 理论版
-
-以上介绍的规则可以分为两类, 一类涉及到语境的变换, 如 `ImpI`; 另一类则不涉及, 如 `WknImpI`. 对于后者, 我们使用演绎记法的理论版 `_─ᵀ⟨_⟩_` 统一将 `⊢`-规则转换为适用于 `⊢ᵀ` 版本. 对于前者, 我们一一证明了它们的 `⊢ᵀ` 版本.
-
-### 演绎记法
-
-```agda
-theoryRule : ((Γ , _) : 𝒯 ⊢ᵀ φ) → (Γ ⊢ φ → Γ ⊢ ψ) → 𝒯 ⊢ᵀ ψ
-theoryRule (Γ , Γ⊆ , Γ⊢) ⊢→ = Γ , Γ⊆ , ⊢→ Γ⊢
-
-infixl 0 deductionᵀ
-deductionᵀ : ((Γ , _) : 𝒯 ⊢ᵀ φ) → (Γ ⊢ φ → Γ ⊢ ψ) → (B : 𝕋) → B ≡ (𝒯 ⊢ᵀ ψ) → B
-deductionᵀ {𝒯} a ab B refl = theoryRule {𝒯} a ab
-
-syntax deductionᵀ a ab B eq = a ─ᵀ⟨ ab ⟩≡⟨ eq ⟩ B
-```
-
-### 规则
-
-**<u>规则</u>** `Ctx` 的理论版.
-
-```agda
-Ctxᵀ : φ ∈ 𝒯 → 𝒯 ⊢ᵀ φ
-Ctxᵀ {φ} φ∈𝒯 = [ φ ] , (λ { (here refl) → φ∈𝒯 }) , Ctx0
-```
-
-**<u>规则</u>** `ImpI` 的理论版.
-
-```agda
-ImpIᵀ : (𝒯 ⨭ φ) ⊢ᵀ ψ → 𝒯 ⊢ᵀ φ →̇ ψ
-ImpIᵀ {𝒯} {φ} (Γ , Γ⊆𝒯⨭φ , Γ⊢) = Γ ∖[ φ ] , H₁ , ImpI (Wkn H₂ Γ⊢) where
-  H₁ : Γ ∖[ φ ] ᴸ⊆ᴾ 𝒯
-  H₁ {x} x∈ with ∈∖[]-elim x∈
-  ... | x∈Γ , x≢φ = 𝟙.rec (isProp∈ {x = x} {𝒯}) H (Γ⊆𝒯⨭φ x∈Γ) where
-    H : x ∈ 𝒯 ⊎ x ∈ ｛ φ ｝ → x ∈ 𝒯
-    H (inj₁ p) = p
-    H (inj₂ refl) = exfalso (x≢φ refl)
-  H₂ : Γ ⊆ᴸ φ ∷ Γ ∖[ φ ]
-  H₂ = ⊆ᴸ-trans {j = φ ∷ Γ} there ∷⊆∷∖[]
-```
-
-**<u>规则</u>** `ImpE` 的理论版.
-
-```agda
-ImpEᵀ : 𝒯 ⊢ᵀ φ →̇ ψ → 𝒯 ⊢ᵀ φ → 𝒯 ⊢ᵀ ψ
-ImpEᵀ {𝒯} (Γ , Γ⊆ , Γ⊢) (Δ , Δ⊆ , Δ⊢) = Γ ++ Δ , sub , ImpE (Wkn (⊆++ˡ _ _) Γ⊢) (Wkn (⊆++ʳ _ _) Δ⊢) where
-  sub : Γ ++ Δ ᴸ⊆ᴾ 𝒯
-  sub ∈++ with ∈++-elim Γ ∈++
-  ... | inj₁ ∈Γ = Γ⊆ ∈Γ
-  ... | inj₂ ∈Δ = Δ⊆ ∈Δ
-```
-
-**<u>规则</u>** `Peirce` 的理论版.
-
-```agda
-Peirceᵀ : 𝒯 ⊢ᵀ ((φ →̇ ψ) →̇ φ) →̇ φ
-Peirceᵀ = [] , (λ ()) , Peirce _ _
-```
-
-**<u>规则</u>** `Cut` 的理论版.
-
-```agda
-Cutᵀ : ∀ φ → 𝒯 ⊢ᵀ φ → 𝒯 ⨭ φ ⊢ᵀ ψ → 𝒯 ⊢ᵀ ψ
-Cutᵀ {𝒯} {ψ} φ H₁ H₂ = ImpEᵀ {𝒯} (ImpIᵀ {𝒯} H₂) H₁
-```
-
-**<u>规则</u>** `Wkn` 的理论版.
-
-```agda
-Wknᵀ : ∀ 𝒯₁ 𝒯₂ → 𝒯₁ ⊆ 𝒯₂ → 𝒯₁ ⊢ᵀ φ → 𝒯₂ ⊢ᵀ φ
-Wknᵀ _ _ 𝒯₁⊆𝒯₂ (Γ , Γ⊆𝒯₁ , Γ⊢) = Γ , 𝒯₁⊆𝒯₂ ∘ Γ⊆𝒯₁ , Γ⊢
-```
-
-**<u>事实</u>** 相对一致的继承性: 如果 `𝒯₂` 与 `𝒯₃` 相对一致, 那么 `𝒯₂` 的子集 `𝒯₁` 与 `𝒯₃` 的亲集 `𝒯₄` 相对一致.  
-**<u>证明</u>** 用 `Wknᵀ` 即得. ∎
-
-```agda
-Con-inherit : ∀ {𝒯₁ 𝒯₂ 𝒯₃ 𝒯₄} → 𝒯₁ ⊆ 𝒯₂ → 𝒯₃ ⊆ 𝒯₄ → Con 𝒯₂ to 𝒯₃ → Con 𝒯₁ to 𝒯₄
-Con-inherit {𝒯₁} {𝒯₂} {𝒯₃} {𝒯₄} 𝒯₁⊆𝒯₂ 𝒯₃⊆𝒯₄ con =
-  𝟙.map (Wknᵀ 𝒯₃ 𝒯₄ 𝒯₃⊆𝒯₄) ∘ con ∘ 𝟙.map (Wknᵀ 𝒯₁ 𝒯₂ 𝒯₁⊆𝒯₂)
 ```
 
 ---

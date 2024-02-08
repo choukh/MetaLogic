@@ -20,6 +20,7 @@ open import FOL.Syntax.Enumeration ℒ
 open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
 open import FOL.Syntax.AdmissibleRules ℒ
+open import FOL.Syntax.TheoryRules ℒ
 
 private variable
   m n : ℕ
@@ -527,9 +528,9 @@ module MaxConExtension (𝒯ⁱ : Theory) where
           𝒞ω ⨭ φ →̇ ψ ⊢ᵀ ⊥̇   ─⟨ ImpIᵀ ⟩
           𝒞ω ⊢ᵀ ¬̇ (φ →̇ ψ)
         H₂ =                ∅─⟨ H₁ ⟩
-          𝒞ω ⊢ᵀ ¬̇ (φ →̇ ψ)   ─ᵀ⟨ NImpE ⟩≡⟨ refl ⟩
+          𝒞ω ⊢ᵀ ¬̇ (φ →̇ ψ)   ─⟨ rule NImpE ⟩
           𝒞ω ⊢ᵀ φ           ─⟨ ⊢→⊢ ⟩
-          𝒞ω ⊢ᵀ ψ           ─ᵀ⟨ WknImpI ⟩≡⟨ refl ⟩
+          𝒞ω ⊢ᵀ ψ           ─⟨ rule WknImpI ⟩
           𝒞ω ⊢ᵀ φ →̇ ψ
 ```
 
@@ -543,7 +544,7 @@ module MaxConExtension (𝒯ⁱ : Theory) where
   𝒞ω-D∀̇ : isMaxAll 𝒯ⁱ → D∀̇ 𝒞ω
   𝒞ω-D∀̇ maxAll {φ} .⇒ ∈𝒞ω t = 𝒞ω-C⊢ $
                     ∅─⟨ Ctxᵀ ∈𝒞ω ⟩
-    𝒞ω ⊢ᵀ ∀̇ φ       ─ᵀ⟨ AllE ⟩≡⟨ refl ⟩
+    𝒞ω ⊢ᵀ ∀̇ φ       ─⟨ rule AllE ⟩
     𝒞ω ⊢ᵀ φ [ t ]₀
   𝒞ω-D∀̇ maxAll {φ} .⇐ H∀ = 𝟙.rec→1 𝒞ω-C⊢ H where
     H : ∥ 𝒞ω ⊢ᵀ ∀̇ φ ∥₁

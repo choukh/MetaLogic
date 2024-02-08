@@ -20,6 +20,7 @@
     - [1.1.3 公式的枚举](fol.syntax.enumeration)
     - [1.1.4ᐨ 替换的性质](fol.syntax.substitution)
     - [1.1.5 可容许规则](fol.syntax.admissible)
+    - [1.1.6ᐨ 理论规则](fol.syntax.theory)
   - [1.2 语义](fol.semantics)
     - [1.2.0 语义蕴含](fol.semantics.base)
     - [1.2.1ᐨ 取值的性质](fol.semantics.evaluation)
