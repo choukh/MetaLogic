@@ -95,8 +95,8 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ## 标准完备性
 
 ```agda
-module Standard {ℓ} {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
-  open PolymorphicSemantics ℓ
+module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
+  open PolymorphicSemantics ℓ0
 
   import FOL.Soundness ℒ as S
   open S.Standard using (soundness)
@@ -119,10 +119,12 @@ module Standard {ℓ} {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (c
     open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
     con : Con (𝒯 ⨭ ¬̇ φ)
     con = 𝒯⊬φ ∘ Contraᵀ
+    std = modelhood con .fst
+    validate = modelhood con .snd
     H₁ : # ⊨ᵩ ¬̇ φ
-    H₁ = modelhood con .snd (¬̇ φ) (inr refl)
+    H₁ = validate (¬̇ φ) (inr refl)
     H₂ : # ⊨ᵩ φ
-    H₂ = {!   !}
+    H₂ = 𝒯⊨φ std # λ φ φ∈𝒯 → validate φ (inl φ∈𝒯)
 ```
 
 ```agda

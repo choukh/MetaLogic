@@ -3,7 +3,6 @@ module Foundation.Prelude.Builtin where
 open import Agda.Primitive public
   using (Level; _⊔_)
   renaming (Set to 𝕋; lzero to ℓ0; lsuc to _⁺)
-  renaming (Setω to 𝕋ω)
 
 open import Level public
   using (Lift; lift; lower)
