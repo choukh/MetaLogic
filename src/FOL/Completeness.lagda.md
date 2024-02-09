@@ -23,7 +23,8 @@ open import FOL.TheoryExtension ℒ
 
 ```agda
 module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
-  open CompleteExtension (mkComExt 𝒯ᶜ) using (𝒯ᵒ; 𝒯ᵒ-sub; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
+  open CompleteExtension (mkComExt 𝒯ᶜ)
+    using (𝒯ᵒ; 𝒯ᵒ-sub; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
 ```
 
 ```agda
@@ -82,24 +83,19 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
-  exp : Exp
-  exp = cls , λ 𝓋 R t⃗ → ∈→⊨ $ 𝒯ᵒ-C⊢ $ tauto $ Vac0 Ctx0
+  std⊥  : Con 𝒯ⁱ → Standard⊥
+  std⊥ con ⊥̇∈𝒯ᵒ = 𝟙.rec isProp⊥ con $ 𝒯ᵒ-con ∣ Ctxᵀ ⊥̇∈𝒯ᵒ ∣₁
 ```
 
 ```agda
-  std : Con 𝒯ⁱ → Std
-  std con = cls , λ ⊥̇∈𝒯ᵒ → 𝟙.rec isProp⊥ con $ 𝒯ᵒ-con ∣ Ctxᵀ ⊥̇∈𝒯ᵒ ∣₁
-```
-
-```agda
-  modelhood : Con 𝒯ⁱ → ℳ isA Std modelOf 𝒯ⁱ
-  modelhood con = {!   !} , λ φ φ∈𝒯ⁱ → valid φ (𝒯ᵒ-sub φ∈𝒯ⁱ)
+  modelhood : Con 𝒯ⁱ → ℳ isA Std {Domain = Term} modelOf 𝒯ⁱ
+  modelhood con = (cls , std⊥ con) , λ φ φ∈𝒯ⁱ → valid φ (𝒯ᵒ-sub φ∈𝒯ⁱ)
 ```
 
 ## 标准完备性
 
 ```agda
-module Standard {ℓ} where
+module Standard {ℓ} {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
   open PolymorphicSemantics ℓ
 
   import FOL.Soundness ℒ as S
@@ -108,30 +104,33 @@ module Standard {ℓ} where
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
 
-  SemiCompleteness    = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
-  SemiCompletenessᵀ   = ∀ {𝒯} {φ} → closedᵀ 𝒯 → closed φ → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
-  Completeness        = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
-  Completenessᵀ       = ∀ {𝒯} {φ} → closedᵀ 𝒯 → closed φ → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
-  SyntacticStability  = ∀ {Γ} {φ} → stable (Γ ⊢ φ)
-  SyntacticStabilityᵀ = ∀ {𝒯} {φ} → stable (𝒯 ⊢ᵀ φ)
+  SemiCompleteness    = 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
+  Completeness        = 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
+  SyntacticStability  = stable (𝒯 ⊢ᵀ φ)
 ```
 
 ```agda
-  semiCompletenessᵀ : SemiCompletenessᵀ
-  semiCompletenessᵀ {𝒯} {φ} c𝒯 cφ 𝒯⊨φ 𝒯⊬φ = {! ℐ  !} where
+  semiCompleteness : SemiCompleteness
+  semiCompleteness 𝒯⊨φ 𝒯⊬φ = std⊥ con (H₁ H₂) where
     c⨭ : closedᵀ (𝒯 ⨭ ¬̇ φ)
     c⨭ = 𝟙.rec isPropClosed
       λ { (inj₁ ∈𝒯) → c𝒯 ∈𝒯
         ; (inj₂ refl) le → fresh→̇ (cφ le) fresh⊥̇ }
     open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
+    con : Con (𝒯 ⨭ ¬̇ φ)
+    con = 𝒯⊬φ ∘ Contraᵀ
+    H₁ : # ⊨ᵩ ¬̇ φ
+    H₁ = modelhood con .snd (¬̇ φ) (inr refl)
+    H₂ : # ⊨ᵩ φ
+    H₂ = {!   !}
 ```
 
 ```agda
+  completeness↔stability : Completeness ↔ SyntacticStability
+  completeness↔stability .⇒ com ne = com $ semanticStability Std id
+    λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundnessᵀ 𝒯⊢φ
+  completeness↔stability .⇐ stb = stb ∘ semiCompleteness
 ```
-  completenessᵀ↔stabilityᵀ : Completenessᵀ ↔ SyntacticStabilityᵀ
-  completenessᵀ↔stabilityᵀ .⇒ com ne = com $ semanticStability Std id
-    λ 𝒯⊭φ → ne λ 𝒯⊢ᵀφ → 𝒯⊭φ $ soundnessᵀ 𝒯⊢ᵀφ
-  completenessᵀ↔stabilityᵀ .⇐ stb = stb ∘ semiCompletenessᵀ
 
 ## 爆炸完备性
 

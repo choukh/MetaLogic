@@ -86,6 +86,19 @@ rule : (∀ {Γ} → Γ ⊢ φ → Γ ⊢ ψ) → ∀ {𝒯} → 𝒯 ⊢ᵀ φ 
 rule H = ImpEᵀ $ tauto $ ImpI′ H
 ```
 
+**<u>规则</u>** `Contra` 的理论版.
+
+```agda
+Contraᵀ : 𝒯 ⨭ ¬̇ φ ⊢ᵀ ⊥̇ → 𝒯 ⊢ᵀ φ
+Contraᵀ {𝒯} {φ} H = ImpEᵀ H₁ H₂ where
+  H₁ =                  ∅─⟨ tauto (Peirce φ ⊥̇) ⟩
+    𝒯 ⊢ᵀ (¬̇ φ →̇ φ) →̇ φ
+  H₂ =                  ∅─⟨ H ⟩
+    𝒯 ⨭ ¬̇ φ ⊢ᵀ ⊥̇        ─⟨ rule FalseE ⟩
+    𝒯 ⨭ ¬̇ φ ⊢ᵀ φ        ─⟨ ImpIᵀ ⟩
+    𝒯 ⊢ᵀ ¬̇ φ →̇ φ
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/TheoryRules.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.TheoryRules.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.theory)  
