@@ -113,7 +113,7 @@ soundness⟨ 𝒞 ⟩ Γ⊢ (Peirce φ ψ) c 𝓋 _ = Γ⊢ c .fst 𝓋 φ ψ
 **<u>证明</u>** 即证 `Std`-可靠性. 由于爆炸变体包含于标准变体, 由 `𝒞`-可靠性得证. ∎
 
 ```agda
-module Standard {ℓ} where
+module _ {ℓ} where
   open PolymorphicSemantics ℓ
 
   finite-soundness : Γ ⊢ φ → Γ ⊨ φ
@@ -182,7 +182,7 @@ classical 𝓋 φ ψ pierce with Dec⊨ᵩ 𝓋 φ
 
 ```agda
 consistency : [] ⊬ ⊥̇
-consistency ⊢⊥̇ = Standard.finite-soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
+consistency ⊢⊥̇ = finite-soundness ⊢⊥̇ (classical , id) (λ _ → tt) λ _ ()
 ```
 
 **<u>注意</u>** 我们自始至终没有在元语言中引入排中律.
@@ -191,4 +191,3 @@ consistency ⊢⊥̇ = Standard.finite-soundness ⊢⊥̇ (classical , id) (λ _
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Soundness.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Soundness.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.soundness)  
 > 交流Q群: 893531731
- 

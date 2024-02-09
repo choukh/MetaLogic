@@ -16,6 +16,7 @@ open import FOL.Syntax.SubstitutionFacts ℒ
 open import FOL.Syntax.AdmissibleRules ℒ
 open import FOL.Syntax.TheoryRules ℒ
 open import FOL.Semantics.Base ℒ
+open import FOL.Soundness ℒ
 open import FOL.TheoryExtension ℒ
 ```
 
@@ -38,7 +39,7 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
-  ℳ : Structure _
+  ℳ : Structure ℓ0
   ℳ = record { ℐ = ℐ ; 𝓋 = # }
 ```
 
@@ -97,13 +98,11 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```agda
 module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
   open PolymorphicSemantics ℓ0
-
-  import FOL.Soundness ℒ as S
-  open S.Standard using (soundness)
-
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
+```
 
+```agda
   SemiCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
   Completeness        = 𝒯 ⊫ φ → 𝒯 ⊩ φ
   SyntacticStability  = stable (𝒯 ⊩ φ)

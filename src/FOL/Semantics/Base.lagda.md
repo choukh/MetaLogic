@@ -245,7 +245,7 @@ module PolymorphicSemantics ℓ where
     let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 ```
 
-**<u>引理</u>** 标准语义子变体 `𝒞`-语义蕴含是稳定的.  
+**<u>引理</u>** 语义稳定性: 标准语义子变体 `𝒞`-语义蕴含是稳定的.  
 **<u>证明</u>** TODO. ∎
 
 ```agda
