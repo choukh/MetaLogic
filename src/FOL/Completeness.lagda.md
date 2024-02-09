@@ -23,7 +23,7 @@ open import FOL.TheoryExtension ℒ
 
 ```agda
 module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
-  open CompleteExtension (mkComExt 𝒯ᶜ) using (𝒯ᵒ; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
+  open CompleteExtension (mkComExt 𝒯ᶜ) using (𝒯ᵒ; 𝒯ᵒ-sub; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
 ```
 
 ```agda
@@ -91,30 +91,47 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   std con = cls , λ ⊥̇∈𝒯ᵒ → 𝟙.rec isProp⊥ con $ 𝒯ᵒ-con ∣ Ctxᵀ ⊥̇∈𝒯ᵒ ∣₁
 ```
 
+```agda
+  modelhood : Con 𝒯ⁱ → ℳ isA Std modelOf 𝒯ⁱ
+  modelhood con = {!   !} , λ φ φ∈𝒯ⁱ → valid φ (𝒯ᵒ-sub φ∈𝒯ⁱ)
+```
+
 ## 标准完备性
 
 ```agda
 module Standard {ℓ} where
   open PolymorphicSemantics ℓ
 
-  SemiCompleteness  = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
-  SemiCompletenessᵀ = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
-  Completeness      = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
-  Completenessᵀ     = ∀ {𝒯} {φ} → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
-  Stable⊢           = ∀ {Γ} {φ} → stable (Γ ⊢ φ)
-  Stable⊢ᵀ          = ∀ {𝒯} {φ} → stable (𝒯 ⊢ᵀ φ)
+  import FOL.Soundness ℒ as S
+  open S.Standard using (soundnessᵀ)
+
+  open import FOL.Syntax.Discrete ℒ
+  open SetOperation (discreteSet {A = Formula})
+
+  SemiCompleteness    = ∀ {Γ} {φ} → Γ ⊨ φ → nonEmpty (Γ ⊢ φ)
+  SemiCompletenessᵀ   = ∀ {𝒯} {φ} → closedᵀ 𝒯 → closed φ → 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
+  Completeness        = ∀ {Γ} {φ} → Γ ⊨ φ → Γ ⊢ φ
+  Completenessᵀ       = ∀ {𝒯} {φ} → closedᵀ 𝒯 → closed φ → 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
+  SyntacticStability  = ∀ {Γ} {φ} → stable (Γ ⊢ φ)
+  SyntacticStabilityᵀ = ∀ {𝒯} {φ} → stable (𝒯 ⊢ᵀ φ)
 ```
 
 ```agda
   semiCompletenessᵀ : SemiCompletenessᵀ
-  semiCompletenessᵀ = {!   !}
+  semiCompletenessᵀ {𝒯} {φ} c𝒯 cφ 𝒯⊨φ 𝒯⊬φ = {! ℐ  !} where
+    c⨭ : closedᵀ (𝒯 ⨭ ¬̇ φ)
+    c⨭ = 𝟙.rec isPropClosed
+      λ { (inj₁ ∈𝒯) → c𝒯 ∈𝒯
+        ; (inj₂ refl) le → fresh→̇ (cφ le) fresh⊥̇ }
+    open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
 ```
 
 ```agda
-  completeness↔stability : Completenessᵀ ↔ Stable⊢ᵀ
-  completeness↔stability .⇒ = {!  !}
-  completeness↔stability .⇐ = {!   !}
 ```
+  completenessᵀ↔stabilityᵀ : Completenessᵀ ↔ SyntacticStabilityᵀ
+  completenessᵀ↔stabilityᵀ .⇒ com ne = com $ semanticStability Std id
+    λ 𝒯⊭φ → ne λ 𝒯⊢ᵀφ → 𝒯⊭φ $ soundnessᵀ 𝒯⊢ᵀφ
+  completenessᵀ↔stabilityᵀ .⇐ stb = stb ∘ semiCompletenessᵀ
 
 ## 爆炸完备性
 

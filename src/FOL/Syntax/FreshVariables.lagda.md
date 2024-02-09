@@ -205,11 +205,11 @@ close-closed φ {m} _ with Σfreshᵩ φ
 **<u>定义</u>** 由闭公式组成的理论叫做闭理论.
 
 ```agda
-closedTheory : Theory → 𝕋
-closedTheory 𝒯 = ∀ {φ} → φ ∈ 𝒯 → closed φ
+closedᵀ : Theory → 𝕋
+closedᵀ 𝒯 = ∀ {φ} → φ ∈ 𝒯 → closed φ
 
 ClosedTheory : 𝕋₁
-ClosedTheory = Σ Theory closedTheory
+ClosedTheory = Σ Theory closedᵀ
 ```
 
 ## 命题性
@@ -232,8 +232,8 @@ isPropFreshᵩ {φ = _ $̇ _} (fresh$̇ p) (fresh$̇ q) = cong fresh$̇ (isProp�
 isPropClosed : isProp (closed φ)
 isPropClosed = isPropΠ̅ λ _ → isProp→ isPropFreshᵩ
 
-isPropClosedTheory : isProp (closedTheory 𝒯)
-isPropClosedTheory = isPropΠ̅ λ _ → isPropΠ λ _ → isPropClosed
+isPropClosedᵀ : isProp (closedᵀ 𝒯)
+isPropClosedᵀ = isPropΠ̅ λ _ → isPropΠ λ _ → isPropClosed
 ```
 
 ---

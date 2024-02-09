@@ -20,10 +20,10 @@ open import FOL.Semantics.EvaluationFacts ℒ
 ## 可靠性定理
 
 **<u>定理</u>** `𝒞`-可靠性:
-对任意包含爆炸变体的 `𝒞` 变体, 以及任意语境 `Γ` 和公式 `φ`, 如果 `Γ` 语法蕴含 `φ`, 那么 `Γ` `𝒞`-语义蕴含 `φ`.
+对爆炸语义的任意子变体 `𝒞`, 以及任意语境 `Γ` 和公式 `φ`, 如果 `Γ` 语法蕴含 `φ`, 那么 `Γ` `𝒞`-语义蕴含 `φ`.
 
 ```agda
-soundness⟨_⟩ : (𝒞 : Variant ℓ) → Exp ⊑ 𝒞 →
+soundness⟨_⟩ : (𝒞 : Variant ℓ) → 𝒞 ⊑ Exp →
   ∀ {Γ φ} → Γ ⊢ φ → Γ ⊨⟨ 𝒞 ⟩ φ
 ```
 
@@ -117,7 +117,7 @@ module Standard {ℓ} where
   open PolymorphicSemantics ℓ
 
   soundness : Γ ⊢ φ → Γ ⊨ φ
-  soundness Γ⊢φ = soundness⟨ Std ⟩ Exp⊑Std Γ⊢φ
+  soundness Γ⊢φ = soundness⟨ Std ⟩ Std⊑Exp Γ⊢φ
 ```
 
 **<u>推论</u>** 可靠性 (理论版): 对任意理论 `𝒯` 和公式 `φ`, 如果 `𝒯` 语法蕴含 `φ`, 那么 `𝒯` 语义蕴含 `φ`.  
@@ -138,7 +138,7 @@ module Standard {ℓ} where
 - 公式 `⊥̇` 的解释 `⊥ᴵ`: **假命题** `⊥ₚ`.
 
 ```agda
-instance
+private instance
   ℐ : Interpretation ⊤
   ℐ = record
     { fᴵ = λ _ _ → tt
@@ -191,3 +191,4 @@ consistency ⊢⊥̇ = Standard.soundness ⊢⊥̇ (classical , id) (λ _ → tt
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Soundness.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Soundness.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.soundness)  
 > 交流Q群: 893531731
+ 

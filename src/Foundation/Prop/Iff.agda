@@ -80,15 +80,15 @@ _ ↔∎ = ↔-refl
 
 ↔-cong-≡ : ∀ {a b c d : A} → a ≡ b → c ≡ d → (a ≡ c) ↔ (b ≡ d)
 ↔-cong-≡ a≡b c≡d = ⇒: (λ a≡c → sym a≡b ∙ a≡c ∙ c≡d)
-              ⇐: (λ b≡d → a≡b     ∙ b≡d ∙ sym c≡d)
+                   ⇐: (λ b≡d → a≡b     ∙ b≡d ∙ sym c≡d)
 
 ↔-cong-→ : A ↔ B → C ↔ D → (A → C) ↔ (B → D)
 ↔-cong-→ A↔B C↔D = ⇒: (λ f x → ⇒ C↔D (f $ ⇐ A↔B x))
-              ⇐: (λ g x → ⇐ C↔D (g $ ⇒   A↔B x))
+                   ⇐: (λ g x → ⇐ C↔D (g $ ⇒   A↔B x))
 
 ↔-cong-Π : (∀ x → P x ↔ Q x) → (∀ x → P x) ↔ (∀ x → Q x)
 ↔-cong-Π ↔ = ⇒: (λ P x → ⇒ (↔ x) $ P x)
-        ⇐: (λ Q x → ⇐ (↔ x) $ Q x)
+             ⇐: (λ Q x → ⇐ (↔ x) $ Q x)
 
 --------------------------------------------------------------------------------
 -- Proof of prop-hood

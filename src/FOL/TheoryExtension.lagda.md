@@ -166,7 +166,7 @@ record GeneralizedExtension : 𝕋₁ where
 **<u>证明</u>** 依定义. ∎
 
 ```agda
-  𝒯ω-closed : (∀ n → closedTheory (𝒯ᵢ n)) → closedTheory 𝒯ω
+  𝒯ω-closed : (∀ n → closedᵀ (𝒯ᵢ n)) → closedᵀ 𝒯ω
   𝒯ω-closed H = 𝟙.rec isPropClosed λ { (m , φ∈𝒯ₘ) → H m φ∈𝒯ₘ }
 ```
 
