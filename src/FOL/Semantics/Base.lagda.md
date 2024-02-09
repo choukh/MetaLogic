@@ -34,7 +34,7 @@ Assignment D = ℕ → D
 
 ```agda
 record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
-  infix 10 _⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨ₛ_ _⊨ₛᵀ_
+  infix 10 _⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨ₛ_ _⊫ₛ_
 
   field
     fᴵ : (f : 𝓕) → 𝕍 D ∣ f ∣ᶠ → D
@@ -111,17 +111,17 @@ record Interpretation (D : 𝕋 ℓ) : 𝕋 (ℓ ⁺) where
 **<u>定义</u>** 语境和理论的有效性
 
 - 我们说语境 `Γ` 在 `𝓋` 下有效, 记作 `𝓋 ⊨ₛ Γ`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ᴸ Γ` 成立.
-- 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊨ₛᵀ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
+- 我们说理论 `𝒯` 在 `𝓋` 下有效, 记作 `𝓋 ⊫ₛ 𝒯`, 当且仅当 `𝓋 ⊨ᵩ φ` 对任意 `φ ∈ 𝒯` 成立.
 
 ```agda
   _⊨ₛ_ : Assignment D → Context → 𝕋 _
   𝓋 ⊨ₛ Γ = ∀ φ → φ ∈ᴸ Γ → 𝓋 ⊨ᵩ φ
 
-  _⊨ₛᵀ_ : Assignment D → Theory → 𝕋 _
-  𝓋 ⊨ₛᵀ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
+  _⊫ₛ_ : Assignment D → Theory → 𝕋 _
+  𝓋 ⊫ₛ 𝒯 = ∀ φ → φ ∈ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
 
-**<u>注意</u>** 以上定义的 `_⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨ₛ_ _⊨ₛᵀ_` 这六个概念都是以解释为参数的.
+**<u>注意</u>** 以上定义的 `_⊨ₜ_ _⊨ₜ⃗_ _⊨ᵩ_ _⊨ₛ_ _⊫ₛ_` 这六个概念都是以解释为参数的.
 
 **<u>约定</u>** 我们一次只会谈论一种解释, 它在上下文中是明确的, 首次出现时会放在括号 `⦃ ⦄` 中或使用 `instance` 关键字来声明, 所以每次提到这些概念时不会一一带上某解释 `ℐ` 作为参数, 从而精简表达. 该约定表达为以下代码.
 
@@ -206,30 +206,30 @@ semanticExplosion exp 𝓋 (∀̇ φ) bot x = semanticExplosion exp (x ∷ₙ �
 **<u>定义</u>** `𝒞`-语义蕴含
 
 - 我们说语境 `Γ` 在层级 `ℓ` 中 `𝒞`-语义蕴含公式 `φ` (也说 `φ` 在 `Γ` 下 `𝒞`-有效), 记作 `Γ ⊨⟨ 𝒞 ⟩ φ` (其中 `𝒞 : Variant ℓ`), 当且仅当对解释到 `ℓ` 中论域 `D` 的任意 `𝒞` 变体 `ℐ` 都有: 任意使得 `Γ` 有效的 `𝓋` 都使得 `φ` 有效.
-- 我们说理论 `𝒯` 在层级 `ℓ` 中 `𝒞`-语义蕴含公式 `φ` (也说 `φ` 在 `𝒯` 下 `𝒞`-有效), 记作 `Γ ⊨ᵀ⟨ 𝒞 ⟩ φ` (其中 `𝒞 : Variant ℓ`), 当且仅当对解释到 `ℓ` 中论域 `D` 的任意 `𝒞` 变体 `ℐ` 都有: 任意使得 `𝒯` 有效的 `𝓋` 都使得 `φ` 有效.
+- 我们说理论 `𝒯` 在层级 `ℓ` 中 `𝒞`-语义蕴含公式 `φ` (也说 `φ` 在 `𝒯` 下 `𝒞`-有效), 记作 `Γ ⊫⟨ 𝒞 ⟩ φ` (其中 `𝒞 : Variant ℓ`), 当且仅当对解释到 `ℓ` 中论域 `D` 的任意 `𝒞` 变体 `ℐ` 都有: 任意使得 `𝒯` 有效的 `𝓋` 都使得 `φ` 有效.
 
 ```agda
 _⊨⟨_⟩_ : Context → Variant ℓ → Formula → 𝕋 _
 Γ ⊨⟨ 𝒞 ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞 → ∀ 𝓋 → 𝓋 ⊨ₛ Γ → 𝓋 ⊨ᵩ φ
 
-_⊨ᵀ⟨_⟩_ : Theory → Variant ℓ → Formula → 𝕋 _
-𝒯 ⊨ᵀ⟨ 𝒞 ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞 → ∀ 𝓋 → 𝓋 ⊨ₛᵀ 𝒯 → 𝓋 ⊨ᵩ φ
+_⊫⟨_⟩_ : Theory → Variant ℓ → Formula → 𝕋 _
+𝒯 ⊫⟨ 𝒞 ⟩ φ = ∀ {D} ⦃ _ : Interpretation D ⦄ → 𝒞 → ∀ 𝓋 → 𝓋 ⊫ₛ 𝒯 → 𝓋 ⊨ᵩ φ
 ```
 
 **<u>定义</u>** 标准-语义蕴含
 
 - 我们说语境 `Γ` 语义蕴含 `φ` (也说 `φ` 在 `Γ` 下有效), 记作 `Γ ⊨ φ`, 当且仅当对给定的宇宙层级 `ℓ` 有 `Γ ⊨⟨ Std {ℓ} ⟩ φ`.
-- 我们说理论 `𝒯` 语义蕴含 `φ` (也说 `φ` 在 `𝒯` 下有效), 记作 `𝒯 ⊨ᵀ φ`, 当且仅当对给定的宇宙层级 `ℓ` 有 `𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ`.
+- 我们说理论 `𝒯` 语义蕴含 `φ` (也说 `φ` 在 `𝒯` 下有效), 记作 `𝒯 ⊫ φ`, 当且仅当对给定的宇宙层级 `ℓ` 有 `𝒯 ⊫⟨ Std {ℓ} ⟩ φ`.
 
 ```agda
 module PolymorphicSemantics ℓ where
-  infix 4 _⊨_ _⊨ᵀ_
+  infix 4 _⊨_ _⊫_
 
   _⊨_ : Context → Formula → 𝕋 _
   Γ ⊨ φ = Γ ⊨⟨ Std {ℓ} ⟩ φ
 
-  _⊨ᵀ_ : Theory → Formula → 𝕋 _
-  𝒯 ⊨ᵀ φ = 𝒯 ⊨ᵀ⟨ Std {ℓ} ⟩ φ
+  _⊫_ : Theory → Formula → 𝕋 _
+  𝒯 ⊫ φ = 𝒯 ⊫⟨ Std {ℓ} ⟩ φ
 ```
 
 **<u>注意</u>** 语义蕴含 (semantic consequence) `_⊨_` 和上一讲的语法蕴含 (syntactic consequence) `_⊢_` 从两个不同的角度刻画了逻辑推理. 此外, 对象语言中的 `_→̇_` 又叫做实质蕴含 (material implication), 我们还有元语言蕴含 `→`, 注意区分这四种蕴含.
@@ -238,10 +238,10 @@ module PolymorphicSemantics ℓ where
 **<u>证明</u>** 由 `isProp⊨ᵩ` 显然成立. ∎
 
 ```agda
-  isProp⊨ isProp⊨ᵀ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
+  isProp⊨ isProp⊫ : ∀ Γ {𝒞 : Variant ℓ} φ → isProp (Γ ⊨⟨ 𝒞 ⟩ φ)
   isProp⊨ Γ φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
     let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
-  isProp⊨ᵀ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
+  isProp⊫ 𝒯 φ = isPropΠ̅ λ _ → isPropΠ̿ λ 𝒱 → isProp→ $ isPropΠ2 λ 𝓋 _ →
     let instance _ = 𝒱 in isProp⊨ᵩ 𝓋 φ
 ```
 
@@ -249,7 +249,7 @@ module PolymorphicSemantics ℓ where
 **<u>证明</u>** TODO. ∎
 
 ```agda
-semanticStability : (𝒞 : Variant ℓ) → 𝒞 ⊑ Std → stable (𝒯 ⊨ᵀ⟨ 𝒞 ⟩ φ)
+semanticStability : (𝒞 : Variant ℓ) → 𝒞 ⊑ Std → stable (𝒯 ⊫⟨ 𝒞 ⟩ φ)
 semanticStability {φ} 𝒞 sub ne c 𝓋 𝓋⊨𝒯 = let (cls , ⊥ᴵ→⊥) = sub c in
   cls 𝓋 φ ⊥̇ λ φ→⊥ᴵ → exfalso $ ne λ 𝒯⊨φ → ⊥ᴵ→⊥ (φ→⊥ᴵ (𝒯⊨φ c 𝓋 𝓋⊨𝒯))
 ```

@@ -73,7 +73,7 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
-  valid : # ⊨ₛᵀ 𝒯ᵒ
+  valid : # ⊫ₛ 𝒯ᵒ
   valid φ φ∈𝒯ᵒ = ∈→⊨ $ subst (_∈ 𝒯ᵒ) [#]ᵩ φ∈𝒯ᵒ
 ```
 
@@ -99,14 +99,14 @@ module Standard {ℓ} {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (c
   open PolymorphicSemantics ℓ
 
   import FOL.Soundness ℒ as S
-  open S.Standard using (soundnessᵀ)
+  open S.Standard using (soundness)
 
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
 
-  SemiCompleteness    = 𝒯 ⊨ᵀ φ → nonEmpty (𝒯 ⊢ᵀ φ)
-  Completeness        = 𝒯 ⊨ᵀ φ → 𝒯 ⊢ᵀ φ
-  SyntacticStability  = stable (𝒯 ⊢ᵀ φ)
+  SemiCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
+  Completeness        = 𝒯 ⊫ φ → 𝒯 ⊩ φ
+  SyntacticStability  = stable (𝒯 ⊩ φ)
 ```
 
 ```agda
@@ -128,7 +128,7 @@ module Standard {ℓ} {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (c
 ```agda
   completeness↔stability : Completeness ↔ SyntacticStability
   completeness↔stability .⇒ com ne = com $ semanticStability Std id
-    λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundnessᵀ 𝒯⊢φ
+    λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundness 𝒯⊢φ
   completeness↔stability .⇐ stb = stb ∘ semiCompleteness
 ```
 
