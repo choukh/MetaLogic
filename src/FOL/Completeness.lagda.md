@@ -103,14 +103,23 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
 ```
 
 ```agda
-  SemiCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
+  WeakCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
   Completeness        = 𝒯 ⊫ φ → 𝒯 ⊩ φ
   SyntacticStability  = stable (𝒯 ⊩ φ)
 ```
 
+弱完备性离完备性正好就差一个语法稳定性.
+
 ```agda
-  semiCompleteness : SemiCompleteness
-  semiCompleteness 𝒯⊨φ 𝒯⊬φ = std⊥ con (H₁ H₂) where
+  completeness↔stability : WeakCompleteness → Completeness ↔ SyntacticStability
+  completeness↔stability _ .⇒ com ne = com $ semanticStability Std id
+    λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundness 𝒯⊢φ
+  completeness↔stability wcom .⇐ stb = stb ∘ wcom
+```
+
+```agda
+  weakCompleteness : WeakCompleteness
+  weakCompleteness 𝒯⊨φ 𝒯⊬φ = std⊥ con (H₁ H₂) where
     c⨭ : closedᵀ (𝒯 ⨭ ¬̇ φ)
     c⨭ = 𝟙.rec isPropClosed
       λ { (inj₁ ∈𝒯) → c𝒯 ∈𝒯
@@ -124,13 +133,6 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
     H₁ = validate (¬̇ φ) (inr refl)
     H₂ : # ⊨ᵩ φ
     H₂ = 𝒯⊨φ std # λ φ φ∈𝒯 → validate φ (inl φ∈𝒯)
-```
-
-```agda
-  completeness↔stability : Completeness ↔ SyntacticStability
-  completeness↔stability .⇒ com ne = com $ semanticStability Std id
-    λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundness 𝒯⊢φ
-  completeness↔stability .⇐ stb = stb ∘ semiCompleteness
 ```
 
 ## 爆炸完备性
