@@ -96,7 +96,7 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ## 完备性
 
 ```agda
-module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
+module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
   open PolymorphicSemantics ℓ0
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
@@ -110,7 +110,7 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
   SyntacticStability  = stable (𝒯 ⊩ φ)
 ```
 
-弱完备性离完备性正好就差一个语法稳定性.
+弱完备性离标准完备性正好就差一个语法稳定性.
 
 ```agda
   completeness↔stability : WeakCompleteness → Completeness ↔ SyntacticStability
@@ -144,10 +144,12 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
   SemanticExplosibility = 𝒯 ⊫ φ → 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ
 ```
 
+爆炸完备性离标准完备性正好就差一个语义爆炸性.
+
 ```agda
-  explosibility↔completeness : ExplodingCompleteness → SemanticExplosibility ↔ Completeness
-  explosibility↔completeness ecom .⇒ se 𝒯⊫φ = ecom $ se 𝒯⊫φ
-  explosibility↔completeness ecom .⇐ com 𝒯⊫φ = soundness⟨ Exp ⟩ id (com 𝒯⊫φ)
+  explosibility↔completeness : ExplodingCompleteness → Completeness ↔ SemanticExplosibility
+  explosibility↔completeness ecom .⇒ com 𝒯⊫φ = soundness⟨ Exp ⟩ id (com 𝒯⊫φ)
+  explosibility↔completeness ecom .⇐ se 𝒯⊫φ = ecom $ se 𝒯⊫φ
 ```
 
 ```agda
@@ -159,9 +161,10 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
 
 ```agda
   explosibility↔stability : SemanticExplosibility ↔ SyntacticStability
-  explosibility↔stability = ↔-trans
-    (explosibility↔completeness explodingCompleteness)
-    (completeness↔stability weakCompleteness)
+  explosibility↔stability =
+    SemanticExplosibility ↔˘⟨ explosibility↔completeness explodingCompleteness ⟩
+    Completeness          ↔⟨ completeness↔stability weakCompleteness ⟩
+    SyntacticStability    ↔∎
 ```
 
 ### 弱构造元理论
