@@ -93,7 +93,7 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   modelhood con = (cls , std⊥ con) , λ φ φ∈𝒯ⁱ → valid φ (𝒯ᵒ-sub φ∈𝒯ⁱ)
 ```
 
-## 标准完备性
+## 完备性
 
 ```agda
 module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
@@ -101,6 +101,8 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
 ```
+
+### 标准模型
 
 ```agda
   WeakCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
@@ -135,7 +137,36 @@ module Standard {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : c
     H₂ = 𝒯⊨φ std # λ φ φ∈𝒯 → validate φ (inl φ∈𝒯)
 ```
 
-## 爆炸完备性
+### 爆炸模型
+
+```agda
+  ExplodingCompleteness = 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ → 𝒯 ⊩ φ
+  SemanticExplosibility = 𝒯 ⊫ φ → 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ
+```
+
+```agda
+  explosibility↔completeness : ExplodingCompleteness → SemanticExplosibility ↔ Completeness
+  explosibility↔completeness ecom .⇒ se 𝒯⊫φ = ecom $ se 𝒯⊫φ
+  explosibility↔completeness ecom .⇐ com 𝒯⊫φ = soundness⟨ Exp ⟩ id (com 𝒯⊫φ)
+```
+
+```agda
+  explodingCompleteness : ExplodingCompleteness
+  explodingCompleteness = {!   !}
+```
+
+语义爆炸性与语法稳定性等价.
+
+```agda
+  explosibility↔stability : SemanticExplosibility ↔ SyntacticStability
+  explosibility↔stability = ↔-trans
+    (explosibility↔completeness explodingCompleteness)
+    (completeness↔stability weakCompleteness)
+```
+
+### 弱构造元理论
+
+TODO
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
