@@ -2,6 +2,7 @@ module Foundation.Relation.Nullary.Negation where
 
 open import Foundation.Prelude
 open import Foundation.Data.Empty
+open import Foundation.Prop.Truncation
 
 open import Relation.Nullary public
   using ()

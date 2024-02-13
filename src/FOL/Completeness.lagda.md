@@ -24,7 +24,7 @@ open import FOL.TheoryExtension ℒ
 
 ```agda
 module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
-  open CompleteExtension (mkComExt 𝒯ᶜ)
+  open CompleteExtension (mkComExt 𝒯ᶜ) public
     using (𝒯ᵒ; 𝒯ᵒ-sub; 𝒯ᵒ-con; 𝒯ᵒ-C⊢; 𝒯ᵒ-D→̇; 𝒯ᵒ-D∀̇)
 ```
 
@@ -84,6 +84,11 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
+  exp⊥ : Exploding⊥
+  exp⊥ 𝓋 R t⃗ ⊥̇∈𝒯ᵒ = ∈→⊨ $ 𝒯ᵒ-C⊢ $ [ ⊥̇ ] , (λ { (here refl) → ⊥̇∈𝒯ᵒ }) , FalseE Ctx0
+```
+
+```agda
   std⊥  : Con 𝒯ⁱ → Standard⊥
   std⊥ con ⊥̇∈𝒯ᵒ = 𝟙.rec isProp⊥ con $ 𝒯ᵒ-con ∣ Ctxᵀ ⊥̇∈𝒯ᵒ ∣₁
 ```
@@ -102,12 +107,19 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
   open SetOperation (discreteSet {A = Formula})
 ```
 
+```agda
+  c⨭ : closedᵀ (𝒯 ⨭ ¬̇ φ)
+  c⨭ = 𝟙.rec isPropClosed
+    λ { (inj₁ ∈𝒯) → c𝒯 ∈𝒯
+      ; (inj₂ refl) le → fresh→̇ (cφ le) fresh⊥̇ }
+```
+
 ### 标准模型
 
 ```agda
   WeakCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
-  Completeness        = 𝒯 ⊫ φ → 𝒯 ⊩ φ
-  SyntacticStability  = stable (𝒯 ⊩ φ)
+  Completeness        = 𝒯 ⊫ φ → ∥ 𝒯 ⊩ φ ∥₁
+  SyntacticStability  = nonEmpty (𝒯 ⊩ φ) → ∥ 𝒯 ⊩ φ ∥₁
 ```
 
 弱完备性离标准完备性正好就差一个语法稳定性.
@@ -122,10 +134,6 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
 ```agda
   weakCompleteness : WeakCompleteness
   weakCompleteness 𝒯⊨φ 𝒯⊬φ = std⊥ con (H₁ H₂) where
-    c⨭ : closedᵀ (𝒯 ⨭ ¬̇ φ)
-    c⨭ = 𝟙.rec isPropClosed
-      λ { (inj₁ ∈𝒯) → c𝒯 ∈𝒯
-        ; (inj₂ refl) le → fresh→̇ (cφ le) fresh⊥̇ }
     open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
     con : Con (𝒯 ⨭ ¬̇ φ)
     con = 𝒯⊬φ ∘ Contraᵀ
@@ -140,7 +148,7 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
 ### 爆炸模型
 
 ```agda
-  ExplodingCompleteness = 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ → 𝒯 ⊩ φ
+  ExplodingCompleteness = 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ → ∥ 𝒯 ⊩ φ ∥₁
   SemanticExplosibility = 𝒯 ⊫ φ → 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ
 ```
 
@@ -148,13 +156,23 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
 
 ```agda
   explosibility↔completeness : ExplodingCompleteness → Completeness ↔ SemanticExplosibility
-  explosibility↔completeness ecom .⇒ com 𝒯⊫φ = soundness⟨ Exp ⟩ id (com 𝒯⊫φ)
-  explosibility↔completeness ecom .⇐ se 𝒯⊫φ = ecom $ se 𝒯⊫φ
+  explosibility↔completeness ecom .⇒ com 𝒯⊫φ exp 𝓋 𝒯⊫𝓋 = 𝟙.rec (isProp⊨ᵩ _ _)
+    (λ 𝒯⊩φ → soundness⟨ Exp ⟩ id 𝒯⊩φ exp 𝓋 𝒯⊫𝓋) (com 𝒯⊫φ)
+  explosibility↔completeness ecom .⇐ se 𝒯⊫φ = ecom (se 𝒯⊫φ)
 ```
 
 ```agda
   explodingCompleteness : ExplodingCompleteness
-  explodingCompleteness = {!   !}
+  explodingCompleteness 𝒯⊨φ = 𝟙.map Contraᵀ H where
+    open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
+    #⊫𝒯 : # ⊫ₛ 𝒯
+    #⊫𝒯 φ φ∈𝒯 = valid φ (𝒯ᵒ-sub (inl φ∈𝒯))
+    #⊨¬̇φ : # ⊨ᵩ ¬̇ φ
+    #⊨¬̇φ = valid (¬̇ φ) (𝒯ᵒ-sub (inr refl))
+    #⊨φ : # ⊨ᵩ φ
+    #⊨φ = 𝒯⊨φ (cls , exp⊥) # #⊫𝒯
+    H : ∥ 𝒯 ⨭ ¬̇ φ ⊩ ⊥̇ ∥₁
+    H = 𝒯ᵒ-con ∣ Ctxᵀ $ #⊨¬̇φ $ #⊨φ ∣₁
 ```
 
 语义爆炸性与语法稳定性等价.
