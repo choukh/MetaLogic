@@ -98,10 +98,10 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   modelhood con = (cls , std⊥ con) , λ φ φ∈𝒯ⁱ → valid φ (𝒯ᵒ-sub φ∈𝒯ⁱ)
 ```
 
-## 完备性
+## 闭理论
 
 ```agda
-module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
+module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed φ) where
   open PolymorphicSemantics ℓ0
   open import FOL.Syntax.Discrete ℒ
   open SetOperation (discreteSet {A = Formula})
@@ -119,7 +119,7 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
 ```agda
   WeakCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
   Completeness        = 𝒯 ⊫ φ → ∥ 𝒯 ⊩ φ ∥₁
-  SyntacticStability  = nonEmpty (𝒯 ⊩ φ) → ∥ 𝒯 ⊩ φ ∥₁
+  SyntacticStability  = stable₁ (𝒯 ⊩ φ)
 ```
 
 弱完备性离标准完备性正好就差一个语法稳定性.
@@ -185,9 +185,14 @@ module _ {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : closed �
     SyntacticStability    ↔∎
 ```
 
-### 弱构造元理论
+### 弱构造性元理论
 
-TODO
+## 任意理论
+
+```agda
+module _ {𝒯 : Theory} {φ : Formula} where
+  open PolymorphicSemantics ℓ0
+```
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  

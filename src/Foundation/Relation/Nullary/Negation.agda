@@ -35,3 +35,6 @@ nonEmpty A = ¬ ¬ A
 
 stable : 𝕋 ℓ → 𝕋 ℓ
 stable A = nonEmpty A → A
+
+stable₁ : 𝕋 ℓ → 𝕋 ℓ
+stable₁ A = nonEmpty A → ∥ A ∥₁

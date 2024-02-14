@@ -9,5 +9,8 @@ open import Data.Unit.Polymorphic public
 isProp⊤ : isProp ⊤
 isProp⊤ _ _ = refl
 
+isProp⊤* : isProp (⊤* {ℓ})
+isProp⊤* _ _ = refl
+
 isSet⊤ : isSet ⊤
 isSet⊤ _ _ refl refl = refl
