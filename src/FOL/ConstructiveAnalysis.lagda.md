@@ -5,11 +5,15 @@ url: fol.analysis
 # 一阶逻辑 ▸ 构造主义纯度分析
 
 ```agda
+{-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import FOL.Language
 module FOL.ConstructiveAnalysis (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
+open import FOL.Syntax.Discrete ℒ
+open import FOL.Syntax.AdmissibleRules ℒ hiding (DNE)
+open import FOL.Soundness ℒ
 ```
 
 ## 𝐓-稳定性
@@ -17,30 +21,47 @@ open import FOL.Syntax.Base ℒ
 ```agda
 Theories : 𝕋₂
 Theories = 𝒫 Theory
+```
 
+```agda
 ⟨_⟩-stability : Theories → 𝕋₁
 ⟨ 𝐓 ⟩-stability = ∀ 𝒯 φ → 𝒯 ∈ 𝐓 → stable₁ (𝒯 ⊩ φ)
+```
 
+```agda
 𝐔 : Theories
 𝐔 = λ _ → ⊤ₚ*
+```
+
+```agda
+enclose : ℙ₀ → Theory
+enclose 𝗣 φ = φ ≡ ⊥̇ ∧ 𝗣 holds , isProp× (discreteSet _ _) (isPredHolds 𝗣)
+```
+
+```agda
+enclose↔ : ∀ 𝗣 → ∥ enclose 𝗣 ⊩ ⊥̇ ∥₁ ↔ 𝗣 holds
+enclose↔ 𝗣 .⇒ = 𝟙.rec (isPredHolds 𝗣)
+  λ { ([] , Γ⊆ , Γ⊢) → exfalso (consistency Γ⊢)
+    ; (φ ∷ Γ , Γ⊆ , Γ⊢) → Γ⊆ (here refl) .snd }
+enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) , Ctx0
 ```
 
 ## 双重否定消去
 
 ```agda
 DNE : 𝕋 (ℓ ⁺)
-DNE {ℓ} = (P : 𝕋 ℓ) → stable₁ P
+DNE {ℓ} = (P : 𝕋 ℓ) → isProp P → stable P
 ```
 
 ```agda
 DNE↔𝐔-stability : DNE ↔ ⟨ 𝐔 ⟩-stability
-DNE↔𝐔-stability .⇒ dne 𝒯 φ _ = dne (𝒯 ⊩ φ)
-DNE↔𝐔-stability .⇐ = {!   !}
+DNE↔𝐔-stability .⇒ dne 𝒯 φ _ ne = dne _ 𝟙.squash (nonEmptyTrunc .⇒ ne)
+DNE↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableTrunc $ u-stb _ _ _
 ```
 
-## 综合马尔可夫
+## 综合马尔可夫原理
 
-## 对象马尔可夫
+## 对象马尔可夫原理
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
