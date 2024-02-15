@@ -464,12 +464,9 @@ open import Foundation.Function.Bijection public
 open import Foundation.Relation.Nullary.Negation public
 ```
 
-**<u>定义</u>** 否定的相关概念
+**<u>定义</u>** `A` 到 `⊥` 的函数叫做 `A` 的否定, 记作 `¬ A`.
 
-- 否定 `¬_ = λ A → A → ⊥`
-- 非空 `nonEmpty = λ A → ¬ ¬ A`
-- 稳定 `stable = λ A → nonEmpty A → A`
-- 截断稳定 `stable₁ = λ A → nonEmpty A → ∥ A ∥₁`
+由于 `⊥` 是命题, 否定一定是一个命题 (`isProp¬`).
 
 #### 可判定
 
@@ -489,6 +486,12 @@ open import Foundation.Relation.Nullary.Discrete.Instance public
 ```
 
 离散性与枚举函数的性质密切相关, 与之一样, 我们单独设为一章: [0.1 离散性](https://www.yuque.com/ocau/metalogic/foundation.discrete.base).
+
+以上这些概念又关乎到我们构造主义基础的深层本质, 我们放在单独的一章讨论: [0.3 构造主义反推数学](https://www.yuque.com/ocau/metalogic/foundation.reverse).
+
+```agda
+open import Foundation.ConstructiveReverse public
+```
 
 ### 一元关系
 

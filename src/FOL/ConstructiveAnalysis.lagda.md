@@ -12,7 +12,7 @@ module FOL.ConstructiveAnalysis (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Discrete ℒ
-open import FOL.Syntax.AdmissibleRules ℒ hiding (DNE)
+open import FOL.Syntax.AdmissibleRules ℒ
 open import FOL.Soundness ℒ
 ```
 
@@ -49,17 +49,14 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 ## 双重否定消去
 
 ```agda
-DNE : 𝕋 (ℓ ⁺)
-DNE {ℓ} = (P : 𝕋 ℓ) → isProp P → stable P
-```
-
-```agda
-DNE↔𝐔-stability : DNE ↔ ⟨ 𝐔 ⟩-stability
-DNE↔𝐔-stability .⇒ dne 𝒯 φ _ ne = dne _ 𝟙.squash (nonEmptyTrunc .⇒ ne)
-DNE↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableTrunc $ u-stb _ _ _
+𝗗𝗡𝗘↔𝐔-stability : 𝗗𝗡𝗘 ↔ ⟨ 𝐔 ⟩-stability
+𝗗𝗡𝗘↔𝐔-stability .⇒ dne 𝒯 φ _ ne = dne _ 𝟙.squash (nonEmptyInhabitation .⇒ ne)
+𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-cong (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _ _ _
 ```
 
 ## 综合马尔可夫原理
+
+
 
 ## 对象马尔可夫原理
 

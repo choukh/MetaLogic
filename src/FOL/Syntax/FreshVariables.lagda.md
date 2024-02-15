@@ -220,7 +220,7 @@ ClosedTheory = Σ Theory closedᵀ
 ```agda
 isPropFreshₜ : ∀ t → isProp (freshₜ n t)
 isPropFreshₜ = term-elim
-  (λ { _ (fresh# p) (fresh# q) → cong fresh# $ isProp→ isProp⊥ p q })
+  (λ { _ (fresh# p) (fresh# q) → cong fresh# $ isProp¬ p q })
   (λ { f t⃗ IH (fresh$̇ p) (fresh$̇ q) → cong fresh$̇ $ isPropΠ2 IH p q })
 
 isPropFreshᵩ : ∀ {φ} → isProp (freshᵩ n φ)
