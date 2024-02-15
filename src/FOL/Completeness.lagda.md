@@ -17,6 +17,7 @@ open import FOL.Syntax.FreshVariables ℒ
 open import FOL.Syntax.SubstitutionFacts ℒ
 open import FOL.Syntax.AdmissibleRules ℒ
 open import FOL.Syntax.TheoryRules ℒ
+open import FOL.Syntax.Stability ℒ
 open import FOL.Semantics.Base ℒ
 open import FOL.Soundness ℒ
 open import FOL.TheoryExtension ℒ
