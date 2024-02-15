@@ -489,10 +489,6 @@ open import Foundation.Relation.Nullary.Discrete.Instance public
 
 以上这些概念又关乎到我们构造主义基础的深层本质, 我们放在单独的一章讨论: [0.3 构造主义反推数学](https://www.yuque.com/ocau/metalogic/foundation.reverse).
 
-```agda
-open import Foundation.ReverseMaths public
-```
-
 ### 一元关系
 
 #### 可数

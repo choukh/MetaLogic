@@ -7,6 +7,8 @@ url: fol.analysis
 ```agda
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
+open import Foundation.ReverseMaths
+
 open import FOL.Language
 module FOL.ConstructiveAnalysis (ℒ : Language) where
 

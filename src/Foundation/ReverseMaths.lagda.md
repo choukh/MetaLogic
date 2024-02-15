@@ -4,43 +4,50 @@ url: foundation.reverse
 
 # 元语言 ▸ 构造主义反推基础
 
+在纯构造主义中工作的好处是我们可以随时按需添加非纯构造性公理 (如 𝗔𝗖, 𝗟𝗘𝗠, 𝗟𝗣𝗢, 𝗠𝗣, 以及它们的各种变体), 以调节元理论的非构造强度, 从而分析我们关心的命题的构造主义纯度. 此种实践我们称为构造主义反推数学, 而本章的目的就是介绍其基本设定.
+
 ```agda
 module Foundation.ReverseMaths where
 
-open import Foundation.Prelude
-open import Foundation.Data.Empty
-open import Foundation.Data.Bool
-open import Foundation.Data.Nat
-open import Foundation.Data.Maybe
-open import Foundation.Prop.Logic
-open import Foundation.Prop.Iff
-open import Foundation.Prop.Truncation
-open import Foundation.Relation.Nullary.Negation
-open import Foundation.Relation.Nullary.Decidable
-open import Foundation.Relation.Nullary.Discrete.Base
+open import Foundation.Essential
 open import Foundation.Relation.Nullary.Discrete.List
-open import Foundation.Function.Enumeration.ListView.Base
 ```
 
 ## 居留与非空
 
-```agda
-inhabited : 𝕋 ℓ → 𝕋 ℓ
-inhabited A = ∥ A ∥₁
+**<u>定义</u>** 居留与非空:
 
-nonEmpty : 𝕋 ℓ → 𝕋 ℓ
+- 我们说类型 `A` 是居留的, 当且仅当存在 `a : A`.
+- 我们说类型 `A` 非空, 当且仅当 `¬ ¬ A` 成立.
+
+```agda
+inhabited nonEmpty : 𝕋 ℓ → 𝕋 ℓ
+inhabited A = ∥ A ∥₁
 nonEmpty A = ¬ ¬ A
 ```
 
+**<u>事实</u>** 居留蕴含非空.
+
 ```agda
-inhabited→nonEmpty : inhabited A → nonEmpty A
-inhabited→nonEmpty = 𝟙.rec isProp¬ λ a ¬a → ¬a a
+_ : inhabited A → nonEmpty A
+_ = 𝟙.rec isProp¬ λ a ¬a → ¬a a
 ```
+
+**<u>事实</u>** 如果 `A` 蕴含 `B`, 那么 `A` 居留蕴含 `B` 居留.
+
+```agda
+_ : (A → B) → inhabited A → inhabited B
+_ = 𝟙.map
+```
+
+**<u>引理</u>** 如果 `A` 蕴含 `B`, 那么 `A` 非空蕴含 `B` 非空.
 
 ```agda
 nonEmpty-subst : (A → B) → nonEmpty A → nonEmpty B
 nonEmpty-subst ab neA ¬b = neA $ ¬b ∘ ab
 ```
+
+**<u>引理</u>** `A` 非空等价于 `A` 的居留性非空.
 
 ```agda
 nonEmptyInhabitation : nonEmpty A ↔ nonEmpty (inhabited A)
@@ -50,6 +57,11 @@ nonEmptyInhabitation .⇐ ¬¬∣a∣ = ¬¬∣a∣ ∘ 𝟙.rec isProp⊥
 
 ## 稳定性
 
+**<u>定义</u>** 稳定性:
+
+- 我们说类型 `A` 稳定, 当且仅当 `A` 非空蕴含 `A`.
+- 我们说类型 `A` 居留稳定, 当且仅当 `A` 非空蕴含 `A` 居留.
+
 ```agda
 stable : 𝕋 ℓ → 𝕋 ℓ
 stable A = nonEmpty A → A
@@ -57,6 +69,11 @@ stable A = nonEmpty A → A
 stable₁ : 𝕋 ℓ → 𝕋 ℓ
 stable₁ A = nonEmpty A → inhabited A
 ```
+
+**<u>引理</u>** 稳定类型的替换:
+
+- 如果 `A` 逻辑等价于 `B`, 那么 `A` 稳定蕴含 `B` 稳定.
+- 如果 `A` 逻辑等价于 `B`, 那么 `A` 居留稳定蕴含 `B` 居留稳定.
 
 ```agda
 stable-subst : A ↔ B → stable A → stable B
@@ -66,27 +83,40 @@ stable₁-subst : A ↔ B → stable₁ A → stable₁ B
 stable₁-subst iff stbA = 𝟙.map (iff .⇒) ∘ stbA ∘ nonEmpty-subst (iff .⇐)
 ```
 
+**<u>引理</u>** `A` 居留稳定逻辑等价于 `A` 的居留性稳定.
+
 ```agda
 stableInhabitation : stable₁ A ↔ stable (inhabited A)
-stableInhabitation .⇒ stbA ne = stbA (nonEmptyInhabitation .⇐ ne)
-stableInhabitation .⇐ stbA ne = stbA (nonEmptyInhabitation .⇒ ne)
+stableInhabitation .⇒ stbA = stbA ∘ nonEmptyInhabitation .⇐
+stableInhabitation .⇐ stbA = stbA ∘ nonEmptyInhabitation .⇒
 ```
 
 ## 排中律
 
+众所周知, 排中律导向经典数学. 它有很多等价形式. 给定宇宙层级 `ℓ`.
+
 ```agda
 module _ {ℓ} where
 ```
+
+**<u>定义</u>** 我们说 `ℓ` 中排中律成立, 当且仅当 `ℓ` 中的任意命题 `P` 都是可判定的.
 
 ```agda
   𝗟𝗘𝗠 : 𝕋 (ℓ ⁺)
   𝗟𝗘𝗠 = (P : 𝕋 ℓ) → isProp P → Dec P
 ```
 
+**<u>引理</u>** `ℓ` 中的任意命题 `P` 的可判定性非空.
+
 ```agda
   Dec-nonEmpty : (P : 𝕋 ℓ) → isProp P → nonEmpty (Dec P)
   Dec-nonEmpty P propP demon = demon $ no $ demon ∘ yes
 ```
+
+**<u>定义</u>** 双重否定消去律:
+
+- 形式0: `ℓ` 中的任意命题 `P` 稳定.
+- 形式1: `ℓ` 中的任意类型 `A` 居留稳定.
 
 ```agda
   𝗗𝗡𝗘 : 𝕋 (ℓ ⁺)
@@ -96,11 +126,21 @@ module _ {ℓ} where
   𝗗𝗡𝗘₁ = (A : 𝕋 ℓ) → stable₁ A
 ```
 
+**<u>事实</u>** 形式0与形式1等价.
+
 ```agda
   𝗗𝗡𝗘↔𝗗𝗡𝗘₁ : 𝗗𝗡𝗘 ↔ 𝗗𝗡𝗘₁
   𝗗𝗡𝗘↔𝗗𝗡𝗘₁ .⇒ dne A = stableInhabitation .⇐ (dne ∥ A ∥₁ 𝟙.squash)
   𝗗𝗡𝗘↔𝗗𝗡𝗘₁ .⇐ dne₁ P propP ne = 𝟙.rec propP id (dne₁ P ne)
 ```
+
+**<u>定理</u>** 排中律与双重否定消去律等价.  
+**<u>证明</u>**
+
+- 左到右: 由排中律, 讨论 `P`.
+  - `P` 成立: 直接就是 `𝗗𝗡𝗘` 的结论.
+  - `¬ P` 成立: 由 `𝗗𝗡𝗘` 的前提, `¬ ¬ P` 成立, 矛盾.
+- 右到左: 由引理 `Dec-nonEmpty`, `P` 的可判定性非空. 由 `𝗗𝗡𝗘` 即得 `P` 的可判定性. ∎
 
 ```agda
   𝗟𝗘𝗠↔𝗗𝗡𝗘 : 𝗟𝗘𝗠 ↔ 𝗗𝗡𝗘
@@ -112,15 +152,22 @@ module _ {ℓ} where
 
 ## 半可判定
 
+**<u>定义</u>** 我们说一串比特 (`true` | `false`) 序列 `f` 见证了真, 当且仅当存在 `n` 使得 `f n ≡ true` 成立.
+
 ```agda
-satisfied : (ℕ → 𝔹) → 𝕋
-satisfied f = ∃ n ， f n ≡ true
+truthy : (ℕ → 𝔹) → 𝕋
+truthy f = ∃ n ， f n ≡ true
 ```
+
+**<u>定义</u>** 我们说 `f` 是类型 `A` 半判定器, 当且仅当 `A` 逻辑等价于 `f` 见证了真.
 
 ```agda
 SemiDec : 𝕋 ℓ → 𝕋 _
-SemiDec A = Σ f ， A ↔ satisfied f
+SemiDec A = Σ f ， A ↔ truthy f
 ```
+
+**<u>引理</u>** 给定关于离散类型 `A` 的性质 `P`, `P` 的枚举算法可以转化为任意 `P x` 的半判定器. 也就是说, 离散可枚举的性质是半可判定的.  
+**<u>证明</u>** 由枚举的定义, `P` 的枚举算法给了我们 `P` 的步进累积序列 `enumℙ : ℕ → 𝕃 A`, 满足对任意 `x`, `P x` 当且仅当 `enumℙ` 见证 `x`. 定义 `P x` 的半判定器为, 输入任意 `n`, 判定 `x` 是否在序列 `enumℙ n` 中 (由于 `A` 离散, 所以可以判定), 以此输出真假. ∎
 
 ```agda
 module _ ⦃ _ : discrete A ⦄ {P : A → 𝕋 ℓ} where
@@ -132,19 +179,24 @@ module _ ⦃ _ : discrete A ⦄ {P : A → 𝕋 ℓ} where
     H .⇒ (n , x∈) = n , subst (λ x → isSome x ≡ true) (some[]⁻¹-intro x∈ .snd) refl
     H .⇐ (n , isS) with enumℙ n [ x ]⁻¹? in eq
     ... | some m = n , some[]⁻¹-elim m eq
-    Hf : P x ↔ satisfied f
+    Hf : P x ↔ truthy f
     Hf .⇒ = 𝟙.map (H .⇒) ∘ witℙ x .⇒
     Hf .⇐ = witℙ x .⇐ ∘ 𝟙.map (H .⇐)
 ```
 
 ## 马尔可夫原理
 
+马尔可夫原理导向**俄国构造主义学派 (Russian constructivism)**.
+
+**<u>定义</u>** **马尔可夫原理 (Markov's principle)**: 任意比特序列对真的见证都是稳定的. 也就是说, 如果并非对任意 `n` 都有 `f n ≡ true` 为假, 那么存在 `n` 使得 `f n ≡ true` 为真.
+
 ```agda
 𝗠𝗣 : 𝕋
-𝗠𝗣 = ∀ f → stable (satisfied f)
+𝗠𝗣 = ∀ f → stable (truthy f)
 ```
 
-**<u>引理</u>** 假设马尔可夫原理, 离散可枚举的性质是稳定的.  
+**<u>定理 (MP)</u>** 离散可枚举的性质是稳定的.  
+**<u>证明</u>** 假设 `P x` 并非不成立, 要证 `P x` 成立. 由引理 `num→semiDec`, 我们有 `P x` 的半判定器 `f`, 满足 `P x` 成立当且仅当 `f` 见证真. 我们证 `f` 见证真. 由 `𝗠𝗣`, 只要证 `f` 并非不见证真. 假设 `f` 不见证真, 那么 `P x` 也不成立, 与 `P x` 并非不成立矛盾. ∎
 
 ```agda
 module _ ⦃ _ : discrete A ⦄ {P : A → 𝕋 ℓ} where

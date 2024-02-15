@@ -8,9 +8,10 @@ url: fol.semantics.base
 
 ```agda
 open import Foundation.Essential
+open import Foundation.ReverseMaths
+
 open import FOL.Language
 module FOL.Semantics.Base (ℒ : Language) where
-
 open import FOL.Syntax.Base ℒ
 instance _ = ℒ
 ```

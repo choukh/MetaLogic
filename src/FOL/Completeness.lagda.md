@@ -7,6 +7,8 @@ url: fol.completeness
 ```agda
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
+open import Foundation.ReverseMaths
+
 open import FOL.Language
 module FOL.Completeness (ℒ : Language) where
 
