@@ -56,8 +56,6 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _ _ _
 ```
 
-## 对象马尔可夫原理
-
 ## 综合马尔可夫原理
 
 ---

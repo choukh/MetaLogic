@@ -187,7 +187,7 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
     SyntacticStability    ↔∎
 ```
 
-### 弱构造性元理论
+### 非纯构造元理论
 
 ## 任意理论
 
