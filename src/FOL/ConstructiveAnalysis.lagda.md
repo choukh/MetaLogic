@@ -9,7 +9,7 @@ url: fol.analysis
 open import Foundation.Essential
 open import Foundation.ReverseMaths
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.ConstructiveAnalysis (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
@@ -48,7 +48,7 @@ enclose↔ 𝗣 .⇒ = 𝟙.rec (isPredHolds 𝗣)
 enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) , Ctx0
 ```
 
-## 双重否定消去
+## 𝐔-稳定性
 
 ```agda
 𝗗𝗡𝗘↔𝐔-stability : 𝗗𝗡𝗘 ↔ ⟨ 𝐔 ⟩-stability
@@ -56,7 +56,9 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _ _ _
 ```
 
-## 综合马尔可夫原理
+## 𝐅-稳定性
+
+## 𝐄-稳定性
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  

@@ -11,7 +11,7 @@ url: fol.extension
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.TheoryExtension (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ hiding (Γ)

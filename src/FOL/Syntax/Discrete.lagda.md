@@ -8,7 +8,7 @@ url: fol.syntax.discrete
 
 ```agda
 open import Foundation.Essential
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Syntax.Discrete (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ

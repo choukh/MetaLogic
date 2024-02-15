@@ -10,7 +10,7 @@ url: fol.semantics.base
 open import Foundation.Essential
 open import Foundation.ReverseMaths
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Semantics.Base (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 instance _ = ℒ

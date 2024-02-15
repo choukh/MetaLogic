@@ -1,8 +1,8 @@
 ---
-url: fol.language
+url: FOL.language.base
 ---
 
-# 一阶逻辑 ▸ 语言
+# 一阶逻辑 ▸ 语言 ▸ 定义
 
 一阶逻辑是一种形式语言, 其语句由一些原始符号按一定的语法组合而成. 符号又分为逻辑符号和非逻辑符号. 本篇先讲非逻辑符号.
 
@@ -22,8 +22,7 @@ $$R^n_0,\ R^n_1,\ R^n_2,\ R^n_3,\ ...$$
 
 ```agda
 open import Foundation.Essential
-
-module FOL.Language where
+module FOL.Language.Base where
 ```
 
 **<u>定义</u>** 一阶逻辑的语言 `ℒ` 是一个六元组
@@ -153,5 +152,5 @@ open Language ⦃...⦄ public
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
-> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Language.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.language)  
+> [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Language/Base.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Language.Base.html) | [语雀](https://www.yuque.com/ocau/metalogic/FOL.language.base)  
 > 交流Q群: 893531731

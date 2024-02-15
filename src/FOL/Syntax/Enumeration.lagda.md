@@ -13,7 +13,7 @@ open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈ᴸ_)
 open import Foundation.Function.Enumeration.PlainView
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Syntax.Enumeration (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Discrete ℒ

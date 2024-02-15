@@ -9,7 +9,7 @@ url: fol.soundness
 
 ```agda
 open import Foundation.Essential
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Soundness (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ

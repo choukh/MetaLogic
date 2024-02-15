@@ -8,7 +8,7 @@ url: fol.syntax.substitution
 
 ```agda
 open import Foundation.Essential
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Syntax.SubstitutionFacts (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ

@@ -9,7 +9,7 @@ url: fol.completeness
 open import Foundation.Essential
 open import Foundation.ReverseMaths
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Completeness (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
@@ -188,6 +188,13 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ```
 
 ### 非纯构造元理论
+
+## 有限理论
+
+```agda
+module _ {Γ : Context} {φ : Formula} where
+  open PolymorphicSemantics ℓ0
+```
 
 ## 任意理论
 

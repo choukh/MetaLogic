@@ -9,7 +9,7 @@ url: fol.syntax.theory
 open import Foundation.Essential
 open import Foundation.Relation.Nullary.Discrete.List
 
-open import FOL.Language
+open import FOL.Language.Base
 module FOL.Syntax.TheoryRules (ℒ : Language) where
 
 open import FOL.Syntax.Base ℒ
