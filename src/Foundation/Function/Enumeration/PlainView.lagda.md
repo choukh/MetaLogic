@@ -76,10 +76,10 @@ module PlainEnum ⦃ _ : discrete A ⦄ ⦃ _ : Ⓛ.Enum A ⦄ (l>_ : proper Ⓛ
   wit : ∀ x → ∃ n ， enum n ≡ x
   wit x = 𝟙.map H (Ⓛ.wit x) where
     H : Ⓛ.Witness Ⓛ.enum x → Σ n ， enum n ≡ x
-    H (m , Hm) with ∈→Σ[]⁻¹? Hm
+    H (m , Hm) with some[]⁻¹-intro Hm
     H (m , Hm) | n , Hn with cum-total Ⓛ.cum m n
       | Ⓛ.enum n [ l> n ]⁻¹!≡   -- = H1 : Ⓛ.enum n [ n ]? ≡ some (enum n)
-      | index-inv (Ⓛ.enum m) Hn   -- = H2 : Ⓛ.enum m [ n ]? ≡ some x
+      | some[]⁻¹→some[] (Ⓛ.enum m) Hn   -- = H2 : Ⓛ.enum m [ n ]? ≡ some x
     ... | inj₁ (xs , n≡m++) | H1 | H2 = n , some-inj (
       some (enum n)           ≡˘⟨ H1 ⟩
       Ⓛ.enum n [ n ]?         ≡⟨ cong _[ n ]? n≡m++ ⟩

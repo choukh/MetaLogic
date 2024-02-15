@@ -18,6 +18,10 @@ open import Agda.Builtin.Nat public
   using (zero; suc; _+_; _*_)
   renaming (Nat to ℕ)
 
+open import Agda.Builtin.Maybe public
+  using ()
+  renaming (Maybe to infix 30 _？; nothing to none; just to some)
+
 open import Agda.Builtin.List public
   using ([]; _∷_)
   renaming (List to 𝕃)

@@ -6,7 +6,7 @@ open import Foundation.Data.Unit
 
 open import Data.Maybe public
   using ()
-  renaming (Maybe to infix 30 _？; nothing to none; just to some)
+  renaming (is-just to isSome; is-nothing to isNone)
 
 open import Data.Maybe.Properties public
   using ()

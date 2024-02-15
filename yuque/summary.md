@@ -10,7 +10,7 @@
       - [0.2.2.0 定义](foundation.enumeration.listview.base)
       - [0.2.2.1 实例](foundation.enumeration.listview.instance)
     - [0.2.3 普通视角](foundation.enumeration.plainview)
-  - [0.3 构造主义反推数学的基本设置](foundation.reverse)
+  - [0.3 构造主义反推基础](foundation.reverse)
   - [0.9 符号表](foundation.cheatsheet)
 - [1 一阶逻辑](fol)
   - [1.0 语言](fol.language)

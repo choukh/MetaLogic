@@ -56,28 +56,42 @@ _[_]⁻¹? : 𝕃 A → A → ℕ ？
   ... | none = none
 ```
 
-**<u>算法</u>** 给出 `x ∈ xs` 的证据, 则 `xs [ x ]⁻¹?` 可以取到 (`some` 形式的) 值, 计算如下
+**<u>引理</u>** 给出 `x ∈ xs` 的证据, 则 `xs [ x ]⁻¹?` 可以取到 (`some` 形式的) 值, 计算如下
 
 - 若 `x` 在 `xs` 的头部, 则其索引为 `0`.
 - 否则 `x` 必在 `xs` 的尾部, 将该证据递归地输入到本算法中, 可知 `x` 在尾部必有索引 `n`, 所以 `x` 在 `xs` 中必有索引 `suc n`. ∎
 
 ```agda
-∈→Σ[]⁻¹? : x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
-∈→Σ[]⁻¹? {x} {y ∷ xs} _ with x ≟ y
-...                     | yes _ = 0 , refl
-∈→Σ[]⁻¹? (here p)       | no ¬p = exfalso (¬p p)
-∈→Σ[]⁻¹? (there x∈)     | no _ with ∈→Σ[]⁻¹? x∈
+some[]⁻¹-intro : x ∈ xs → Σ n ， xs [ x ]⁻¹? ≡ some n
+some[]⁻¹-intro {x} {y ∷ xs} _ with x ≟ y
+...                           | yes _ = 0 , refl
+some[]⁻¹-intro (here p)       | no ¬p = exfalso (¬p p)
+some[]⁻¹-intro (there x∈)     | no _ with some[]⁻¹-intro x∈
 ... | n , H rewrite H = suc n , refl
+```
+
+**<u>引理</u>** 如果 `xs [ x ]⁻¹?` 可以取到 (`some` 形式的) 值, 那么 `x ∈ xs`. 对 `xs` 的长度归纳.
+
+- `xs` 不可能为空.
+- 当 `xs` 为 `y ∷ xs` 时, 判定 `x ≟ y`.
+  - 若相等, 则 `x` 在 `y ∷ xs` 的头部.
+  - 若不相等, 此时有 `xs [ x ]⁻¹? ≡ some n`, 所以 `x` 在 `y ∷ xs` 的尾部. ∎
+
+```agda
+some[]⁻¹-elim : ∀ n → xs [ x ]⁻¹? ≡ some n → x ∈ xs
+some[]⁻¹-elim {y ∷ xs} {x} n H with x ≟ y | xs [ x ]⁻¹? in eq
+... | yes refl | _      = here refl
+... | no ¬p    | some _ = there (some[]⁻¹-elim _ eq)
 ```
 
 **<u>引理</u>** 如果 `xs [ x ]⁻¹?` 可以算出为 `n`, 则 `xs [ n ]?` 可以算出为 `x`.  
 **<u>证明</u>** 计算即得. ∎
 
 ```agda
-index-inv : (xs : 𝕃 A) → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x
-index-inv {x} (y ∷ xs) H with x ≟ y | xs [ x ]⁻¹? in eq
-index-inv _        refl  | yes refl | _      = refl
-index-inv (y ∷ xs) refl  | no _     | some _ = index-inv xs eq
+some[]⁻¹→some[] : (xs : 𝕃 A) → xs [ x ]⁻¹? ≡ some n → xs [ n ]? ≡ some x
+some[]⁻¹→some[] {x} (y ∷ xs) H with x ≟ y | xs [ x ]⁻¹? in eq
+some[]⁻¹→some[] _        refl  | yes refl | _      = refl
+some[]⁻¹→some[] (y ∷ xs) refl  | no _     | some _ = some[]⁻¹→some[] xs eq
 ```
 
 ## 元素的移除

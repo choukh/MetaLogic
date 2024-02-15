@@ -50,15 +50,13 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 
 ```agda
 𝗗𝗡𝗘↔𝐔-stability : 𝗗𝗡𝗘 ↔ ⟨ 𝐔 ⟩-stability
-𝗗𝗡𝗘↔𝐔-stability .⇒ dne 𝒯 φ _ ne = dne _ 𝟙.squash (nonEmptyInhabitation .⇒ ne)
-𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-cong (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _ _ _
+𝗗𝗡𝗘↔𝐔-stability .⇒ dne 𝒯 φ _ = 𝗗𝗡𝗘↔𝗗𝗡𝗘₁ .⇒ dne _
+𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _ _ _
 ```
 
-## 综合马尔可夫原理
-
-
-
 ## 对象马尔可夫原理
+
+## 综合马尔可夫原理
 
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  

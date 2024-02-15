@@ -61,7 +61,7 @@ e2ℕⓂ n = enum n [ n ]?
 
 e2ℕⓂ-enum : ∀ p → Σ k ， e2ℕⓂ k ≡ some p
 e2ℕⓂ-enum (m , n) with enum (suc (m + n)) [ m , n ]⁻¹? in eq1
-... | none rewrite ∈→Σ[]⁻¹? (∈e2ℕ-intro m n) .snd with eq1
+... | none rewrite some[]⁻¹-intro (∈e2ℕ-intro m n) .snd with eq1
 ... | ()
 e2ℕⓂ-enum (m , n) | some k with e2ℕⓂ k in eq2
 ... | none rewrite (enum k) [ e2ℕ-length->n k ]⁻¹!≡ with eq2
@@ -76,12 +76,12 @@ e2ℕⓂ-enum (m , n) | some k | some q = k , H where
     e2ℕⓂ k                            ≡⟨ eq2 ⟩
     some q                            ≡˘⟨ ++[]? (enum k) eq2 ⟩
     (enum k ++ xs) [ k ]?             ≡˘⟨ cong (_[ k ]?) eq3 ⟩
-    enum (suc (m + n)) [ k ]?         ≡⟨ index-inv (enum (suc (m + n))) eq1 ⟩
+    enum (suc (m + n)) [ k ]?         ≡⟨ some[]⁻¹→some[] (enum (suc (m + n))) eq1 ⟩
     some (m , n)                      ∎
   H | inj₂ ≥ with cum-≤→Σ cum ≥
   ... | xs , eq3 =
     e2ℕⓂ k                            ≡⟨ cong (_[ k ]?) eq3 ⟩
-    (enum (suc (m + n)) ++ xs) [ k ]? ≡⟨ ++[]? (enum (suc (m + n))) (index-inv (enum (suc (m + n))) eq1) ⟩
+    (enum (suc (m + n)) ++ xs) [ k ]? ≡⟨ ++[]? (enum (suc (m + n))) (some[]⁻¹→some[] (enum (suc (m + n))) eq1) ⟩
     some (m , n)                      ∎
 
 EnumⓂ2ℕ : Ⓜ.Enum (ℕ × ℕ)
