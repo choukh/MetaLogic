@@ -4,7 +4,7 @@ url: foundation.reverse
 
 # 元语言 ▸ 构造主义反推基础
 
-在纯构造主义中工作的好处是我们可以随时按需添加非纯构造性公理 (如 𝗔𝗖, 𝗟𝗘𝗠, 𝗟𝗣𝗢, 𝗠𝗣, 以及它们的各种变体), 以调节元理论的非构造强度, 从而分析我们关心的命题的构造主义纯度. 此种实践我们称为构造主义反推数学, 而本章的目的就是介绍其基本设定.
+在纯构造主义中工作的好处是我们可以随时按需添加非纯构造公理 (如 𝗔𝗖, 𝗟𝗘𝗠, 𝗟𝗣𝗢, 𝗠𝗣, 以及它们的各种变体), 以调节元理论的非构造强度, 从而分析我们关心的命题的构造主义纯度. 此种实践我们称为构造主义反推数学, 而本章的目的就是介绍其基本设定.
 
 ```agda
 module Foundation.ReverseMaths where
@@ -17,7 +17,7 @@ open import Foundation.Relation.Nullary.Discrete.List
 
 **<u>定义</u>** 居留与非空:
 
-- 我们说类型 `A` 是居留的, 当且仅当存在 `a : A`.
+- 我们说类型 `A` 居留, 当且仅当存在 `a : A`.
 - 我们说类型 `A` 非空, 当且仅当 `¬ ¬ A` 成立.
 
 ```agda
@@ -106,11 +106,11 @@ module _ {ℓ} where
   𝗟𝗘𝗠 = (P : 𝕋 ℓ) → isProp P → Dec P
 ```
 
-**<u>引理</u>** `ℓ` 中的任意命题 `P` 的可判定性非空.
+**<u>引理</u>** `ℓ` 中的任意类型 `A` 的可判定性非空.
 
 ```agda
-  Dec-nonEmpty : (P : 𝕋 ℓ) → isProp P → nonEmpty (Dec P)
-  Dec-nonEmpty P propP demon = demon $ no $ demon ∘ yes
+  Dec-nonEmpty : nonEmpty (Dec A)
+  Dec-nonEmpty demon = demon $ no $ demon ∘ yes
 ```
 
 **<u>定义</u>** 双重否定消去律:
@@ -147,7 +147,7 @@ module _ {ℓ} where
   𝗟𝗘𝗠↔𝗗𝗡𝗘 .⇒ lem P propP with lem P propP
   ... | yes p = λ _ → p
   ... | no ¬p = λ ¬¬p → exfalso (¬¬p ¬p)
-  𝗟𝗘𝗠↔𝗗𝗡𝗘 .⇐ dne P propP = dne (Dec P) (isPredDec propP) (Dec-nonEmpty P propP)
+  𝗟𝗘𝗠↔𝗗𝗡𝗘 .⇐ dne P propP = dne (Dec P) (isPredDec propP) Dec-nonEmpty
 ```
 
 ## 半可判定
