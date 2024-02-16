@@ -30,10 +30,19 @@ Theories = 𝒫̅ Theory
 ⟨ 𝐓 ⟩-stability = ∀ {𝒯 φ} → 𝒯 ∈̅ 𝐓 → stable₁ (𝒯 ⊩ φ)
 ```
 
+## 𝐔-稳定性
+
+```agda
+𝐔 : Theories
+𝐔 = λ _ → ⊤ₚ*
+```
+
 ```agda
 enclose : 𝕋 → Theory
 enclose A φ = φ ≡ ⊥̇ ∧ inhabited A , isProp× (discreteSet _ _) 𝟙.squash
 ```
+
+`A` 的居留性等价于 `enclose A` 的不一致性.
 
 ```agda
 enclose↔ : enclose A ⊩₁ ⊥̇ ↔ inhabited A
@@ -41,13 +50,6 @@ enclose↔ .⇒ = 𝟙.rec→1
   λ { ([] , Γ⊆ , Γ⊢) → exfalso (consistency Γ⊢)
     ; (φ ∷ Γ , Γ⊆ , Γ⊢) → Γ⊆ (here refl) .snd }
 enclose↔ .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) , Ctx0
-```
-
-## 𝐔-稳定性
-
-```agda
-𝐔 : Theories
-𝐔 = λ _ → ⊤ₚ*
 ```
 
 ```agda
