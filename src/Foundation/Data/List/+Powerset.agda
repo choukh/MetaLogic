@@ -9,6 +9,6 @@ open import Foundation.Data.List.SetTheoretic
 set : 𝕃 X → 𝒫 X
 set xs = λ x → x ∈͆₁ xs , 𝟙.squash
 
-infix 4 _⊆͆₊_
-_⊆͆₊_ : 𝕃 X → 𝒫 X → 𝕋 _
-xs ⊆͆₊ A = ∀ {x} → x ∈͆ xs → x ∈ A
+infix 4 _⊆͆ₚ_
+_⊆͆ₚ_ : 𝕃 X → 𝒫 X → 𝕋 _
+xs ⊆͆ₚ A = ∀ {x} → x ∈͆ xs → x ∈ A

@@ -374,7 +374,7 @@ open import Foundation.Data.List.SetTheoretic public
     ⊆-trans to ⊆͆-trans)
 ```
 
-我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_⊆͆₊_`.
+我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_⊆͆ₚ_`.
 
 ```agda
 open import Foundation.Data.List.+Powerset public

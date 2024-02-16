@@ -136,10 +136,10 @@ record GeneralizedExtension : 𝕋₁ where
 - 当 `Γ` 为 `φ ∷ Γ` 时, 由归纳假设, 存在 `m` 使得 `Γ` 是 `𝒯ᵢ m` 的子集. 由前提, 存在 `n` 使得 `φ ∈ 𝒯ᵢ n`. 由扩张性 `𝒯≤-sub`, `m` 和 `n` 的较大者 `o` 将使得 `φ ∷ Γ` 是 `𝒯ᵢ o` 的子集. ∎
 
 ```agda
-  ⊆𝒯ω→⊆𝒯ₙ : ∀ Γ → Γ ⊆͆₊ 𝒯ω → ∃ n ， Γ ⊆͆₊ 𝒯ᵢ n
+  ⊆𝒯ω→⊆𝒯ₙ : ∀ Γ → Γ ⊆͆ₚ 𝒯ω → ∃ n ， Γ ⊆͆ₚ 𝒯ᵢ n
   ⊆𝒯ω→⊆𝒯ₙ [] _ = ex 0 λ ()
   ⊆𝒯ω→⊆𝒯ₙ (φ ∷ Γ) Γ⊆l = 𝟙.map2 H (⊆𝒯ω→⊆𝒯ₙ Γ λ φ∈Γ → Γ⊆l (there φ∈Γ)) (Γ⊆l (here refl)) where
-    H : Σ m ， Γ ⊆͆₊ 𝒯ᵢ m → Σ n ， φ ∈ 𝒯ᵢ n → Σ o ， (φ ∷ Γ) ⊆͆₊ 𝒯ᵢ o
+    H : Σ m ， Γ ⊆͆ₚ 𝒯ᵢ m → Σ n ， φ ∈ 𝒯ᵢ n → Σ o ， (φ ∷ Γ) ⊆͆ₚ 𝒯ᵢ o
     H (m , Γ⊆𝒯ₘ) (n , φ∈𝒯ₙ) = max m n ,
       λ { (here refl) → 𝒯≤-sub ≤maxʳ φ∈𝒯ₙ
         ; (there ψ∈Γ) → 𝒯≤-sub ≤maxˡ (Γ⊆𝒯ₘ ψ∈Γ) }
@@ -150,7 +150,7 @@ record GeneralizedExtension : 𝕋₁ where
 
 ```agda
   𝒯ω⊢→𝒯ₙ⊢ : ∀ {φ} → 𝒯ω ⊩ φ → ∃ n ， 𝒯ᵢ n ⊩ φ
-  𝒯ω⊢→𝒯ₙ⊢ (Γ , Γ⊆l , Γ⊢φ) = 𝟙.map (λ { (n , Γ⊆𝒯ᵢ) → n , Γ , Γ⊆𝒯ᵢ , Γ⊢φ }) (⊆𝒯ω→⊆𝒯ₙ Γ Γ⊆l)
+  𝒯ω⊢→𝒯ₙ⊢ (Γ , Γ⊆l , Γ⊢φ) = 𝟙.map (uncurry $ λ n Γ⊆𝒯ᵢ → n , Γ , Γ⊆𝒯ᵢ , Γ⊢φ) (⊆𝒯ω→⊆𝒯ₙ Γ Γ⊆l)
 ```
 
 **<u>引理</u>** 无穷扩张的极限相对于起始理论一致.  
@@ -159,7 +159,7 @@ record GeneralizedExtension : 𝕋₁ where
 ```agda
   𝒯ω-con : Con 𝒯ω to 𝒯ᵢ 0
   𝒯ω-con ∥𝒯ω⊢⊥̇∥₁ = 𝟙.intro ∥𝒯ω⊢⊥̇∥₁ λ 𝒯ω⊢⊥̇ →
-    𝟙.intro (𝒯ω⊢→𝒯ₙ⊢ 𝒯ω⊢⊥̇) λ { (n , 𝒯ₙ⊢⊥̇) → 𝒯≤-con z≤n ∣ 𝒯ₙ⊢⊥̇ ∣₁ }
+    𝟙.intro (𝒯ω⊢→𝒯ₙ⊢ 𝒯ω⊢⊥̇) $ uncurry λ n 𝒯ₙ⊢⊥̇ → 𝒯≤-con z≤n ∣ 𝒯ₙ⊢⊥̇ ∣₁
 ```
 
 **<u>引理</u>** 如果每一步扩张都是闭理论, 那么极限是闭理论.  
@@ -167,7 +167,7 @@ record GeneralizedExtension : 𝕋₁ where
 
 ```agda
   𝒯ω-closed : (∀ n → closedᵀ (𝒯ᵢ n)) → closedᵀ 𝒯ω
-  𝒯ω-closed H = 𝟙.rec isPropClosed λ { (m , φ∈𝒯ₘ) → H m φ∈𝒯ₘ }
+  𝒯ω-closed H = 𝟙.rec isPropClosed $ uncurry λ m φ∈𝒯ₘ → H m φ∈𝒯ₘ
 ```
 
 ## 极大全称扩张
@@ -250,7 +250,7 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 **<u>引理</u>** `𝒜` 的每一步都与上一步相对一致.  
 **<u>证明</u>** 只要证 `𝒜 (suc n) ⊩ ⊥̇` 可以转化为 `𝒜 n ⊩ ⊥̇`.
 
-给定 `𝒜 (suc n) ⊩ ⊥̇`, 由 `𝒜` 的定义和 `ImpIᵀ` 规则有 `𝒜 n ⊩ ¬̇ Ax n`, 也就是说有满足 `Γ ⊆͆₊ 𝒜 n` 的 `Γ` 满足 `Γ ⊢ ¬̇ Ax n`. 现在要证 `𝒜 n ⊩ ⊥̇`, 我们宣称 `Γ` 就是所需的语境, 也就是证 `Γ ⊢ ⊥̇`.
+给定 `𝒜 (suc n) ⊩ ⊥̇`, 由 `𝒜` 的定义和 `ImpIᵀ` 规则有 `𝒜 n ⊩ ¬̇ Ax n`, 也就是说有满足 `Γ ⊆͆ₚ 𝒜 n` 的 `Γ` 满足 `Γ ⊢ ¬̇ Ax n`. 现在要证 `𝒜 n ⊩ ⊥̇`, 我们宣称 `Γ` 就是所需的语境, 也就是证 `Γ ⊢ ⊥̇`.
 
 ```agda
   𝒜-con : Con (𝒜 (suc n)) to (𝒜 n)
@@ -321,17 +321,17 @@ module MaxAllExtension ((𝒯ⁱ , 𝒯ⁱ-closed) : ClosedTheory) where
 最后, 我们来说明 `𝒜ω` 是极大全称化的.
 
 **<u>引理</u>** 对 `𝒜ω` 的任意扩张 `𝒯`, `𝒯` 到 `Ψ n [ # n ]₀` 的证明可以转化为 `𝒯` 到 `∀̇ Ψ n` 的证明.  
-**<u>证明</u>** 给定 `𝒯 ⊩ Ψ n [ # n ]₀`, 我们有 `Γ ⊆͆₊ 𝒯` 满足 `Γ ⊢ Ψ n [ # n ]₀`. 现在要证 `𝒯 ⊩ ∀̇ Ψ n`, 我们宣称 `Ax n ∷ Γ` 就是要找的语境. 为此需要证明:
+**<u>证明</u>** 给定 `𝒯 ⊩ Ψ n [ # n ]₀`, 我们有 `Γ ⊆͆ₚ 𝒯` 满足 `Γ ⊢ Ψ n [ # n ]₀`. 现在要证 `𝒯 ⊩ ∀̇ Ψ n`, 我们宣称 `Ax n ∷ Γ` 就是要找的语境. 为此需要证明:
 
-- `Ax n ∷ Γ ⊆͆₊ 𝒯`: 这又需要证:
+- `Ax n ∷ Γ ⊆͆ₚ 𝒯`: 这又需要证:
   - `Ax n ∈ 𝒯`: 由于 `𝒯` 是 `𝒜ω` 的扩张, 只需证 `Ax n ∈ 𝒜ω`, 由定义显然成立.
-  - `Γ ⊆͆₊ 𝒯`: 由前提即得.
+  - `Γ ⊆͆ₚ 𝒯`: 由前提即得.
 - `Ax n ∷ Γ ⊢ ∀̇ Ψ n`: 如代码所示. ∎
 
 ```agda
   𝒜ω-isMaxAll-Ψ : ∀ 𝒯 → 𝒜ω ⊆ 𝒯 → 𝒯 ⊩ Ψ n [ # n ]₀ → 𝒯 ⊩ ∀̇ Ψ n
   𝒜ω-isMaxAll-Ψ {n} 𝒯 𝒜ω⊆𝒯 (Γ , Γ⊆𝒯 , Γ⊢) = Ax n ∷ Γ , ∷⊆𝒯 , ∷⊢∀̇ where
-    ∷⊆𝒯 : Ax n ∷ Γ ⊆͆₊ 𝒯
+    ∷⊆𝒯 : Ax n ∷ Γ ⊆͆ₚ 𝒯
     ∷⊆𝒯 (here refl) = 𝒜ω⊆𝒯 (ex (suc n) (inr refl))
     ∷⊆𝒯 (there φ∈Γ) = Γ⊆𝒯 φ∈Γ
     ∷⊢∀̇ : Ax n ∷ Γ ⊢ ∀̇ Ψ n
@@ -408,17 +408,17 @@ module MaxConExtension (𝒯ⁱ : Theory) where
 
 - `Γ` 是空列表, 则显然是子列表.
 - `Γ` 是 `ψ ∷ Γ`. 这时它也是一致添加集 `𝒯 ⨭ᶜ φ` 的子列表, 所以 `ψ ∈ 𝒯 ⨭ᶜ φ`. 分两种情况.
-  - ψ ∈ 𝒯. 由归纳假设 `(Γ ⊆͆₊ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯`, 只要证 `Γ ⊆͆₊ 𝒯 → ψ ∷ Γ ⊆͆₊ 𝒯`. 由 `ψ ∈ 𝒯` 即证.
+  - ψ ∈ 𝒯. 由归纳假设 `(Γ ⊆͆ₚ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯`, 只要证 `Γ ⊆͆ₚ 𝒯 → ψ ∷ Γ ⊆͆ₚ 𝒯`. 由 `ψ ∈ 𝒯` 即证.
   - ψ ∈ ｛ φ ｝⟨ 𝒯 ⟩. 依定义有 `Con (𝒯 ⨭ φ) to 𝒯`. ∎
 
 ```agda
-  ⨭ᶜ-sub : ∀ Γ 𝒯 φ → Γ ⊆͆₊ 𝒯 ⨭ᶜ φ → (Γ ⊆͆₊ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+  ⨭ᶜ-sub : ∀ Γ 𝒯 φ → Γ ⊆͆ₚ 𝒯 ⨭ᶜ φ → (Γ ⊆͆ₚ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
   ⨭ᶜ-sub [] _ _ sub = inl λ ()
   ⨭ᶜ-sub (ψ ∷ Γ) 𝒯 φ sub = 𝟙.rec→1 aux (sub (here refl)) where
-    aux : ψ ∈ 𝒯 ⊎ ψ ∈ ｛ φ ｝⟨ 𝒯 ⟩ → (ψ ∷ Γ ⊆͆₊ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+    aux : ψ ∈ 𝒯 ⊎ ψ ∈ ｛ φ ｝⟨ 𝒯 ⟩ → (ψ ∷ Γ ⊆͆ₚ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
     aux (inj₂ (_ , con)) = inr con
     aux (inj₁ ψ∈𝒯) = aux₂ $ ⨭ᶜ-sub Γ 𝒯 φ (sub ∘ there) where
-      aux₂ : (Γ ⊆͆₊ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯 → (ψ ∷ Γ ⊆͆₊ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
+      aux₂ : (Γ ⊆͆ₚ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯 → (ψ ∷ Γ ⊆͆ₚ 𝒯) ∨ Con (𝒯 ⨭ φ) to 𝒯
       aux₂ = 𝟙.map $ map₁ λ { _ (here refl) → ψ∈𝒯
                             ; sub (there ∈Γ) → sub ∈Γ }
 ```
@@ -429,7 +429,7 @@ module MaxConExtension (𝒯ⁱ : Theory) where
 ```agda
   ⨭ᶜ-Con : 𝒯 ⨭ᶜ φ ⊩ ψ → (𝒯 ⊩ ψ) ∨ Con (𝒯 ⨭ φ) to 𝒯
   ⨭ᶜ-Con {𝒯} {φ} {ψ} (Γ , Γ⊆ , Γ⊢) = 𝟙.map aux (⨭ᶜ-sub Γ 𝒯 φ Γ⊆) where
-    aux : (Γ ⊆͆₊ 𝒯) ⊎ (Con 𝒯 ⨭ φ to 𝒯) → (𝒯 ⊩ ψ) ⊎ (Con 𝒯 ⨭ φ to 𝒯)
+    aux : (Γ ⊆͆ₚ 𝒯) ⊎ (Con 𝒯 ⨭ φ to 𝒯) → (𝒯 ⊩ ψ) ⊎ (Con 𝒯 ⨭ φ to 𝒯)
     aux = map₁ λ Γ⊆ → Γ , Γ⊆ , Γ⊢
 ```
 
@@ -465,7 +465,7 @@ module MaxConExtension (𝒯ⁱ : Theory) where
       aux₂ : (𝒞 n ⊩ ⊥̇) ⊎ (Con 𝒞 n ⨭ Ψ n to 𝒞 n) → ∥ 𝒞 n ⊩ ⊥̇ ∥₁
       aux₂ (inj₁ 𝒞ₙ⊢⊥̇) = ∣ 𝒞ₙ⊢⊥̇ ∣₁
       aux₂ (inj₂ con) = con ∣ Γ , sub , Γ⊢ ∣₁ where
-        sub : Γ ⊆͆₊ 𝒞 n ⨭ Ψ n
+        sub : Γ ⊆͆ₚ 𝒞 n ⨭ Ψ n
         sub φ∈Γ = ∈⨭ᶜ-elim (Γ⊆ φ∈Γ)
 ```
 
