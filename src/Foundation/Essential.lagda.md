@@ -365,19 +365,19 @@ open import Foundation.Data.List public
 
 列表 `𝕃 A` 是不定长有限类型. 不定长是指列表的类型签名中不储存长度信息, 有限是指列表的长度是个自然数. 当 `A` 是集合时, `𝕃 A` 也是集合 (`isSet𝕃`).
 
-我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈̂ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈̂ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
+我们可以问 `x : A` 在不在列表 `xs : 𝕃 A` 中, 这引入了列表的属于关系 `x ∈͆ xs` 以及一系列类比于集合论的概念. 我们把它们放在以下模块. 注意与幂集不同的是, `x ∈͆ xs` 不是命题, 因为 `x` 不保证在 `xs` 中只出现一次.
 
 ```agda
 open import Foundation.Data.List.SetTheoretic public
   renaming (
-    _∈_ to _∈̂_; _∈₁_ to _∈̂₁_; _⊆_ to _⊆̂_;
-    ⊆-trans to ⊆̂-trans)
+    _∈_ to _∈͆_; _∈₁_ to _∈͆₁_; _⊆_ to _⊆͆_;
+    ⊆-trans to ⊆͆-trans)
 ```
 
-我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_ᴸ⊆ᴾ_`.
+我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_⊆͆₊_`.
 
 ```agda
-open import Foundation.Set.Powerset+List public
+open import Foundation.Data.List.+Powerset public
 ```
 
 #### 向量

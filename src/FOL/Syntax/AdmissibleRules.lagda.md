@@ -45,7 +45,7 @@ syntax deduction a B ab = a ─⟨ ab ⟩ B
 Ctx0 : φ ∷ Γ ⊢ φ
 Ctx0 {φ} {Γ} =
              ∅─⟨ here refl ⟩
-  φ ∈̂ φ ∷ Γ ─⟨ Ctx ⟩
+  φ ∈͆ φ ∷ Γ ─⟨ Ctx ⟩
   φ ∷ Γ ⊢ φ
 ```
 
@@ -68,7 +68,7 @@ ImpI′ {φ} {ψ} {Γ} H =
 **<u>证明</u>** 对证明树归纳即得. ∎
 
 ```agda
-Wkn : Γ ⊆̂ Δ → Γ ⊢ φ → Δ ⊢ φ
+Wkn : Γ ⊆͆ Δ → Γ ⊢ φ → Δ ⊢ φ
 Wkn sub (Ctx H) = Ctx (sub H)
 Wkn sub (ImpI H) = ImpI (Wkn (∷⊆∷ sub) H)
 Wkn sub (ImpE H₁ H₂) = ImpE (Wkn sub H₁) (Wkn sub H₂)
@@ -131,7 +131,7 @@ Wkn0 {Γ} {ψ} {φ} H =
   Γ ⊢ ψ     ─⟨ Wkn sub ⟩
   φ ∷ Γ ⊢ ψ
   where
-  sub : Γ ⊆̂ φ ∷ Γ
+  sub : Γ ⊆͆ φ ∷ Γ
   sub = there
 ```
 
@@ -169,7 +169,7 @@ Swap {φ} {ψ} {Γ} {ξ} H =
   φ ∷ ψ ∷ Γ ⊢ ξ ─⟨ Wkn sub ⟩
   ψ ∷ φ ∷ Γ ⊢ ξ
   where
-  sub : φ ∷ ψ ∷ Γ ⊆̂ ψ ∷ φ ∷ Γ
+  sub : φ ∷ ψ ∷ Γ ⊆͆ ψ ∷ φ ∷ Γ
   sub (here refl) = there (here refl)
   sub (there (here refl)) = here refl
   sub (there (there H)) = there (there H)
