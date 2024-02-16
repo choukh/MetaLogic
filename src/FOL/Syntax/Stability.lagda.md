@@ -31,16 +31,16 @@ Theories = 𝒫̅ Theory
 ```
 
 ```agda
-enclose : ℙ₀ → Theory
-enclose 𝗣 φ = φ ≡ ⊥̇ ∧ 𝗣 holds , isProp× (discreteSet _ _) (isPredHolds 𝗣)
+enclose : 𝕋 → Theory
+enclose A φ = φ ≡ ⊥̇ ∧ inhabited A , isProp× (discreteSet _ _) 𝟙.squash
 ```
 
 ```agda
-enclose↔ : ∀ 𝗣 → ∥ enclose 𝗣 ⊩ ⊥̇ ∥₁ ↔ 𝗣 holds
-enclose↔ 𝗣 .⇒ = 𝟙.rec (isPredHolds 𝗣)
+enclose↔ : enclose A ⊩₁ ⊥̇ ↔ inhabited A
+enclose↔ .⇒ = 𝟙.rec→1
   λ { ([] , Γ⊆ , Γ⊢) → exfalso (consistency Γ⊢)
     ; (φ ∷ Γ , Γ⊆ , Γ⊢) → Γ⊆ (here refl) .snd }
-enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) , Ctx0
+enclose↔ .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) , Ctx0
 ```
 
 ## 𝐔-稳定性
@@ -51,9 +51,19 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 ```
 
 ```agda
-𝐔stb↔𝗗𝗡𝗘 : ⟨ 𝐔 ⟩-stability ↔ 𝗗𝗡𝗘
-𝐔stb↔𝗗𝗡𝗘 .⇒ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _
-𝐔stb↔𝗗𝗡𝗘 .⇐ dne _ = 𝗗𝗡𝗘↔𝗗𝗡𝗘₁ .⇒ dne _
+𝐔stb↔𝗗𝗡𝗘₁ : ⟨ 𝐔 ⟩-stability ↔ 𝗗𝗡𝗘₁
+𝐔stb↔𝗗𝗡𝗘₁ .⇒ u-stb A = stable₁-subst enclose↔ (u-stb _)
+𝐔stb↔𝗗𝗡𝗘₁ .⇐ dne _ = dne _
+```
+
+𝐔-稳定性等价于排中律.
+
+```agda
+𝐔stb↔𝗟𝗘𝗠 : ⟨ 𝐔 ⟩-stability ↔ 𝗟𝗘𝗠
+𝐔stb↔𝗟𝗘𝗠 = ⟨ 𝐔 ⟩-stability ↔⟨ 𝐔stb↔𝗗𝗡𝗘₁ ⟩
+           𝗗𝗡𝗘₁            ↔˘⟨ 𝗗𝗡𝗘↔𝗗𝗡𝗘₁ ⟩
+           𝗗𝗡𝗘             ↔˘⟨ 𝗟𝗘𝗠↔𝗗𝗡𝗘 ⟩
+           𝗟𝗘𝗠             ↔∎
 ```
 
 ## 𝐅-稳定性
@@ -81,10 +91,12 @@ setΓ⊩₁↔⊢₁ .⇐ = 𝟙.map λ Γ⊢ → _ , ∣_∣₁ , Γ⊢
   ⇐: 𝟙.map λ Γ⊢ → Γ , (λ ∈Γ → iff .⇐ ∣ ∈Γ ∣₁) , Γ⊢
 ```
 
+𝐅-稳定性等价于语境可证的稳定性.
+
 ```agda
 𝐅stb↔⊢stb : ⟨ 𝐅 ⟩-stability ↔ ∀ {Γ φ} → stable₁ (Γ ⊢ φ)
-𝐅stb↔⊢stb .⇒ = {!   !}
-𝐅stb↔⊢stb .⇐ = {!   !}
+𝐅stb↔⊢stb .⇒ stb = stable₁-subst setΓ⊩₁↔⊢₁ (stb setΓ∈𝐅)
+𝐅stb↔⊢stb .⇐ stb 𝒯∈̅𝐅 = 𝟙.rec (isProp→ 𝟙.squash) (λ H → stable₁-subst (↔-sym $ H .snd) stb) (⊩₁↔⊢₁ 𝒯∈̅𝐅)
 ```
 
 ## 𝐄-稳定性

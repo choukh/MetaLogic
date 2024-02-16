@@ -40,11 +40,17 @@ _ : (A → B) → inhabited A → inhabited B
 _ = 𝟙.map
 ```
 
-**<u>引理</u>** 如果 `A` 蕴含 `B`, 那么 `A` 非空蕴含 `B` 非空.
+**<u>引理</u>** 非空类型的替换:
+
+- 如果 `A` 蕴含 `B`, 那么 `A` 非空蕴含 `B` 非空.
+- 如果 `A` 居留蕴含 `B` 居留, 那么 `A` 非空蕴含 `B` 非空.
 
 ```agda
 nonEmpty-subst : (A → B) → nonEmpty A → nonEmpty B
 nonEmpty-subst ab neA ¬b = neA $ ¬b ∘ ab
+
+nonEmpty-subst₁ : (∥ A ∥₁ → ∥ B ∥₁) → nonEmpty A → nonEmpty B
+nonEmpty-subst₁ ab neA ¬b = neA λ a → 𝟙.rec isProp⊥ ¬b (ab ∣ a ∣₁)
 ```
 
 **<u>引理</u>** `A` 非空等价于 `A` 的居留性非空.
@@ -72,15 +78,15 @@ stable₁ A = nonEmpty A → inhabited A
 
 **<u>引理</u>** 稳定类型的替换:
 
-- 如果 `A` 逻辑等价于 `B`, 那么 `A` 稳定蕴含 `B` 稳定.
-- 如果 `A` 逻辑等价于 `B`, 那么 `A` 居留稳定蕴含 `B` 居留稳定.
+- 如果 `A` 与 `B` 逻辑等价, 那么 `A` 稳定蕴含 `B` 稳定.
+- 如果 `A` 居留与 `B` 居留等价, 那么 `A` 居留稳定蕴含 `B` 居留稳定.
 
 ```agda
 stable-subst : A ↔ B → stable A → stable B
 stable-subst iff stbA = iff .⇒ ∘ stbA ∘ nonEmpty-subst (iff .⇐)
 
-stable₁-subst : A ↔ B → stable₁ A → stable₁ B
-stable₁-subst iff stbA = 𝟙.map (iff .⇒) ∘ stbA ∘ nonEmpty-subst (iff .⇐)
+stable₁-subst : ∥ A ∥₁ ↔ ∥ B ∥₁ → stable₁ A → stable₁ B
+stable₁-subst iff stbA = iff .⇒ ∘ stbA ∘ nonEmpty-subst₁ (iff .⇐)
 ```
 
 **<u>引理</u>** `A` 居留稳定逻辑等价于 `A` 的居留性稳定.
