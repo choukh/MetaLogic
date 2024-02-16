@@ -17,21 +17,21 @@ import Cubical.Foundations.Powerset as 🧊
 -- Definition
 
 𝒫 : 𝕋 ℓ → 𝕋 (ℓ ⁺)
-𝒫 X = X → ℙ _
+𝒫 {ℓ} X = X → ℙ ℓ
 
-𝒫⁻ : 𝕋 (ℓ ⁺) → 𝕋 (ℓ ⁺)
-𝒫⁻ {ℓ} X = X → ℙ ℓ
+𝒫̅ : 𝕋 (ℓ ⁺) → 𝕋 (ℓ ⁺)
+𝒫̅ {ℓ} X = X → ℙ ℓ
 
 isSet𝒫 : isSet (𝒫 X)
 isSet𝒫 = isSet→ isSetℙ
 
-isSet𝒫⁻ : isSet (𝒫⁻ X)
-isSet𝒫⁻ = isSet→ isSetℙ
+isSet𝒫̅ : isSet (𝒫̅ X)
+isSet𝒫̅ = isSet→ isSetℙ
 
 ------------------------------------------------------------------------
 -- Membership
 
-infix 5 _∈_ _∉_ _∈⁻_ _∈ₚ_ _⊆_
+infix 5 _∈_ _∉_ _∈̅_ _∈ₚ_ _⊆_
 
 _∈_ : X → 𝒫 X → 𝕋 _
 x ∈ A = A x holds
@@ -39,14 +39,14 @@ x ∈ A = A x holds
 _∉_ : X → 𝒫 X → 𝕋 _
 x ∉ A = ¬ (A x holds)
 
-_∈⁻_ : X → 𝒫⁻ X → 𝕋 _
-x ∈⁻ A = A x holds
+_∈̅_ : X → 𝒫̅ X → 𝕋 _
+x ∈̅ A = A x holds
 
 isProp∈ : {x : X} {A : 𝒫 X} → isProp (x ∈ A)
 isProp∈ {x} {A} = isPredHolds (A x)
 
-isProp∈⁻ : {x : X} {A : 𝒫⁻ X} → isProp (x ∈⁻ A)
-isProp∈⁻ {x} {A} = isPredHolds (A x)
+isProp∈̅ : {x : X} {A : 𝒫̅ X} → isProp (x ∈̅ A)
+isProp∈̅ {x} {A} = isPredHolds (A x)
 
 _∈ₚ_ : X → 𝒫 X → ℙ _
 x ∈ₚ A = x ∈ A , isProp∈

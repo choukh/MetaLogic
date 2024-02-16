@@ -22,12 +22,12 @@ open import FOL.Soundness ℒ
 
 ```agda
 Theories : 𝕋₁
-Theories = 𝒫⁻ Theory
+Theories = 𝒫̅ Theory
 ```
 
 ```agda
 ⟨_⟩-stability : Theories → 𝕋₁
-⟨ 𝐓 ⟩-stability = ∀ {𝒯 φ} → 𝒯 ∈⁻ 𝐓 → stable₁ (𝒯 ⊩ φ)
+⟨ 𝐓 ⟩-stability = ∀ {𝒯 φ} → 𝒯 ∈̅ 𝐓 → stable₁ (𝒯 ⊩ φ)
 ```
 
 ```agda
@@ -60,18 +60,23 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 
 ```agda
 𝐅 : Theories
-𝐅 = λ 𝒯 → ∃ₚ Γ ， ∀ φ → φ ∈ 𝒯 ↔ φ ∈ᴸ Γ
+𝐅 = λ 𝒯 → ∃ₚ Γ ， ∀ φ → φ ∈ 𝒯 ↔ φ ∈̂₁ Γ
 ```
 
 ```agda
-theory : Context → Theory
-theory Γ = λ φ → ∥ φ ∈ᴸ Γ ∥ₚ
+finTheory : Context → Theory
+finTheory Γ = λ φ → φ ∈̂₁ Γ , 𝟙.squash
 ```
 
 ```agda
-theory↔ : theory Γ ⊩₁ φ ↔ Γ ⊢₁ φ
-theory↔ .⇒ = 𝟙.rec→1 λ { (Δ , Δ⊆ , Δ⊢) → Wkn₁ Δ⊆ Δ⊢ }
-theory↔ .⇐ = 𝟙.map λ Γ⊢ → _ , ∣_∣₁ , Γ⊢
+finTheory∈𝐅 : finTheory Γ ∈̅ 𝐅
+finTheory∈𝐅 {Γ} = ∣ Γ , (λ _ → ↔-refl) ∣₁
+```
+
+```agda
+finTheory↔ : finTheory Γ ⊩₁ φ ↔ Γ ⊢₁ φ
+finTheory↔ .⇒ = 𝟙.rec→1 λ { (Δ , Δ⊆ , Δ⊢) → Wkn₁ Δ⊆ Δ⊢ }
+finTheory↔ .⇐ = 𝟙.map λ Γ⊢ → _ , ∣_∣₁ , Γ⊢
 ```
 
 ## 𝐄-稳定性

@@ -19,12 +19,12 @@ open import Foundation.Data.Sum
 open import Foundation.Data.Sigma
 ```
 
-我们需要同时谈论列表的 `_∈_` 和向量的 `_∈_`, 分别记作 `_∈ᴸ_` 和 `_∈⃗_`, 以示区别.
+我们需要同时谈论列表的 `_∈_` 和向量的 `_∈_`, 分别记作 `_∈̂_` 和 `_∈⃗_`, 以示区别.
 
 ```agda
 open import Foundation.Data.List
 open import Foundation.Data.List.SetTheoretic
-  renaming (_∈_ to _∈ᴸ_)
+  renaming (_∈_ to _∈̂_)
 open import Foundation.Data.Vec
 open import Foundation.Data.Vec.SetTheoretic
   renaming (_∈_ to _∈⃗_)
@@ -83,7 +83,7 @@ module _ (cum : Cumulation f) where
 ```agda
   cum-≤→⊆ : m ≤ n → f m ⊆ f n
   cum-≤→⊆ m≤n x∈fm with cum-≤→Σ m≤n
-  ... | xs , eq = subst (_ ∈ᴸ_) eq (∈++-introˡ x∈fm)
+  ... | xs , eq = subst (_ ∈̂_) eq (∈++-introˡ x∈fm)
 ```
 
 **<u>引理</u>** 对累积列表的任意两个项, 前项的长度小于等于后项的长度.
@@ -99,11 +99,11 @@ module _ (cum : Cumulation f) where
 
 ## 枚举的定义
 
-**<u>定义</u>** `x : A` 在列表序列 `f : 𝕃ₙ A` 中的见证集, 记作 `Witness f x`, 定义为满足 `x ∈ᴸ f n` 的所有 `n` (称为 `x` 的见证) 组成的集合.
+**<u>定义</u>** `x : A` 在列表序列 `f : 𝕃ₙ A` 中的见证集, 记作 `Witness f x`, 定义为满足 `x ∈̂ f n` 的所有 `n` (称为 `x` 的见证) 组成的集合.
 
 ```agda
 Witness : 𝕃ₙ A → A → 𝕋 _
-Witness f x = Σ n ， x ∈ᴸ f n
+Witness f x = Σ n ， x ∈̂ f n
 ```
 
 **<u>定义</u>** 我们说 `f` 见证了 `x`, 记作 `f witness x`, 当且仅当见证集 `Witness f x` 有值, 也即存在 `x` 的见证.
@@ -184,14 +184,14 @@ combine xs (suc n) = map (uncurry _∷_) (xs [×] combine xs n)
 **<u>证明</u>** 依定义. ∎
 
 ```agda
-∈combine-intro : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → (∀ {x} → x ∈⃗ x⃗ → x ∈ᴸ xs) → x⃗ ∈ᴸ combine xs n
+∈combine-intro : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → (∀ {x} → x ∈⃗ x⃗ → x ∈̂ xs) → x⃗ ∈̂ combine xs n
 ∈combine-intro {x⃗ = []} _ = here refl
 ∈combine-intro {x⃗ = x ∷ x⃗} H = ∈map[×]-intro (H $ here refl) (∈combine-intro $ H ∘ there)
 
-∈combine-elim : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → x⃗ ∈ᴸ combine xs n → ∀ {x} → x ∈⃗ x⃗ → x ∈ᴸ xs
-∈combine-elim {x⃗ = x ∷ x⃗} x⃗∈ᴸ y∈⃗ with ∈map[×]-elim x⃗∈ᴸ
-∈combine-elim {x⃗ = x ∷ x⃗} _ (here refl) | _ , _ , x∈ᴸ , _ , refl = x∈ᴸ
-∈combine-elim {x⃗ = x ∷ x⃗} _ (there y∈⃗)  | _ , _ , x∈ᴸ , x⃗∈ᴸ , refl = ∈combine-elim x⃗∈ᴸ y∈⃗
+∈combine-elim : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → x⃗ ∈̂ combine xs n → ∀ {x} → x ∈⃗ x⃗ → x ∈̂ xs
+∈combine-elim {x⃗ = x ∷ x⃗} x⃗∈̂ y∈⃗ with ∈map[×]-elim x⃗∈̂
+∈combine-elim {x⃗ = x ∷ x⃗} _ (here refl) | _ , _ , x∈̂ , _ , refl = x∈̂
+∈combine-elim {x⃗ = x ∷ x⃗} _ (there y∈⃗)  | _ , _ , x∈̂ , x⃗∈̂ , refl = ∈combine-elim x⃗∈̂ y∈⃗
 ```
 
 **<u>引理</u>** 对任意累积列表和维数 `n`, 前项的 `n` 维组合包含于后项的 `n` 维组合.  
@@ -213,9 +213,9 @@ combine-wit {f} cum (x ∷ x⃗) wit = 𝟙.map2 H (wit x (here refl)) IH where
     IH = combine-wit cum x⃗ λ y y∈⃗ → wit y (there y∈⃗)
     H : Witness f x → Witness _ x⃗ → Witness _ (x ∷ x⃗)
     H (m , Hm) (o , Ho) = m + o , ∈map[×]-intro H1 H2 where
-      H1 : x ∈ᴸ f (m + o)
+      H1 : x ∈̂ f (m + o)
       H1 = cum-≤→⊆ cum m≤m+n Hm
-      H2 : x⃗ ∈ᴸ combine (f (m + o)) _
+      H2 : x⃗ ∈̂ combine (f (m + o)) _
       H2 = combine-≤→⊆ cum m≤n+m Ho
 ```
 

@@ -10,7 +10,7 @@ url: fol.syntax.enumeration
 {-# OPTIONS --lossy-unification #-}
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
-open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈ᴸ_)
+open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈̂_)
 open import Foundation.Function.Enumeration.PlainView
 
 open import FOL.Language.Base
@@ -90,9 +90,9 @@ $$
       H$̇ f t⃗ IH = 𝟙.map2 H (wit f) (combine-wit c t⃗ IH) where
         H : Witness _ f → Witness _ t⃗ → Witness _ (f $̇ t⃗)
         H (m , Hm) (n , Hn) = suc m + n , ∈++-introʳ (there $ ∈concat-intro H1 H2) where
-          H1 : f $̇ t⃗ ∈ᴸ apps (m + n) f
+          H1 : f $̇ t⃗ ∈̂ apps (m + n) f
           H1 = ∈map-intro (combine-≤→⊆ c m≤n+m Hn) refl
-          H2 : apps (m + n) f ∈ᴸ map (apps (m + n)) (enum (m + n))
+          H2 : apps (m + n) f ∈̂ map (apps (m + n)) (enum (m + n))
           H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
 ```
 
@@ -156,9 +156,9 @@ instance
     w (R $̇ t⃗) = 𝟙.map2 H (wit R) (wit t⃗) where
       H : Witness enum R → Witness enum t⃗ → Witness e (R $̇ t⃗)
       H (m , Hm) (n , Hn) = suc m + n , (∈++-introʳ $ ∈++-introʳ $ ∈++-introʳ $ ∈concat-intro H1 H2) where
-          H1 : R $̇ t⃗ ∈ᴸ apps (m + n) R
+          H1 : R $̇ t⃗ ∈̂ apps (m + n) R
           H1 = ∈map-intro (cum-≤→⊆ cum m≤n+m Hn) refl
-          H2 : apps (m + n) R ∈ᴸ map (apps (m + n)) (enum (m + n))
+          H2 : apps (m + n) R ∈̂ map (apps (m + n)) (enum (m + n))
           H2 = ∈map-intro (cum-≤→⊆ cum m≤m+n Hm) refl
 ```
 
@@ -191,7 +191,7 @@ module Plain = PlainEnum enumFormula-proper
 公式的枚举函数 `Ψ` 有一个非常显然的性质: 对任意 `m ≤ n`, `# n` 是 `Ψ m` 的新变元 (`Ψ-fresh`). 因为变元的数量是无限的, 而任一时刻只有有限个被枚举出来. 然而完整地写出其形式化证明却相当冗长且乏味, 因为必须对枚举函数的结构一步步地归纳. 比较适合处理这种情况的是 Coq 和 Lean 等自带 tactic 的证明助理. 虽然 Agda 也可以使用反射机制实现 tactic, 但毕竟需要额外去实现, 除非后面经常出现这种情况, 否则暂不考虑.
 
 ```agda
-termEnum-fresh : m ≤ n → t ∈ᴸ enum m → freshₜ n t
+termEnum-fresh : m ≤ n → t ∈̂ enum m → freshₜ n t
 termEnum-fresh {suc m} le t∈ with ∈++-elim _ t∈
 ... | inj₁ t∈ = termEnum-fresh (m+n≤o⇒n≤o 1 le) t∈
 ... | inj₂ (here refl) = fresh# λ { refl → 1+n≰n le }
@@ -207,12 +207,12 @@ termEnum-fresh {t = f $̇ t⃗} le _
 ...       | _ , t⃗∈ , refl with ∈combine-elim t⃗∈
 ...         | H = fresh$̇ λ t t∈t⃗ → termEnum-fresh (m+n≤o⇒n≤o 1 le) (H t∈t⃗)
 
-termEnum-fresh-vec : m ≤ n → {t⃗ : 𝕍 Term o} → t⃗ ∈ᴸ enum m → ∀ {t} → t ∈⃗ t⃗ → freshₜ n t
-termEnum-fresh-vec {suc m} le t⃗∈ᴸ t∈⃗ with ∈++-elim _ t⃗∈ᴸ
-... | inj₁ t⃗∈ᴸ = termEnum-fresh-vec (m+n≤o⇒n≤o 1 le) t⃗∈ᴸ t∈⃗
-... | inj₂ t⃗∈ᴸ = termEnum-fresh (m+n≤o⇒n≤o 1 le) (∈combine-elim t⃗∈ᴸ t∈⃗)
+termEnum-fresh-vec : m ≤ n → {t⃗ : 𝕍 Term o} → t⃗ ∈̂ enum m → ∀ {t} → t ∈⃗ t⃗ → freshₜ n t
+termEnum-fresh-vec {suc m} le t⃗∈̂ t∈⃗ with ∈++-elim _ t⃗∈̂
+... | inj₁ t⃗∈̂ = termEnum-fresh-vec (m+n≤o⇒n≤o 1 le) t⃗∈̂ t∈⃗
+... | inj₂ t⃗∈̂ = termEnum-fresh (m+n≤o⇒n≤o 1 le) (∈combine-elim t⃗∈̂ t∈⃗)
 
-formulaEnum-fresh : m ≤ n → φ ∈ᴸ enum m → freshᵩ n φ
+formulaEnum-fresh : m ≤ n → φ ∈̂ enum m → freshᵩ n φ
 formulaEnum-fresh {(zero)} _ (here refl) = fresh⊥̇
 formulaEnum-fresh {suc m} {φ = ⊥̇} le φ∈ = fresh⊥̇
 
@@ -228,7 +228,7 @@ formulaEnum-fresh _ _ | _
 formulaEnum-fresh _ _ | _ | _
         | inj₂ φ∈$̇ with ∈concat-elim _ φ∈$̇
 ...       | _ , φ∈φs , φs∈ with ∈map-elim φs∈
-...         | _ , _ , eq with ∈map-elim $ subst (_ ∈ᴸ_) (sym eq) φ∈φs
+...         | _ , _ , eq with ∈map-elim $ subst (_ ∈̂_) (sym eq) φ∈φs
 ...           | _ , _ , ()
 
 formulaEnum-fresh {suc m} {φ = φ →̇ ψ} le φ∈ with ∈++-elim _ φ∈
@@ -245,7 +245,7 @@ formulaEnum-fresh le _ | _
 formulaEnum-fresh _ _ | _ | _
         | inj₂ φ∈$̇ with ∈concat-elim _ φ∈$̇
 ...       | _ , φ∈φs , φs∈ with ∈map-elim φs∈
-...         | _ , _ , eq with ∈map-elim $ subst (_ ∈ᴸ_) (sym eq) φ∈φs
+...         | _ , _ , eq with ∈map-elim $ subst (_ ∈̂_) (sym eq) φ∈φs
 ...           | _ , _ , ()
 
 formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le φ∈ with ∈++-elim _ φ∈
@@ -259,7 +259,7 @@ formulaEnum-fresh le _ | _
 ...       | _ , _ , ()
 formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le _ | _ | _
         | inj₂ φ∈$̇ = H (m+n≤o⇒n≤o 1 le) φ∈$̇ where
-  H : m ≤ n → φ ∈ᴸ concat (map (apps m) (enum m)) → freshᵩ n φ
+  H : m ≤ n → φ ∈̂ concat (map (apps m) (enum m)) → freshᵩ n φ
   H le φ∈$̇ with ∈concat-elim _ φ∈$̇
   ... | _ , φ∈φs , φs∈ with ∈map-elim φs∈
   ...   | _ , _ , refl with ∈map-elim φ∈φs

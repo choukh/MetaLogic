@@ -241,7 +241,7 @@ variable
 
 ```agda
 data _⊢_ : Context → Formula → 𝕋 where
-  Ctx     : φ ∈ᴸ Γ            → Γ ⊢ φ
+  Ctx     : φ ∈̂ Γ            → Γ ⊢ φ
   ImpI    : φ ∷ Γ ⊢ ψ         → Γ ⊢ φ →̇ ψ
   ImpE    : Γ ⊢ φ →̇ ψ → Γ ⊢ φ → Γ ⊢ ψ
   AllI    : ⇞ Γ ⊢ φ           → Γ ⊢ ∀̇ φ

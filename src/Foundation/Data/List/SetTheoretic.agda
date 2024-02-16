@@ -12,7 +12,7 @@ open import Foundation.Prop.Truncation
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
 open import Data.List.Membership.Propositional public
-  using (_∈_; _∉_)
+  using (_∈_)
 open import Data.List.Membership.Propositional.Properties as Ⓜ public
   using ()
   renaming (
@@ -23,7 +23,7 @@ open import Data.List.Membership.Propositional.Properties as Ⓜ public
     ∈-filter⁺  to ∈filter-intro; ∈-filter⁻  to ∈filter-elim
     )
 open import Data.List.Relation.Binary.Subset.Propositional public
-  using (_⊆_; _⊈_)
+  using (_⊆_)
 open import Data.List.Relation.Binary.Subset.Propositional.Properties public
   using (⊆-trans)
   renaming (xs⊆xs++ys to ⊆++ˡ; xs⊆ys++xs to ⊆++ʳ)
