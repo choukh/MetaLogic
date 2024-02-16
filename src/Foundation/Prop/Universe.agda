@@ -1,6 +1,7 @@
 module Foundation.Prop.Universe where
 
 open import Foundation.Prelude
+open import Foundation.Prop.Logic
 open import Foundation.Prop.Iff
 open import Foundation.Prop.Truncation
 
@@ -49,6 +50,19 @@ variable
 
 ⊤ₚ* : ℙ ℓ
 ⊤ₚ* = ⊤* , isProp⊤*
+
+∃ₚ : (A : 𝕋 ℓ) (P : A → 𝕋 ℓ′) → ℙ _
+∃ₚ A P = ∃ A P , 𝟙.squash
+
+∃̅ₚ : (P : A → 𝕋 ℓ′) → ℙ _
+∃̅ₚ P = ∃̅ P , 𝟙.squash
+
+∃ₚ-syntax = ∃ₚ
+∃̅ₚ-syntax = ∃̅ₚ
+
+infix 1 ∃ₚ-syntax ∃̅ₚ-syntax
+syntax ∃ₚ-syntax A (λ x → P) = ∃ₚ x ꞉ A ， P
+syntax ∃̅ₚ-syntax (λ x → P) = ∃ₚ x ， P
 
 --------------------------------------------------------------------------------
 -- Cubical

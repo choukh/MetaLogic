@@ -64,7 +64,7 @@ ImpI′ {φ} {ψ} {Γ} H =
 
 弱化指的是对语境的弱化. 此类规则允许我们通过在弱化的语境中证明某公式, 来说明原语境中就能证明该公式.
 
-**<u>规则</u>** 弱化: `Γ ⊆ᴸ Δ` 蕴含 `Γ ⊢ φ → Δ ⊢ φ`.  
+**<u>规则</u>** 弱化.  
 **<u>证明</u>** 对证明树归纳即得. ∎
 
 ```agda
@@ -76,6 +76,20 @@ Wkn sub (AllI H) = AllI (Wkn (map⊆map sub) H)
 Wkn sub (AllE H) = AllE (Wkn sub H)
 Wkn sub (FalseE H) = FalseE (Wkn sub H)
 Wkn sub (Peirce φ ψ) = Peirce φ ψ
+```
+
+**<u>规则</u>** 截断弱化.  
+**<u>证明</u>** 对证明树归纳即得. ∎
+
+```agda
+Wkn₁ : Γ ⊆₁ Δ → Γ ⊢ φ → Δ ⊢₁ φ
+Wkn₁ sub (Ctx H) = 𝟙.map Ctx (sub H)
+Wkn₁ sub (ImpI H) = 𝟙.map ImpI (Wkn₁ (∷⊆₁∷ sub) H)
+Wkn₁ sub (ImpE H₁ H₂) = 𝟙.map2 ImpE (Wkn₁ sub H₁) (Wkn₁ sub H₂)
+Wkn₁ sub (AllI H) = 𝟙.map AllI (Wkn₁ (map⊆₁map sub) H)
+Wkn₁ sub (AllE H) = 𝟙.map AllE (Wkn₁ sub H)
+Wkn₁ sub (FalseE H) = 𝟙.map FalseE (Wkn₁ sub H)
+Wkn₁ sub (Peirce φ ψ) = ∣ Peirce φ ψ ∣₁
 ```
 
 **<u>规则</u>** 替换弱化: 一个证明在其语境和结论同时做同种替换后仍然有效.  

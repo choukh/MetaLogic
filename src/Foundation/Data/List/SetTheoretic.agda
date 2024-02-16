@@ -7,6 +7,7 @@ open import Foundation.Data.Maybe
 open import Foundation.Data.List
 open import Foundation.Data.Sigma
 open import Foundation.Data.Sum
+open import Foundation.Prop.Truncation
 
 open import Data.List.Relation.Unary.Any public
   using (Any; here; there)
@@ -107,3 +108,22 @@ _[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
 map⊆map : xs ⊆ ys → map f xs ⊆ map f ys
 map⊆map sub H with ∈map-elim H
 ... | (x , x∈xs , refl) = ∈map-intro (sub x∈xs) refl
+
+------------------------------------------------------------------------
+-- Truncated
+
+infix 4 _∈₁_ _⊆₁_
+
+_∈₁_ : A → 𝕃 A → 𝕋 _
+x ∈₁ xs = ∥ x ∈ xs ∥₁
+
+_⊆₁_ : 𝕃 A → 𝕃 A → 𝕋 _
+xs ⊆₁ ys = ∀ {x} → x ∈ xs → x ∈₁ ys
+
+∷⊆₁∷ : xs ⊆₁ ys → x ∷ xs ⊆₁ x ∷ ys
+∷⊆₁∷ sub (here refl) = ∣ here refl ∣₁
+∷⊆₁∷ sub (there x∈xs) = 𝟙.map there (sub x∈xs)
+
+map⊆₁map : xs ⊆₁ ys → map f xs ⊆₁ map f ys
+map⊆₁map sub H with ∈map-elim H
+... | (x , x∈xs , refl) = 𝟙.map (λ x∈ys → ∈map-intro x∈ys refl) (sub x∈xs)

@@ -21,18 +21,13 @@ open import FOL.Soundness ℒ
 ## 𝐓-稳定性
 
 ```agda
-Theories : 𝕋₂
-Theories = 𝒫 Theory
+Theories : 𝕋₁
+Theories = 𝒫⁻ Theory
 ```
 
 ```agda
 ⟨_⟩-stability : Theories → 𝕋₁
-⟨ 𝐓 ⟩-stability = ∀ {𝒯 φ} → 𝒯 ∈ 𝐓 → stable₁ (𝒯 ⊩ φ)
-```
-
-```agda
-𝐔 : Theories
-𝐔 = λ _ → ⊤ₚ*
+⟨ 𝐓 ⟩-stability = ∀ {𝒯 φ} → 𝒯 ∈⁻ 𝐓 → stable₁ (𝒯 ⊩ φ)
 ```
 
 ```agda
@@ -51,6 +46,11 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 ## 𝐔-稳定性
 
 ```agda
+𝐔 : Theories
+𝐔 = λ _ → ⊤ₚ*
+```
+
+```agda
 𝗗𝗡𝗘↔𝐔-stability : 𝗗𝗡𝗘 ↔ ⟨ 𝐔 ⟩-stability
 𝗗𝗡𝗘↔𝐔-stability .⇒ dne _ = 𝗗𝗡𝗘↔𝗗𝗡𝗘₁ .⇒ dne _
 𝗗𝗡𝗘↔𝐔-stability .⇐ u-stb P propP = stable-subst (enclose↔ (P , propP)) $ stableInhabitation .⇒ $ u-stb _
@@ -59,7 +59,19 @@ enclose↔ 𝗣 .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p
 ## 𝐅-稳定性
 
 ```agda
+𝐅 : Theories
+𝐅 = λ 𝒯 → ∃ₚ Γ ， ∀ φ → φ ∈ 𝒯 ↔ φ ∈ᴸ Γ
+```
 
+```agda
+theory : Context → Theory
+theory Γ = λ φ → ∥ φ ∈ᴸ Γ ∥ₚ
+```
+
+```agda
+theory↔ : theory Γ ⊩₁ φ ↔ Γ ⊢₁ φ
+theory↔ .⇒ = 𝟙.rec→1 λ { (Δ , Δ⊆ , Δ⊢) → Wkn₁ Δ⊆ Δ⊢ }
+theory↔ .⇐ = 𝟙.map λ Γ⊢ → _ , ∣_∣₁ , Γ⊢
 ```
 
 ## 𝐄-稳定性

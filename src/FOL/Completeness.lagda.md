@@ -121,7 +121,7 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 
 ```agda
   WeakCompleteness    = 𝒯 ⊫ φ → nonEmpty (𝒯 ⊩ φ)
-  Completeness        = 𝒯 ⊫ φ → ∥ 𝒯 ⊩ φ ∥₁
+  Completeness        = 𝒯 ⊫ φ → 𝒯 ⊩₁ φ
   SyntacticStability  = stable₁ (𝒯 ⊩ φ)
 ```
 
@@ -151,7 +151,7 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ### 爆炸模型
 
 ```agda
-  ExplodingCompleteness = 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ → ∥ 𝒯 ⊩ φ ∥₁
+  ExplodingCompleteness = 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ → 𝒯 ⊩₁ φ
   SemanticExplosibility = 𝒯 ⊫ φ → 𝒯 ⊫⟨ Exp {ℓ0} ⟩ φ
 ```
 
