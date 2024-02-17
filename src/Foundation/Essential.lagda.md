@@ -370,11 +370,12 @@ open import Foundation.Data.List public
 ```agda
 open import Foundation.Data.List.SetTheoretic public
   renaming (
-    _∈_ to _∈͆_; _∈₁_ to _∈͆₁_; _⊆_ to _⊆͆_;
+    _∈_ to _∈͆_; _∈₁_ to _∈͆₁_;
+    _⊆_ to _⊆͆_; _⊆₁_ to _⊆͆₁_;
     ⊆-trans to ⊆͆-trans)
 ```
 
-我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_⊆͆ₚ_`.
+我们甚至可以谈论 `A` 的列表与 `A` 的子集间的包含关系 `_⊆̣͆_`.
 
 ```agda
 open import Foundation.Data.List.+Powerset public

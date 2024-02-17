@@ -158,7 +158,19 @@ freshVar∷-fresh φ Γ H = Σfreshᵩ _ .snd (freshVar-≥ {Γ = φ ∷ Γ} (th
 ```agda
 ∀̇ⁿ : ℕ → Formula → Formula
 ∀̇ⁿ zero = id
-∀̇ⁿ (suc n) φ = ∀̇ (∀̇ⁿ n φ)
+∀̇ⁿ (suc n) = ∀̇_ ∘ ∀̇ⁿ n
+```
+
+```agda
+↑ⁿ : ℕ → Formula → Formula
+↑ⁿ zero = id
+↑ⁿ (suc n) = ↑_ ∘ ↑ⁿ n
+```
+
+```agda
+∀̇ⁿ[]ᵩ : Γ ⊢ ↑ⁿ n (∀̇ⁿ n φ) → Γ ⊢ φ
+∀̇ⁿ[]ᵩ {n = zero} H = H
+∀̇ⁿ[]ᵩ {n = suc n} H = {! ∀̇ⁿ[]ᵩ {n = n}   !}
 ```
 
 **<u>引理</u>** 如果 `n` 是 `φ` 的新变元, 那么 `n ∸ m` 是 `∀̇ⁿ m φ` 的新变元.  

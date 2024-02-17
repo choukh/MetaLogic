@@ -54,7 +54,7 @@ enclose↔ .⇐ p = ∣_∣₁ $ [ ⊥̇ ] , (λ { (here refl) → refl , p }) ,
 
 ```agda
 𝐔stb↔𝗗𝗡𝗘₁ : ⟨ 𝐔 ⟩-stability ↔ 𝗗𝗡𝗘₁
-𝐔stb↔𝗗𝗡𝗘₁ .⇒ u-stb A = stable₁-subst enclose↔ (u-stb _)
+𝐔stb↔𝗗𝗡𝗘₁ .⇒ u-stb _ = stable₁-subst enclose↔ (u-stb _)
 𝐔stb↔𝗗𝗡𝗘₁ .⇐ dne _ = dne _
 ```
 
