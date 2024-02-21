@@ -8,6 +8,8 @@ url: fol.syntax.substitution
 
 ```agda
 open import Foundation.Essential
+open import Foundation.Data.Nat.Order
+
 open import FOL.Language.Base
 module FOL.Syntax.SubstitutionFacts (ℒ : Language) where
 
@@ -234,7 +236,7 @@ private variable
   eq (suc n) = sym ↑ₜ[]₀
 ```
 
-## 含新变元的替换
+## 限制新变元的替换
 
 **<u>引理</u>** 如果对任意 `n`, 要么 `n` 是 `t` 的新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `t [ σ ]ₜ ≡ t [ τ ]ₜ`.
 
@@ -255,16 +257,16 @@ private variable
 **<u>引理</u>** 如果对任意 `n`, 要么 `n` 是 `φ` 的新变元, 要么 `σ` 与 `τ` 在该处取值相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
 
 ```agda
-[]ᵩ-ext-freshᵩ-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
+[]ᵩ-ext-freshᵩ-single-dec : Decℙ P → (∀ n → ¬ P n → σ n ≡ τ n) →
   ∀ φ → (∀ n → P n → freshᵩ n φ) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
-[]ᵩ-ext-freshᵩ-dec _ _ ⊥̇ _ = refl
-[]ᵩ-ext-freshᵩ-dec decP Hext (R $̇ t⃗) Hfresh = cong (R $̇_) $ map⃗-ext
+[]ᵩ-ext-freshᵩ-single-dec _ _ ⊥̇ _ = refl
+[]ᵩ-ext-freshᵩ-single-dec decP Hext (R $̇ t⃗) Hfresh = cong (R $̇_) $ map⃗-ext
   λ t t∈⃗ → []ₜ-ext-freshₜ-dec decP Hext t λ n Pn → freshR$̇-elim (Hfresh n Pn) t t∈⃗
-[]ᵩ-ext-freshᵩ-dec {P} decP Hext (φ →̇ ψ) Hfresh = cong2 _→̇_
-  ([]ᵩ-ext-freshᵩ-dec decP Hext φ λ n Pn → fst $ fresh→̇-elim $ Hfresh n Pn)
-  ([]ᵩ-ext-freshᵩ-dec decP Hext ψ λ n Pn → snd $ fresh→̇-elim $ Hfresh n Pn)
-[]ᵩ-ext-freshᵩ-dec {P} {σ} {τ} decP Hext (∀̇ φ) Hfresh = cong ∀̇_ $
-  []ᵩ-ext-freshᵩ-dec {P = P′} H₁ H₂ φ H₃ where
+[]ᵩ-ext-freshᵩ-single-dec {P} decP Hext (φ →̇ ψ) Hfresh = cong2 _→̇_
+  ([]ᵩ-ext-freshᵩ-single-dec decP Hext φ λ n Pn → fst $ fresh→̇-elim $ Hfresh n Pn)
+  ([]ᵩ-ext-freshᵩ-single-dec decP Hext ψ λ n Pn → snd $ fresh→̇-elim $ Hfresh n Pn)
+[]ᵩ-ext-freshᵩ-single-dec {P} {σ} {τ} decP Hext (∀̇ φ) Hfresh = cong ∀̇_ $
+  []ᵩ-ext-freshᵩ-single-dec {P = P′} H₁ H₂ φ H₃ where
   P′ : ℕ → 𝕋 _
   P′ zero = ⊥*
   P′ (suc n) = P n
@@ -281,8 +283,27 @@ private variable
 **<u>引理</u>** 如果 `n` 是 `φ` 的新变元, 且 `σ` 与 `τ` 在 `n` 之外逐点相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
 
 ```agda
-[]ᵩ-ext-freshᵩ : freshᵩ n φ → (∀ m → m ≢ n → σ m ≡ τ m) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
-[]ᵩ-ext-freshᵩ {n} {φ} Hfresh Hext = []ᵩ-ext-freshᵩ-dec {P = _≡ n} (λ _ → it) Hext φ λ { _ refl → Hfresh }
+[]ᵩ-ext-freshᵩ-single : freshᵩ n φ → (∀ m → m ≢ n → σ m ≡ τ m) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
+[]ᵩ-ext-freshᵩ-single {n} {φ} Hfresh Hext =
+  []ᵩ-ext-freshᵩ-single-dec {P = _≡ n} (λ _ → it) Hext φ λ { _ refl → Hfresh }
+```
+
+**<u>引理</u>** 如果 `n` 以上(含)是 `φ` 的新变元, 且 `σ` 与 `τ` 在 `n` 以下(不含)逐点相等, 那么 `φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ`.
+
+```agda
+[]ᵩ-ext-freshᵩ-range : (∀ m → n ≤ m → freshᵩ m φ) → (∀ m → m < n → σ m ≡ τ m) → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
+[]ᵩ-ext-freshᵩ-range {n} {φ} Hfresh Hext =
+  []ᵩ-ext-freshᵩ-single-dec {P = n ≤_} (n ≤?_) (λ m n≰m → Hext m (≰⇒> n≰m)) φ Hfresh
+```
+
+**<u>引理</u>** 替换对闭公式不起作用.
+
+```agda
+[]ᵩ-ext-closed : closed φ → φ [ σ ]ᵩ ≡ φ [ τ ]ᵩ
+[]ᵩ-ext-closed H = []ᵩ-ext-freshᵩ-range {n = 0} (λ _ → H) λ _ ()
+
+[]ᵩ-closed : closed φ → φ [ σ ]ᵩ ≡ φ
+[]ᵩ-closed H = []ᵩ-ext-closed H ∙ [#]ᵩ
 ```
 
 **<u>引理</u>** 如果对任意 `n : ℕ` 要么 `n` 是 `t` 的新变元要么 `m` 是 `σ n` 的新变元, 那么 `m` 是 `t [ σ ]ₜ` 的新变元.

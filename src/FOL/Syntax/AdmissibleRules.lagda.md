@@ -188,7 +188,22 @@ Wkn1 {φ} {Γ} {ξ} {ψ} H =
 
 ## 语境内化
 
+```agda
+LiftAll : ∀ n → Γ ⊢ (∀̇ⁿ n φ) [ # ∘ (n +_) ]ᵩ → Γ ⊢ φ
+LiftAll zero H = subst (_ ⊢_) (sym [#]ᵩ) H
+LiftAll {φ} (suc n) H = LiftAll n $ subst (_ ⊢_) eq (AllE {t = # n} H) where
+  eq = ∀̇ⁿ n φ [ # ∘ (n +_) ]ᵩ                      ≡⟨ []ᵩ-ext eq2 _ ⟩
+       (∀̇ⁿ n φ [ # n ∷ₙ (# ∘ (suc n +_)) ]ᵩ)       ≡˘⟨ []₀∘[↑]ᵩ _ ⟩
+       (∀̇ⁿ n φ [ ↑ₛ (# ∘ (suc n +_)) ]ᵩ) [ # n ]₀  ∎ where
+    eq2 : # ∘ (n +_) ≗ # n ∷ₙ # ∘ (suc n +_)
+    eq2 zero = {!   !}
+    eq2 (suc k) = {!   !}
+```
 
+```agda
+Close : Γ ⊢ close φ → Γ ⊢ φ
+Close H = {!   !}
+```
 
 ## 演绎定理
 
@@ -288,7 +303,7 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   -- k        = 0 1 2 3 | 4
   -- [ ζ 4 ]ᵩ = 1 2 3 4 | 0
   ζ-lift : ∀ n φ → freshᵩ n φ → φ [ ζ n ]ᵩ ≡ ↑ φ
-  ζ-lift n φ Hfresh = []ᵩ-ext-freshᵩ Hfresh H where
+  ζ-lift n φ Hfresh = []ᵩ-ext-freshᵩ-single Hfresh H where
     H : ∀ m → m ≢ n → ζ n m ≡ # (suc m)
     H m m≢n with m ≡ᵇ n in m≡ᵇn
     ... | true = exfalso $ m≢n $ ≡ᵇ⇒≡ _ _ $ subst 𝖳 m≡ᵇn tt
@@ -304,7 +319,7 @@ nameless-conversion {n} {Γ} {φ} freshΓ (fresh∀̇ freshᵩ-suc) =
   ζ-id : ∀ n φ → freshᵩ (suc n) φ → φ [ # n ]₀ [ ζ n ]ᵩ ≡ φ
   ζ-id n φ Hfresh =
     φ [ # n ]₀ [ ζ n ]ᵩ           ≡⟨ []ᵩ-∘ φ ⟩
-    φ [ _[ ζ n ]ₜ ∘ (# n ∷ₙ #) ]ᵩ ≡⟨ []ᵩ-ext-freshᵩ Hfresh H ⟩
+    φ [ _[ ζ n ]ₜ ∘ (# n ∷ₙ #) ]ᵩ ≡⟨ []ᵩ-ext-freshᵩ-single Hfresh H ⟩
     φ [ # ]ᵩ                      ≡⟨ [#]ᵩ ⟩
     φ                             ∎ where
     H : ∀ m → m ≢ suc n → (# n ∷ₙ #) m [ ζ n ]ₜ ≡ # m
@@ -547,3 +562,4 @@ DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRules.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRules.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
+  
