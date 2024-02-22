@@ -569,7 +569,7 @@ LiftAll {Γ} {φ} (suc n) H =                       ∅─⟨ H ⟩
 Close : Γ ⊢ ∀̇⋯ φ → Γ ⊢ φ
 Close {Γ} {φ} H = let n = Σfreshᵩ φ .fst in
                               ∅─⟨ H ⟩
-  Γ ⊢ ∀̇⋯ φ                    ─⟨ subst (_ ⊢_) ([]ᵩ-closed $ ∀̇⋯closed φ) ⟩
+  Γ ⊢ ∀̇⋯ φ                    ─⟨ subst (_ ⊢_) ([]ᵩ-closed $ ∀̇⋯-closed φ) ⟩
   Γ ⊢ (∀̇⋯ φ) [ # ∘ (n +_) ]ᵩ  ─⟨ LiftAll n ⟩
   Γ ⊢ φ
 ```

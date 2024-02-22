@@ -197,8 +197,8 @@ closed = freshᵩFrom 0
 **<u>证明</u>** 取 `φ` 的新变元 `n`, 由引理 `∀̇ⁿ-freshᵩFrom`, `∀̇⋯ φ` 的新变元是 `n ∸ n ≡ 0`, 所以 `∀̇⋯ φ` 是闭公式. ∎
 
 ```agda
-∀̇⋯closed : ∀ φ → closed (∀̇⋯ φ)
-∀̇⋯closed φ {m} _ with Σfreshᵩ φ
+∀̇⋯-closed : ∀ φ → closed (∀̇⋯ φ)
+∀̇⋯-closed φ {m} _ with Σfreshᵩ φ
 ... | n , Hn = ∀̇ⁿ-freshᵩFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
 ```
 

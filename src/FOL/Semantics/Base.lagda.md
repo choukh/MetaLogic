@@ -309,8 +309,8 @@ validateBigImp {Δ} {𝒞} {φ} (ψ ∷ Γ) H c 𝓋 𝓋⊫Δ 𝓋⊨ψ = valid
 **<u>证明</u>** 由上述两条引理即得. ∎
 
 ```agda
-validateInternal : Γ ⊨⟨ 𝒞 ⟩ φ → [] ⊨⟨ 𝒞 ⟩ ∀̇⋯ (Γ ⇢ φ)
-validateInternal {Γ} {φ} H = validateClose (Γ ⇢ φ) $ validateBigImp Γ $ Wkn⊨ φ sub H where
+validateInternalization : Γ ⊨⟨ 𝒞 ⟩ φ → [] ⊨⟨ 𝒞 ⟩ ∀̇⋯ (Γ ⇢ φ)
+validateInternalization {Γ} {φ} H = validateClose (Γ ⇢ φ) $ validateBigImp Γ $ Wkn⊨ φ sub H where
   sub : Γ ⊆͆ Γ ʳ++ []
   sub = subst (_ ⊆͆_) (ʳ++[] Γ) ⊆reverse
 ```

@@ -195,6 +195,13 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ```agda
 module _ {Γ : Context} {φ : Formula} where
   open PolymorphicSemantics ℓ0
+
+  standardFiniteCompleteness : ⟨ 𝐅 ⟩-stability → Γ ⊨ φ → Γ ⊢₁ φ
+  standardFiniteCompleteness stb H = 𝟙.map
+    Internalize $ ⊩↔⊢ .⇒ $
+    completeness↔stability weakCompleteness .⇐ (stb setΓ∈𝐅) $
+    ⊨↔⊫ .⇒ $ validateInternalization H
+    where open Guarded {set []} {∀̇⋯ (Γ ⇢ φ)} (𝟙.rec isPropClosed λ ()) (∀̇⋯-closed (Γ ⇢ φ))
 ```
 
 ## 任意理论
