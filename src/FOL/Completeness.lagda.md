@@ -77,7 +77,7 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
 ```
 
 ```agda
-  valid : # ⊫ₛ 𝒯ᵒ
+  valid : # ⊫ᵩ 𝒯ᵒ
   valid φ φ∈𝒯ᵒ = ∈→⊨ $ subst (_∈ 𝒯ᵒ) [#]ᵩ φ∈𝒯ᵒ
 ```
 
@@ -168,7 +168,7 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
   explodingCompleteness : ExplodingCompleteness
   explodingCompleteness 𝒯⊨φ = 𝟙.map Contraᵀ H where
     open TermModel (𝒯 ⨭ ¬̇ φ , c⨭)
-    #⊫𝒯 : # ⊫ₛ 𝒯
+    #⊫𝒯 : # ⊫ᵩ 𝒯
     #⊫𝒯 φ φ∈𝒯 = valid φ (𝒯ᵒ-sub (inl φ∈𝒯))
     #⊨¬̇φ : # ⊨ᵩ ¬̇ φ
     #⊨¬̇φ = valid (¬̇ φ) (𝒯ᵒ-sub (inr refl))
@@ -191,8 +191,6 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ### 非纯构造元理论
 
 ## 有限理论
-
-### 语境内化的有效性
 
 ```agda
 module _ {Γ : Context} {φ : Formula} where

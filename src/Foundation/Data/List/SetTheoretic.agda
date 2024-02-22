@@ -114,6 +114,10 @@ reverse⊆ {xs = x ∷ xs} H with ∈++-elim (reverse xs) $ subst (_ ∈_) (sym 
 ... | inj₁ H = there (reverse⊆ H)
 ... | inj₂ (here refl) = here refl
 
+⊆reverse : xs ⊆ reverse xs
+⊆reverse {xs = x ∷ xs} (here refl) = subst (_ ∈_) (reverse-++ [ x ] xs) (∈++-introʳ (here refl))
+⊆reverse {xs = x ∷ xs} (there H) = subst (_ ∈_) (reverse-++ [ x ] xs) (∈++-introˡ (⊆reverse H))
+
 ------------------------------------------------------------------------
 -- Truncated
 

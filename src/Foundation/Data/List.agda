@@ -1,6 +1,8 @@
 module Foundation.Data.List where
 
 open import Foundation.Prelude
+open import Foundation.Data.Maybe
+open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.Sigma
 
 open import Data.List public
@@ -17,10 +19,8 @@ open import Data.List.Properties public
 open import Cubical.Data.List
   using (isOfHLevelList)
 
-open import Foundation.Data.Maybe
 open import Data.Nat.Properties
   using (+-assoc)
-open import Foundation.Data.Nat.AlternativeOrder
 
 isSet𝕃 : isSet A → isSet (𝕃 A)
 isSet𝕃 = mapIsSet (isOfHLevelList 0)
@@ -52,7 +52,7 @@ _[_]⁻¹!≡ : (xs : 𝕃 A) {n : ℕ} (le : n < length xs) → xs [ n ]? ≡ s
 xs [ le ]⁻¹!≡ = Σ[<length]? xs le .snd
 
 --------------------------------------------------------------------------------
--- misc
+-- ++
 
 length-++-++ : ∀ (xs ys : 𝕃 A) {zs} →
   length (xs ++ ys ++ zs) ≡ length xs + length ys + length zs
@@ -61,3 +61,9 @@ length-++-++ xs ys {zs} =
   length xs + length (ys ++ zs)       ≡⟨ cong (length xs +_) (length-++ ys) ⟩
   length xs + (length ys + length zs) ≡˘⟨ +-assoc (length xs) _ _ ⟩
   length xs + length ys + length zs   ∎
+
+--------------------------------------------------------------------------------
+-- reverse
+
+ʳ++[] : (xs : 𝕃 A) → xs ʳ++ [] ≡ reverse xs
+ʳ++[] xs = ʳ++-defn xs ∙ ++-identityʳ _
