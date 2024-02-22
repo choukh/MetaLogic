@@ -57,13 +57,13 @@ module TermModel (𝒯ᶜ@(𝒯ⁱ , _) : ClosedTheory) where
   𝓋↔σ : ∀ 𝓋 φ → 𝓋 ⊨ᵩ φ ↔ φ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ
   𝓋↔σ 𝓋 ⊥̇ = ↔-refl
   𝓋↔σ 𝓋 (φ →̇ ψ) =
-    (𝓋 ⊨ᵩ φ → 𝓋 ⊨ᵩ ψ)               ↔⟨ ↔-cong-→ (𝓋↔σ 𝓋 φ) (𝓋↔σ 𝓋 ψ) ⟩
-    (φ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ → ψ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ) ↔˘⟨ 𝒯ᵒ-D→̇ ⟩
-    φ [ 𝓋 ]ᵩ →̇ ψ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ        ↔∎
+    (𝓋 ⊨ᵩ φ → 𝓋 ⊨ᵩ ψ)                   ↔⟨ ↔-cong-→ (𝓋↔σ 𝓋 φ) (𝓋↔σ 𝓋 ψ) ⟩
+    (φ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ → ψ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ)     ↔˘⟨ 𝒯ᵒ-D→̇ ⟩
+    φ [ 𝓋 ]ᵩ →̇ ψ [ 𝓋 ]ᵩ ∈ 𝒯ᵒ            ↔∎
   𝓋↔σ 𝓋 (∀̇ φ) =
-    (∀ t → (t ∷ₙ 𝓋) ⊨ᵩ φ)           ↔⟨ ↔-cong-Π iff ⟩
-    (∀ t → φ [ ↑ₛ 𝓋 ]ᵩ [ t ]₀ ∈ 𝒯ᵒ) ↔˘⟨ 𝒯ᵒ-D∀̇ ⟩
-    ∀̇ φ [ ↑ₛ 𝓋 ]ᵩ ∈ 𝒯ᵒ              ↔∎ where
+    (∀ t → (t ∷ₙ 𝓋) ⊨ᵩ φ)               ↔⟨ ↔-cong-Π iff ⟩
+    (∀ t → φ [ ↑ₛ 𝓋 ]ᵩ [ t ]₀ ∈ 𝒯ᵒ)     ↔˘⟨ 𝒯ᵒ-D∀̇ ⟩
+    ∀̇ φ [ ↑ₛ 𝓋 ]ᵩ ∈ 𝒯ᵒ                  ↔∎ where
       iff = λ t →
         (t ∷ₙ 𝓋) ⊨ᵩ φ                   ↔⟨ 𝓋↔σ (t ∷ₙ 𝓋) φ ⟩
         φ [ t ∷ₙ 𝓋 ]ᵩ ∈ 𝒯ᵒ              ↔≡˘⟨ cong (_∈ 𝒯ᵒ) ([]₀∘[↑]ᵩ φ) ⟩
@@ -195,13 +195,21 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ```agda
 module _ {Γ : Context} {φ : Formula} where
   open PolymorphicSemantics ℓ0
+  open Guarded {set []} {∀̇⋯ (Γ ⇢ φ)} (𝟙.rec isPropClosed λ ()) (∀̇⋯-closed (Γ ⇢ φ))
 
   standardFiniteCompleteness : ⟨ 𝐅 ⟩-stability → Γ ⊨ φ → Γ ⊢₁ φ
   standardFiniteCompleteness stb H = 𝟙.map
     Internalize $ ⊩↔⊢ .⇒ $
     completeness↔stability weakCompleteness .⇐ (stb setΓ∈𝐅) $
     ⊨↔⊫ .⇒ $ validateInternalization H
-    where open Guarded {set []} {∀̇⋯ (Γ ⇢ φ)} (𝟙.rec isPropClosed λ ()) (∀̇⋯-closed (Γ ⇢ φ))
+```
+
+```agda
+  explodingFiniteCompleteness : Γ ⊨⟨ Exp {ℓ0} ⟩ φ → Γ ⊢₁ φ
+  explodingFiniteCompleteness H = 𝟙.map
+    Internalize $ ⊩↔⊢ .⇒ $
+    explodingCompleteness $
+    ⊨↔⊫ .⇒ $ validateInternalization H
 ```
 
 ## 任意理论
@@ -215,3 +223,4 @@ module _ {𝒯 : Theory} {φ : Formula} where
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Completeness.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Completeness.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.completeness)  
 > 交流Q群: 893531731
+ 

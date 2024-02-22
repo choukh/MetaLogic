@@ -27,10 +27,10 @@ private variable
 infix 1 tautology
 infixl 0 deduction
 
-tautology : (A : 𝕋) → A → A
+tautology : (A : 𝕋 ℓ) → A → A
 tautology A a = a
 
-deduction : A → (B : 𝕋) → (A → B) → B
+deduction : A → (B : 𝕋 ℓ) → (A → B) → B
 deduction a B ab = ab a
 
 syntax tautology A a = ∅─⟨ a ⟩ A
