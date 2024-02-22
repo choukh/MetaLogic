@@ -129,7 +129,7 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 
 ```agda
   completeness↔stability : WeakCompleteness → Completeness ↔ SyntacticStability
-  completeness↔stability _ .⇒ com ne = com $ semanticStability Std id
+  completeness↔stability _ .⇒ com ne = com $ semanticStability id
     λ 𝒯⊭φ → ne λ 𝒯⊢φ → 𝒯⊭φ $ soundness 𝒯⊢φ
   completeness↔stability wcom .⇐ stb = stb ∘ wcom
 ```
@@ -191,6 +191,8 @@ module Guarded {𝒯 : Theory} {φ : Formula} (c𝒯 : closedᵀ 𝒯) (cφ : cl
 ### 非纯构造元理论
 
 ## 有限理论
+
+### 语境内化的有效性
 
 ```agda
 module _ {Γ : Context} {φ : Formula} where
