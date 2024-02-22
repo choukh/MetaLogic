@@ -186,25 +186,6 @@ Wkn1 {φ} {Γ} {ξ} {ψ} H =
   φ ∷ ψ ∷ Γ ⊢ ξ
 ```
 
-## 语境内化
-
-```agda
-LiftAll : ∀ n → Γ ⊢ (∀̇ⁿ n φ) [ # ∘ (n +_) ]ᵩ → Γ ⊢ φ
-LiftAll zero H = subst (_ ⊢_) (sym [#]ᵩ) H
-LiftAll {φ} (suc n) H = LiftAll n $ subst (_ ⊢_) eq (AllE {t = # n} H) where
-  eq = ∀̇ⁿ n φ [ # ∘ (n +_) ]ᵩ                      ≡⟨ []ᵩ-ext eq2 _ ⟩
-       (∀̇ⁿ n φ [ # n ∷ₙ (# ∘ (suc n +_)) ]ᵩ)       ≡˘⟨ []₀∘[↑]ᵩ _ ⟩
-       (∀̇ⁿ n φ [ ↑ₛ (# ∘ (suc n +_)) ]ᵩ) [ # n ]₀  ∎ where
-    eq2 : # ∘ (n +_) ≗ # n ∷ₙ # ∘ (suc n +_)
-    eq2 zero = {!   !}
-    eq2 (suc k) = {!   !}
-```
-
-```agda
-Close : Γ ⊢ close φ → Γ ⊢ φ
-Close H = {!   !}
-```
-
 ## 演绎定理
 
 **<u>规则</u>** `ImpI` 的逆命题.  
@@ -558,8 +539,75 @@ DP {φ} {Γ} = LEM (∃̇ (¬̇ φ)) H₁ H₂ where
     ¬̇ ∃̇ ¬̇ φ ∷ Γ ⊢ ∃̇ (φ →̇ ↑ ∀̇ φ)
 ```
 
+## 语境内化
+
+```agda
+LiftAll : ∀ n → Γ ⊢ (∀̇ⁿ n φ) [ # ∘ (n +_) ]ᵩ → Γ ⊢ φ
+LiftAll {Γ} {φ} zero H =                          ∅─⟨ H ⟩
+  Γ ⊢ φ [ # ]ᵩ                                    ─⟨ subst (_ ⊢_) (sym [#]ᵩ) ⟩
+  Γ ⊢ φ
+LiftAll {Γ} {φ} (suc n) H =                       ∅─⟨ H ⟩
+  Γ ⊢ ∀̇ (∀̇ⁿ n φ [ ↑ₛ (# ∘ (suc n +_)) ]ᵩ)         ─⟨ AllE {t = # n} ⟩
+  Γ ⊢ ∀̇ⁿ n φ [ _ ]ᵩ [ # n ]₀                      ─⟨ subst (_ ⊢_) eq ⟩
+  Γ ⊢ ∀̇ⁿ n φ [ # ∘ (n +_) ]ᵩ                      ─⟨ LiftAll n ⟩
+  Γ ⊢ φ
+  where
+  eq = ∀̇ⁿ n φ [ # ∘ (n +_) ]ᵩ                     ≡⟨ []ᵩ-ext eq2 _ ⟩
+       (∀̇ⁿ n φ [ # n ∷ₙ (# ∘ (suc n +_)) ]ᵩ)      ≡˘⟨ []₀∘[↑]ᵩ _ ⟩
+       (∀̇ⁿ n φ [ ↑ₛ (# ∘ (suc n +_)) ]ᵩ) [ # n ]₀ ∎
+    where
+    eq2 : # ∘ (n +_) ≗ # n ∷ₙ # ∘ (suc n +_)
+    eq2 zero = cong # (+-identityʳ n)
+    eq2 (suc k) = cong # (+-suc n k)
+```
+
+```agda
+Close : Γ ⊢ ∀̇⋯ φ → Γ ⊢ φ
+Close {Γ} {φ} H = let n = Σfreshᵩ φ .fst in
+                              ∅─⟨ H ⟩
+  Γ ⊢ ∀̇⋯ φ                    ─⟨ subst (_ ⊢_) ([]ᵩ-closed $ ∀̇⋯closed φ) ⟩
+  Γ ⊢ (∀̇⋯ φ) [ # ∘ (n +_) ]ᵩ  ─⟨ LiftAll n ⟩
+  Γ ⊢ φ
+```
+
+```agda
+_⇢_ : Context → Formula → Formula
+[] ⇢ φ = φ
+(ψ ∷ Γ) ⇢ φ = ψ →̇ Γ ⇢ φ
+```
+
+```agda
+BigImpE : Γ ⊢ Δ ⇢ φ → Δ ʳ++ Γ ⊢ φ
+BigImpE {Δ = []} = id
+BigImpE {Γ} {Δ = ψ ∷ Δ} {φ} H =   ∅─⟨ H ⟩
+  Γ ⊢ ψ →̇ (Δ ⇢ φ)                 ─⟨ ImpE′ ⟩
+  ψ ∷ Γ ⊢ (Δ ⇢ φ)                 ─⟨ BigImpE ⟩
+  Δ ʳ++ ψ ∷ Γ ⊢ φ                 ─⟨ subst (_⊢ φ) eq ⟩
+  (ψ ∷ Δ) ʳ++ Γ ⊢ φ
+  where
+  eq = (ψ ∷ Δ) ʳ++ Γ              ≡⟨⟩
+       ([ ψ ] ++ Δ) ʳ++ Γ         ≡⟨ ++-ʳ++ [ ψ ] {ys = Δ} ⟩
+       Δ ʳ++ [ ψ ] ʳ++ Γ          ≡⟨⟩
+       Δ ʳ++ ψ ∷ Γ                ∎
+```
+
+```agda
+Internalize : [] ⊢ ∀̇⋯ (Γ ⇢ φ) → Γ ⊢ φ
+Internalize {Γ} {φ} H =           ∅─⟨ H ⟩
+  [] ⊢ ∀̇⋯ (Γ ⇢ φ)                 ─⟨ Close ⟩
+  [] ⊢ Γ ⇢ φ                      ─⟨ BigImpE ⟩
+  Γ ʳ++ [] ⊢ φ                    ─⟨ Wkn sub ⟩
+  Γ ⊢ φ
+  where
+  sub : Γ ʳ++ [] ⊆͆ Γ
+  sub H =                         ∅─⟨ H ⟩
+    _ ∈͆ Γ ʳ++ []                  ─⟨ subst (_ ∈͆_) (sym $ ʳ++-defn Γ) ⟩
+    _ ∈͆ reverse Γ ++ []           ─⟨ subst (_ ∈͆_) (sym $ ++-identityʳ _) ⟩
+    _ ∈͆ reverse Γ                 ─⟨ reverse⊆ ⟩
+    _ ∈͆ Γ
+```
+
 ---
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/AdmissibleRules.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.AdmissibleRules.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.admissible)  
 > 交流Q群: 893531731
-  

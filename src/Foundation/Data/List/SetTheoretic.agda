@@ -109,6 +109,11 @@ map⊆map : xs ⊆ ys → map f xs ⊆ map f ys
 map⊆map sub H with ∈map-elim H
 ... | (x , x∈xs , refl) = ∈map-intro (sub x∈xs) refl
 
+reverse⊆ : reverse xs ⊆ xs
+reverse⊆ {xs = x ∷ xs} H with ∈++-elim (reverse xs) $ subst (_ ∈_) (sym $ reverse-++ [ x ] xs) H
+... | inj₁ H = there (reverse⊆ H)
+... | inj₂ (here refl) = here refl
+
 ------------------------------------------------------------------------
 -- Truncated
 

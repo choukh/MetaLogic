@@ -186,19 +186,19 @@ closed : Formula → 𝕋
 closed = freshᵩFrom 0
 ```
 
-**<u>定义</u>** 给定公式 `φ`, 取其新变元 `n`, 对 `φ` 做 `n` 次全称量化, 得到的公式叫做 `φ` 的闭公式, 记作 `close φ`.
+**<u>定义</u>** 给定公式 `φ`, 取其新变元 `n`, 对 `φ` 做 `n` 次全称量化, 得到的公式叫做 `φ` 的闭公式, 记作 `∀̇⋯ φ`.
 
 ```agda
-close : Formula → Formula
-close φ = ∀̇ⁿ (Σfreshᵩ φ .fst) φ
+∀̇⋯ : Formula → Formula
+∀̇⋯ φ = ∀̇ⁿ (Σfreshᵩ φ .fst) φ
 ```
 
-**<u>定理</u>** 对任意 `φ`, `close φ` 是闭公式.  
-**<u>证明</u>** 取 `φ` 的新变元 `n`, 由引理 `∀̇ⁿ-freshᵩFrom`, `close φ` 的新变元是 `n ∸ n ≡ 0`, 所以 `close φ` 是闭公式. ∎
+**<u>定理</u>** 对任意 `φ`, `∀̇⋯ φ` 是闭公式.  
+**<u>证明</u>** 取 `φ` 的新变元 `n`, 由引理 `∀̇ⁿ-freshᵩFrom`, `∀̇⋯ φ` 的新变元是 `n ∸ n ≡ 0`, 所以 `∀̇⋯ φ` 是闭公式. ∎
 
 ```agda
-close-closed : ∀ φ → closed (close φ)
-close-closed φ {m} _ with Σfreshᵩ φ
+∀̇⋯closed : ∀ φ → closed (∀̇⋯ φ)
+∀̇⋯closed φ {m} _ with Σfreshᵩ φ
 ... | n , Hn = ∀̇ⁿ-freshᵩFrom n n φ Hn $ subst (_≤ m) (n∸n≡0 n) z≤n
 ```
 
