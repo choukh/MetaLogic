@@ -96,39 +96,38 @@ some[]⁻¹→some[] (y ∷ xs) refl  | no _     | some _ = some[]⁻¹→some[]
 
 ## 元素的移除
 
-**<u>定义</u>** 将列表中 `xs` 中与 `x` 相等的元素全部去掉, 所得到的集合叫做 `xs` 移除 `x`, 记作 `xs ∖[ x ]`.
+**<u>定义</u>** 将列表中 `xs` 中与 `x` 相等的元素全部去掉, 所得到的集合叫做 `xs` 移除 `x`, 记作 `remove xs x`.
 
 ```
-infix 30 _∖[_]
-_∖[_] : 𝕃 A → A → 𝕃 A
-xs ∖[ x ] = filter {P = _≢ x} (λ _ → ¬? it) xs
+remove : 𝕃 A → A → 𝕃 A
+remove xs x = filter {P = _≢ x} (λ _ → ¬? it) xs
 ```
 
 **<u>引理</u>** 移除的引入和消去.
 
 ```agda
-∈∖[]-intro : x ∈ xs → x ≢ y → x ∈ xs ∖[ y ]
-∈∖[]-intro = ∈filter-intro (λ _ → ¬? it)
+∈remove-intro : x ∈ xs → x ≢ y → x ∈ remove xs y
+∈remove-intro = ∈filter-intro (λ _ → ¬? it)
 
-∈∖[]-elim : x ∈ xs ∖[ y ] → x ∈ xs × x ≢ y
-∈∖[]-elim = ∈filter-elim (λ _ → ¬? it)
+∈remove-elim : x ∈ remove xs y → x ∈ xs × x ≢ y
+∈remove-elim = ∈filter-elim (λ _ → ¬? it)
 ```
 
 **<u>引理</u>** 移除元素后的列表包含于原列表.
 
 ```agda
-∖[]⊆ : xs ∖[ x ] ⊆ xs
-∖[]⊆ x∈ = ∈∖[]-elim x∈ .fst
+remove⊆ : remove xs x ⊆ xs
+remove⊆ x∈ = ∈remove-elim x∈ .fst
 ```
 
-**<u>引理</u>** `y ∷ xs ⊆ y ∷ xs ∖[ y ]`.
+**<u>引理</u>** `y ∷ xs ⊆ y ∷ remove xs y`.
 
 ```agda
-∷⊆∷∖[] : y ∷ xs ⊆ y ∷ xs ∖[ y ]
-∷⊆∷∖[] (here refl) = here refl
-∷⊆∷∖[] {y} {x} (there x∈) with x ≟ y
+∷⊆∷remove : y ∷ xs ⊆ y ∷ remove xs y
+∷⊆∷remove (here refl) = here refl
+∷⊆∷remove {y} {x} (there x∈) with x ≟ y
 ... | yes refl = here refl
-... | no x≢y = there (∈∖[]-intro x∈ x≢y)
+... | no x≢y = there (∈remove-intro x∈ x≢y)
 ```
 
 ---

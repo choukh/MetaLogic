@@ -126,7 +126,7 @@ instance
     e zero = [ ⊥̇ ]
     e (suc n) = e n
       ++ map ∀̇_ (e n)
-      ++ map (uncurry _→̇_) (e n [×] e n)
+      ++ map (uncurry _→̇_) (e n ⨉ e n)
       ++ concat (map (apps n) (enum n))
 ```
 
@@ -151,7 +151,7 @@ instance
       H (n , Hn) = suc n , (∈++-introʳ $ ∈++-introˡ $ ∈map-intro Hn refl)
     w (φ →̇ ψ) = 𝟙.map2 H (w φ) (w ψ) where
       H : Witness e φ → Witness e ψ → Witness e (φ →̇ ψ)
-      H (m , Hm) (n , Hn) = suc m + n , (∈++-introʳ $ ∈++-introʳ $ ∈++-introˡ $ ∈map[×]-intro
+      H (m , Hm) (n , Hn) = suc m + n , (∈++-introʳ $ ∈++-introʳ $ ∈++-introˡ $ ∈map⨉-intro
         (cum-≤→⊆ c m≤m+n Hm) (cum-≤→⊆ c m≤n+m Hn))
     w (R $̇ t⃗) = 𝟙.map2 H (wit R) (wit t⃗) where
       H : Witness enum R → Witness enum t⃗ → Witness e (R $̇ t⃗)
@@ -239,7 +239,7 @@ formulaEnum-fresh {suc m} {φ = φ →̇ ψ} le φ∈ with ∈++-elim _ φ∈
 formulaEnum-fresh le _ | _
       | inj₂ φ∈++ with ∈++-elim _ φ∈++
 ...     | inj₁ φ∈→̇ with ∈map-elim φ∈→̇
-...       | _ , φ∈× , refl with ∈[×]-elim φ∈×
+...       | _ , φ∈× , refl with ∈⨉-elim φ∈×
 ...         | φ∈e₁ , φ∈e₂ = let H = ≤-trans (m+n≤o⇒n≤o 1 le) m≤n+m in
               fresh→̇ (formulaEnum-fresh H φ∈e₁) (formulaEnum-fresh H φ∈e₂)
 formulaEnum-fresh _ _ | _ | _

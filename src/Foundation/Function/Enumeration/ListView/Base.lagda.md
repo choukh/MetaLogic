@@ -177,7 +177,7 @@ enumerable↔ℙ = ↔-map Enum↔ℙ
 ```agda
 combine : 𝕃 A → (n : ℕ) → 𝕃 (𝕍 A n)
 combine xs zero = [ [] ]
-combine xs (suc n) = map (uncurry _∷_) (xs [×] combine xs n)
+combine xs (suc n) = map (uncurry _∷_) (xs ⨉ combine xs n)
 ```
 
 **<u>引理</u>** 向量 `x⃗ : 𝕍 A n` 属于列表 `xs` 的 `n` 维组合, 当且仅当任意 `x⃗` 包含于 `xs`.  
@@ -186,10 +186,10 @@ combine xs (suc n) = map (uncurry _∷_) (xs [×] combine xs n)
 ```agda
 ∈combine-intro : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → (∀ {x} → x ∈⃗ x⃗ → x ∈͆ xs) → x⃗ ∈͆ combine xs n
 ∈combine-intro {x⃗ = []} _ = here refl
-∈combine-intro {x⃗ = x ∷ x⃗} H = ∈map[×]-intro (H $ here refl) (∈combine-intro $ H ∘ there)
+∈combine-intro {x⃗ = x ∷ x⃗} H = ∈map⨉-intro (H $ here refl) (∈combine-intro $ H ∘ there)
 
 ∈combine-elim : {x⃗ : 𝕍 A n} {xs : 𝕃 A} → x⃗ ∈͆ combine xs n → ∀ {x} → x ∈⃗ x⃗ → x ∈͆ xs
-∈combine-elim {x⃗ = x ∷ x⃗} x⃗∈͆ y∈⃗ with ∈map[×]-elim x⃗∈͆
+∈combine-elim {x⃗ = x ∷ x⃗} x⃗∈͆ y∈⃗ with ∈map⨉-elim x⃗∈͆
 ∈combine-elim {x⃗ = x ∷ x⃗} _ (here refl) | _ , _ , x∈͆ , _ , refl = x∈͆
 ∈combine-elim {x⃗ = x ∷ x⃗} _ (there y∈⃗)  | _ , _ , x∈͆ , x⃗∈͆ , refl = ∈combine-elim x⃗∈͆ y∈⃗
 ```
@@ -212,7 +212,7 @@ combine-wit _ [] _ = ex 0 (here refl)
 combine-wit {f} cum (x ∷ x⃗) wit = 𝟙.map2 H (wit x (here refl)) IH where
     IH = combine-wit cum x⃗ λ y y∈⃗ → wit y (there y∈⃗)
     H : Witness f x → Witness _ x⃗ → Witness _ (x ∷ x⃗)
-    H (m , Hm) (o , Ho) = m + o , ∈map[×]-intro H1 H2 where
+    H (m , Hm) (o , Ho) = m + o , ∈map⨉-intro H1 H2 where
       H1 : x ∈͆ f (m + o)
       H1 = cum-≤→⊆ cum m≤m+n Hm
       H2 : x⃗ ∈͆ combine (f (m + o)) _

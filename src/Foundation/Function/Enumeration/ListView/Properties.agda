@@ -35,7 +35,7 @@ eℕ-length (suc n) =
   suc (suc n)                         ∎
 
 ∈e2ℕ-intro : ∀ m n → (m , n) ∈ enum (suc (m + n))
-∈e2ℕ-intro m n = ∈++-introʳ $ ∈[×]-intro m∈eℕm+n n∈eℕm+n where
+∈e2ℕ-intro m n = ∈++-introʳ $ ∈⨉-intro m∈eℕm+n n∈eℕm+n where
   m∈eℕm+n : m ∈ enum (m + n)
   m∈eℕm+n = ∈eℕ-intro m (m + n) m≤m+n
   n∈eℕm+n : n ∈ enum (m + n)
@@ -44,7 +44,7 @@ eℕ-length (suc n) =
 e2ℕ-length-suc : ∀ n → length (enum (suc n)) ≡ length (enum n) + suc n * suc n
 e2ℕ-length-suc n =
   length (enum (suc n))                               ≡⟨ length-++ (enum n) ⟩
-  length (enum n) + length (enum n [×] enum n)        ≡⟨ cong (length (enum n) +_) $ [×]-length (enum n) (enum n) ⟩
+  length (enum n) + length (enum n ⨉ enum n)        ≡⟨ cong (length (enum n) +_) $ ⨉-length (enum n) (enum n) ⟩
   length (enum n) + length (enum n) * length (enum n) ≡⟨ cong (length (enum n) +_) $ cong2 _*_ (eℕ-length n) (eℕ-length n) ⟩
   length (enum n) + suc n * suc n                 ∎
 

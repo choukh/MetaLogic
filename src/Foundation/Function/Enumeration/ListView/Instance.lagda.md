@@ -63,16 +63,16 @@ instance
   enum× : ⦃ Enum A ⦄ → ⦃ Enum B ⦄ → Enum (A × B)
   enum× {A} {B} = mkEnum e c w where
     e : 𝕃ₙ (A × B)
-    e zero = enum 0 [×] enum 0
-    e (suc n) = e n ++ enum n [×] enum n
+    e zero = enum 0 ⨉ enum 0
+    e (suc n) = e n ++ enum n ⨉ enum n
     c : Cumulation e
-    c n = enum n [×] enum n , refl
+    c n = enum n ⨉ enum n , refl
     w : ∀ xy → e witness xy
     w (x , y) = 𝟙.map2 H (wit x) (wit y) where
       H : Witness enum x → Witness enum y → Witness e (x , y)
       H (m , x∈fm) (n , x∈gn) = suc (m + n) , ∈++-introʳ H2 where
-        H2 : (x , y) ∈ enum (m + n) [×] enum (m + n)
-        H2 = ∈[×]-intro (cum-≤→⊆ cum m≤m+n x∈fm) (cum-≤→⊆ cum m≤n+m x∈gn)
+        H2 : (x , y) ∈ enum (m + n) ⨉ enum (m + n)
+        H2 = ∈⨉-intro (cum-≤→⊆ cum m≤m+n x∈fm) (cum-≤→⊆ cum m≤n+m x∈gn)
 ```
 
 **<u>实例/构造</u>** 可枚举集的 `n` 维向量可枚举: 第 `0` 项取空列表, 第 `suc m` 项取前一项并上 `enum m` 的 `n` 维组合. 其中 `enum m` 是可枚举集的累积列表的第 `m` 项. 见证条件的证明留作练习. ∎
@@ -96,7 +96,7 @@ instance
     w [] = ex 1 (here refl)
     w (x ∷ x⃗) = 𝟙.map2 H (wit x) (w x⃗) where
       H : Witness enum x → Witness e x⃗ → Witness e (x ∷ x⃗)
-      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈++-introʳ (∈map[×]-intro H1 H2) where
+      H (m , Hm) (suc n , Hn) = suc m + suc n , ∈++-introʳ (∈map⨉-intro H1 H2) where
         H1 : x ∈ enum (m + suc n)
         H1 = cum-≤→⊆ cum m≤m+n Hm
         H2 : x⃗ ∈ combine (enum (m + suc n)) _

@@ -66,36 +66,36 @@ map⊆P : (∀ x → x ∈ xs → P (f x)) → ∀ y → y ∈ map f xs → P y
 map⊆P {P} H y y∈ with ∈map-elim y∈
 ... | x , x∈xs , y≡fx = subst P y≡fx $ H x x∈xs
 
-infixr 6 _[×]_
-_[×]_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
-[] [×] ys = []
-(x ∷ xs) [×] ys = map (x ,_) ys ++ xs [×] ys
+infixr 6 _⨉_
+_⨉_ : 𝕃 A → 𝕃 B → 𝕃 (A × B)
+[] ⨉ ys = []
+(x ∷ xs) ⨉ ys = map (x ,_) ys ++ xs ⨉ ys
 
-∈[×]-intro : x ∈ xs → y ∈ ys → (x , y) ∈ xs [×] ys
-∈[×]-intro {xs = _ ∷ xs} (here refl) y∈ = ∈++-introˡ $ ∈map-intro y∈ refl
-∈[×]-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈++-introʳ $ ∈[×]-intro x∈ y∈
+∈⨉-intro : x ∈ xs → y ∈ ys → (x , y) ∈ xs ⨉ ys
+∈⨉-intro {xs = _ ∷ xs} (here refl) y∈ = ∈++-introˡ $ ∈map-intro y∈ refl
+∈⨉-intro {xs = _ ∷ xs} (there x∈)  y∈ = ∈++-introʳ $ ∈⨉-intro x∈ y∈
 
-∈[×]-elim : {p@(x , y) : A × B} → p ∈ xs [×] ys → x ∈ xs × y ∈ ys
-∈[×]-elim {xs = x ∷ xs} {ys} p∈ with ∈++-elim (map (x ,_) ys) p∈
-∈[×]-elim _ | inj₁ H with ∈map-elim H
+∈⨉-elim : {p@(x , y) : A × B} → p ∈ xs ⨉ ys → x ∈ xs × y ∈ ys
+∈⨉-elim {xs = x ∷ xs} {ys} p∈ with ∈++-elim (map (x ,_) ys) p∈
+∈⨉-elim _ | inj₁ H with ∈map-elim H
 ... | y , y∈ , refl = here refl , y∈
-∈[×]-elim _ | inj₂ H with ∈[×]-elim H
+∈⨉-elim _ | inj₂ H with ∈⨉-elim H
 ... | H1 , H2 = there H1 , H2
 
-[×]-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs [×] ys) ≡ length xs * length ys
-[×]-length [] _ = refl
-[×]-length (x ∷ xs) ys =
-  length (map (x ,_) ys ++ xs [×] ys)         ≡⟨ length-++ (map (x ,_) ys) ⟩
-  length (map (x ,_) ys) + length (xs [×] ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
-  length ys + length (xs [×] ys)              ≡⟨ cong (_ +_) ([×]-length xs ys) ⟩
+⨉-length : (xs : 𝕃 A) (ys : 𝕃 B) → length (xs ⨉ ys) ≡ length xs * length ys
+⨉-length [] _ = refl
+⨉-length (x ∷ xs) ys =
+  length (map (x ,_) ys ++ xs ⨉ ys)         ≡⟨ length-++ (map (x ,_) ys) ⟩
+  length (map (x ,_) ys) + length (xs ⨉ ys) ≡⟨ cong (_+ _) (length-map _ ys) ⟩
+  length ys + length (xs ⨉ ys)              ≡⟨ cong (_ +_) (⨉-length xs ys) ⟩
   length ys + length xs * length ys           ∎
 
-∈map[×]-intro : {f : A × B → C} → x ∈ xs → y ∈ ys → f (x , y) ∈ map f (xs [×] ys)
-∈map[×]-intro H1 H2 = ∈map-intro (∈[×]-intro H1 H2) refl
+∈map⨉-intro : {f : A × B → C} → x ∈ xs → y ∈ ys → f (x , y) ∈ map f (xs ⨉ ys)
+∈map⨉-intro H1 H2 = ∈map-intro (∈⨉-intro H1 H2) refl
 
-∈map[×]-elim : {f : A × B → C} → z ∈ map f (xs [×] ys) → Σ x ， Σ y ， x ∈ xs × y ∈ ys × z ≡ f (x , y)
-∈map[×]-elim z∈ with ∈map-elim z∈
-... | (x , y) , xy∈ , refl with ∈[×]-elim xy∈
+∈map⨉-elim : {f : A × B → C} → z ∈ map f (xs ⨉ ys) → Σ x ， Σ y ， x ∈ xs × y ∈ ys × z ≡ f (x , y)
+∈map⨉-elim z∈ with ∈map-elim z∈
+... | (x , y) , xy∈ , refl with ∈⨉-elim xy∈
 ... | x∈ , y∈ = x , y , x∈ , y∈ , refl
 
 ------------------------------------------------------------------------
