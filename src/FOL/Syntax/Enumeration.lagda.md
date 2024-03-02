@@ -11,6 +11,7 @@ url: fol.syntax.enumeration
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈͆_)
+open import Foundation.Data.List.Solver
 open import Foundation.Function.Enumeration.PlainView
 
 open import FOL.Language.Base
