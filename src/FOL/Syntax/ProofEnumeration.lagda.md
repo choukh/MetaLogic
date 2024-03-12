@@ -15,6 +15,7 @@ module FOL.Syntax.ProofEnumeration (ℒ : Language) where
 open import FOL.Syntax.Base ℒ
 open import FOL.Syntax.Discrete ℒ
 open import FOL.Syntax.Enumeration ℒ
+open Enumℙ ⦃ ... ⦄
 instance _ = ℒ
 ```
 

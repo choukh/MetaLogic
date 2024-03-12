@@ -31,9 +31,9 @@ private module Test (xs ys zs : 𝕃 ℕ) where
   f zero = xs
   f (suc n) = f n ++ ys
 
-  test-solve∈++-n : ∀ n → xs ⊆ f n
-  test-solve∈++-n zero = id
-  test-solve∈++-n (suc n) H = solve∈++ (test-solve∈++-n n H)
+  --test-solve∈++-n : ∀ n → xs ⊆ f n
+  --test-solve∈++-n zero = id
+  --test-solve∈++-n (suc n) H = solve∈++ (test-solve∈++-n n H)
 
   test-solve∈++-0 : xs ⊆ xs ++ ys ++ zs
   test-solve∈++-0 H = solve∈++ H

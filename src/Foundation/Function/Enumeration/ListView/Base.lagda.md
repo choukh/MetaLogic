@@ -150,8 +150,6 @@ record Enumℙ {A : 𝕋 ℓ} (P : A → 𝕋 ℓ′) : 𝕋 (ℓ ⊔ ℓ′) wh
     cumℙ : Cumulation enumℙ
     witℙ : ∀ x → P x ↔ enumℙ witness x
 
-open Enumℙ ⦃...⦄ public
-
 Enum↔ℙ : Enum A ↔ Enumℙ λ (_ : A) → ⊤
 Enum↔ℙ = ⇒: (λ (mkEnum f cum H) → mkEnumℙ f cum λ x → ⇒: (λ _ → H x) ⇐: (λ _ → tt))
           ⇐: (λ (mkEnumℙ f cum H) → mkEnum f cum λ x → H x .⇒ tt)

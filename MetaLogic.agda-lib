@@ -1,6 +1,6 @@
 name: MetaLogic
 depend:
-  cubical-0.5
+  cubical-0.7
   standard-library-2.0
 include: src
 flags:
