@@ -11,7 +11,6 @@ url: fol.syntax.enumeration
 open import Foundation.Essential
 open import Foundation.Data.Nat.AlternativeOrder
 open import Foundation.Data.List.SetTheoretic renaming (_∈_ to _∈͆_)
-open import Foundation.Data.List.Solver
 open import Foundation.Function.Enumeration.PlainView
 
 open import FOL.Language.Base
@@ -274,3 +273,4 @@ formulaEnum-fresh {suc m} {φ = R $̇ t⃗} le _ | _ | _
 > 知识共享许可协议: [CC-BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)  
 > [GitHub](https://github.com/choukh/MetaLogic/blob/main/src/FOL/Syntax/Enumeration.lagda.md) | [GitHub Pages](https://choukh.github.io/MetaLogic/FOL.Syntax.Enumeration.html) | [语雀](https://www.yuque.com/ocau/metalogic/fol.syntax.enumeration)  
 > 交流Q群: 893531731
+ 
