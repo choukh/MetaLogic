@@ -26,6 +26,8 @@ inhabited A = ∥ A ∥₁
 nonEmpty A = ¬ ¬ A
 ```
 
+**<u>注意</u>** 借助**双重否定翻译 (double-negation translation)**, `A` 的非空性又可以看作是 `A` 在经典逻辑中的可证性.
+
 **<u>事实</u>** 居留蕴含非空.
 
 ```agda
